@@ -1,0 +1,70 @@
+plugins {
+  id "com.eriwen.gradle.js" version "1.12.1"
+}
+
+repositories {
+    mavenCentral()
+}
+
+String jsSrcDir = "src/main/js"
+String jsDistDir = "dist"
+
+javascript.source {
+    dev {
+        js {
+            srcDir jsSrcDir
+            include "*.js"
+            exclude "*.min.js"
+        }
+    }
+    prod {
+        js {
+            srcDir jsSrcDir
+            include "*.min.js"
+        }
+    }
+}
+
+jshint {
+    tasks.jshint.source = javascript.source.dev.js.files
+    tasks.jshint.dest = file("${buildDir}/jshint.out")
+    tasks.jshint.reporter = "checkstyle"
+    jshint.options = [curly: true, eqeqeq: true, expr: true, freeze: true, latedef: true, nonbsp: true, nonew: true, notypeof: true, shadow: true, undef: true, unused: true]
+}
+
+combineJs {
+    source = javascript.source.dev.js.files
+    dest = file("${jsDistDir}/smile.js")
+}
+
+minifyJs {
+    source = combineJs
+    dest = file("${jsDistDir}/smile.min.js")
+    sourceMap = file("${jsDistDir}/smile.js.map")
+    closure {
+        warningLevel = "QUIET"
+    }
+}
+
+defaultTasks "package"
+
+task "package"(dependsOn: ["jshint", "combineJs", "minifyJs"]) << {
+}
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+version = '1.0.0-SNAPSHOT'
+
+dependencies {
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.5.4'
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-smile', version: '2.5.4'
+    compile group: 'commons-io', name: 'commons-io', version: '2.4'
+    compile group: 'org.springframework', name: 'spring-core', version: '4.1.6.RELEASE'
+}
+
+task generate(type: JavaExec, dependsOn: jar) {
+    main = 'TestDataGenerator'
+    args = ['arg1', 'arg2']
+    classpath = sourceSets.main.runtimeClasspath
+}
