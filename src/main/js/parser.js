@@ -87,7 +87,7 @@
       if (tokenClass === 0) { // Short Shared Value String reference (single byte)
         return sharedStringValues.getString(token & 0x1f);
       } else if (tokenClass === 1) { // Simple literals, numbers
-        parseSimpleLiteralValue(token, decoderStream);
+        return parseSimpleLiteralValue(token, decoderStream);
       } else if (tokenClass === 2) { // Tiny ASCII (1 - 32 bytes == chars)
         s = decoderStream.readAscii((token & 0x1f) + 1);
         sharedStringValues.addString(s);
@@ -107,7 +107,7 @@
       } else if (tokenClass === 6) { // Small integers (single byte)
         return Smile.Decoder.decodeZigZag(token & 0x1f);
       } else if (tokenClass === 7) { // Binary / Long text / structure markers
-        parseBinaryLongTextStructureValues(token, decoderStream);
+        return parseBinaryLongTextStructureValues(token, decoderStream);
       }
     }
 
