@@ -52,40 +52,30 @@
    * http://www.onicos.com/staff/iz/amuse/javascript/expert/utf.txt
    */
   Smile.Decoder.decodeUtf8 = function(array) {
-    var out, i, len, c, char2, char3;
-
-    out = '';
-    len = array.length;
-    i = 0;
+    var out = '',
+      len = array.length,
+      i = 0,
+      c,
+      char2,
+      char3,
+      msb4;
     while (i < len) {
       c = array[i++];
-      switch (c >> 4) {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-          // 0xxxxxxx
-          out += String.fromCharCode(c);
-          break;
-        case 12:
-        case 13:
-          // 110x xxxx   10xx xxxx
-          char2 = array[i++];
-          out += String.fromCharCode(((c & 0x1f) << 6) | (char2 & 0x3f));
-          break;
-        case 14:
-          // 1110 xxxx  10xx xxxx  10xx xxxx
-          char2 = array[i++];
-          char3 = array[i++];
-          out += String.fromCharCode(((c & 0x0f) << 12) | ((char2 & 0x3f) << 6) | ((char3 & 0x3f) << 0));
-          break;
+      msb4 = c >> 4;
+      if ((msb4 >= 0) && (msb4 <= 7)) {
+        // 0xxxxxxx
+        out += String.fromCharCode(c);
+      } else if ((msb4 >= 12) && (msb4 <= 13)) {
+        // 110x xxxx   10xx xxxx
+        char2 = array[i++];
+        out += String.fromCharCode(((c & 0x1f) << 6) | (char2 & 0x3f));
+      } else if (msb4 === 14) {
+        // 1110 xxxx  10xx xxxx  10xx xxxx
+        char2 = array[i++];
+        char3 = array[i++];
+        out += String.fromCharCode(((c & 0x0f) << 12) | ((char2 & 0x3f) << 6) | ((char3 & 0x3f) << 0));
       }
     }
-
     return out;
   };
 
@@ -336,6 +326,10 @@
     }
 
     function parseBinaryLongTextStructureValues(token, decoderStream) {
+      var array,
+        object,
+        key,
+        value;
       if (token === 0xe0) { // Long (variable length) ASCII text
         // TODO
         throw new Smile.SmileError('Value token 0x' + token.toString(16) + ' not supported yet.');
@@ -349,17 +343,17 @@
         // TODO
         throw new Smile.SmileError('Value token 0x' + token.toString(16) + ' not supported yet.');
       } else if (token === 0xf8) { // START_ARRAY
-        var array = [];
+        array = [];
         while (decoderStream.peek() !== 0xf9) { // END_ARRAY
           array.push(parseValue(decoderStream));
         }
         decoderStream.read(); // consume END_ARRAY
         return array;
       } else if (token === 0xfa) { // START_OBJECT
-        var object = {};
+        object = {};
         while (decoderStream.peek() !== 0xfb) { // END_OBJECT
-          var key = parseKey(decoderStream);
-          var value = parseValue(decoderStream);
+          key = parseKey(decoderStream);
+          value = parseValue(decoderStream);
           object[key] = value;
         }
         decoderStream.read(); // consume END_OBJECT
@@ -379,7 +373,7 @@
       if (tokenClass === 0) { // Short Shared Value String reference (single byte)
         return sharedStringValues.getString(token & 0x1f);
       } else if (tokenClass === 1) { // Simple literals, numbers
-        parseSimpleLiteralValue(token, decoderStream);
+        return parseSimpleLiteralValue(token, decoderStream);
       } else if (tokenClass === 2) { // Tiny ASCII (1 - 32 bytes == chars)
         s = decoderStream.readAscii((token & 0x1f) + 1);
         sharedStringValues.addString(s);
@@ -399,7 +393,7 @@
       } else if (tokenClass === 6) { // Small integers (single byte)
         return Smile.Decoder.decodeZigZag(token & 0x1f);
       } else if (tokenClass === 7) { // Binary / Long text / structure markers
-        parseBinaryLongTextStructureValues(token, decoderStream);
+        return parseBinaryLongTextStructureValues(token, decoderStream);
       }
     }
 
@@ -416,6 +410,7 @@
         }
         return sharedPropertyNames.getString(reference);
       } else if (token === 0x34) { // Long (not-yet-shared) Unicode name
+        // TODO
         throw new Smile.SmileError('Key token 0x' + token.toString(16) + ' not supported yet.');
       } else if ((token >= 0x40) && (token <= 0x7f)) { // 'Short' shared key name reference
         reference = token & 0x3f;

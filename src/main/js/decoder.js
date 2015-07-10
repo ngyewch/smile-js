@@ -40,40 +40,30 @@
    * http://www.onicos.com/staff/iz/amuse/javascript/expert/utf.txt
    */
   Smile.Decoder.decodeUtf8 = function(array) {
-    var out, i, len, c, char2, char3;
-
-    out = '';
-    len = array.length;
-    i = 0;
+    var out = '',
+      len = array.length,
+      i = 0,
+      c,
+      char2,
+      char3,
+      msb4;
     while (i < len) {
       c = array[i++];
-      switch (c >> 4) {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-          // 0xxxxxxx
-          out += String.fromCharCode(c);
-          break;
-        case 12:
-        case 13:
-          // 110x xxxx   10xx xxxx
-          char2 = array[i++];
-          out += String.fromCharCode(((c & 0x1f) << 6) | (char2 & 0x3f));
-          break;
-        case 14:
-          // 1110 xxxx  10xx xxxx  10xx xxxx
-          char2 = array[i++];
-          char3 = array[i++];
-          out += String.fromCharCode(((c & 0x0f) << 12) | ((char2 & 0x3f) << 6) | ((char3 & 0x3f) << 0));
-          break;
+      msb4 = c >> 4;
+      if ((msb4 >= 0) && (msb4 <= 7)) {
+        // 0xxxxxxx
+        out += String.fromCharCode(c);
+      } else if ((msb4 >= 12) && (msb4 <= 13)) {
+        // 110x xxxx   10xx xxxx
+        char2 = array[i++];
+        out += String.fromCharCode(((c & 0x1f) << 6) | (char2 & 0x3f));
+      } else if (msb4 === 14) {
+        // 1110 xxxx  10xx xxxx  10xx xxxx
+        char2 = array[i++];
+        char3 = array[i++];
+        out += String.fromCharCode(((c & 0x0f) << 12) | ((char2 & 0x3f) << 6) | ((char3 & 0x3f) << 0));
       }
     }
-
     return out;
   };
 
