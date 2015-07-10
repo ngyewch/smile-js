@@ -124,6 +124,7 @@
         }
         return sharedPropertyNames.getString(reference);
       } else if (token === 0x34) { // Long (not-yet-shared) Unicode name
+        // TODO
         throw new Smile.SmileError('Key token 0x' + token.toString(16) + ' not supported yet.');
       } else if ((token >= 0x40) && (token <= 0x7f)) { // 'Short' shared key name reference
         reference = token & 0x3f;
