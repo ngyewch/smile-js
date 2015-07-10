@@ -1,0 +1,25 @@
+{
+  "name": "smile-js",
+  "homepage": "https://github.com/ngyewch/smile-js",
+  "authors": [
+    "Ng Yew Choong <ngyewch@gmail.com>"
+  ],
+  "description": "Javascript Smile implementation",
+  "main": "dist/smile.min.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "json"
+  ],
+  "license": "Apache-2.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "src/main/java",
+    "src/test"
+  ]
+}
