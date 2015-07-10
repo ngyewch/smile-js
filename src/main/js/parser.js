@@ -44,6 +44,10 @@
     }
 
     function parseBinaryLongTextStructureValues(token, decoderStream) {
+      var array,
+        object,
+        key,
+        value;
       if (token === 0xe0) { // Long (variable length) ASCII text
         // TODO
         throw new Smile.SmileError('Value token 0x' + token.toString(16) + ' not supported yet.');
@@ -57,17 +61,17 @@
         // TODO
         throw new Smile.SmileError('Value token 0x' + token.toString(16) + ' not supported yet.');
       } else if (token === 0xf8) { // START_ARRAY
-        var array = [];
+        array = [];
         while (decoderStream.peek() !== 0xf9) { // END_ARRAY
           array.push(parseValue(decoderStream));
         }
         decoderStream.read(); // consume END_ARRAY
         return array;
       } else if (token === 0xfa) { // START_OBJECT
-        var object = {};
+        object = {};
         while (decoderStream.peek() !== 0xfb) { // END_OBJECT
-          var key = parseKey(decoderStream);
-          var value = parseValue(decoderStream);
+          key = parseKey(decoderStream);
+          value = parseValue(decoderStream);
           object[key] = value;
         }
         decoderStream.read(); // consume END_OBJECT
