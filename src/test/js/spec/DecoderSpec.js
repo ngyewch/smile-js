@@ -6,6 +6,8 @@ describe('Decoder', function() {
     expect(Smile.Decoder.decodeZigZag(3)).toEqual(-2);
     expect(Smile.Decoder.decodeZigZag(4294967294)).toEqual(2147483647);
     expect(Smile.Decoder.decodeZigZag(4294967295)).toEqual(-2147483648);
+    expect(Smile.Decoder.decodeZigZag(9007199254740990)).toEqual(4503599627370495);
+    expect(Smile.Decoder.decodeZigZag(9007199254740991)).toEqual(-4503599627370496);
   });
 
   it('should throw an error for illegal ZigZag encoded values', function() {
