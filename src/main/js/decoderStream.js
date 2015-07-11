@@ -72,4 +72,26 @@
     var array = this._inputStream.readArray(Math.ceil(bits / 7));
     return Smile.Decoder.decodeFixedLengthBigEndianEncodedBits(array, bits, adjustEndianness);
   };
+
+  Smile.DecoderStream.prototype.readSafeBinary = function() {
+    var len = this.readUnsignedVint(),
+      array = this._inputStream.readArray(Math.ceil(len * 8 / 7));
+    return Smile.Decoder.decodeSafeBinaryEncodedBits(array, len * 8);
+  };
+
+  Smile.DecoderStream.prototype.readBigInt = function() {
+    var array = this.readSafeBinary(),
+      n = 0,
+      i;
+    for (i = 0; i < array.length; i++) {
+      n = (n * 256) + array[i];
+    }
+    return n;
+  };
+
+  Smile.DecoderStream.prototype.readBigDecimal = function() {
+    var scale = this.readSignedVint();
+    var magnitude = this.readBigInt();
+    return magnitude * Math.pow(10, scale);
+  };
 }(window.Smile = window.Smile || {}));
