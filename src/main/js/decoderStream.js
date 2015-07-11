@@ -27,14 +27,14 @@
       bits = 0;
 
     function safeLeftShift(n, shift) {
-        if ((bits + shift) < 32) {
-          value <<= shift;
-          value |= n & bitMask[shift];
-        } else {
-          value *= shiftMultiplier[shift];
-          value += n & bitMask[shift];
-        }
-        bits += shift;
+      if ((bits + shift) < 32) {
+        value <<= shift;
+        value |= n & bitMask[shift];
+      } else {
+        value *= shiftMultiplier[shift];
+        value += n & bitMask[shift];
+      }
+      bits += shift;
     }
 
     while (true) {
