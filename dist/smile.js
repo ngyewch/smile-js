@@ -367,63 +367,53 @@
       return debugContextStack[debugContextStack.length - 1];
     }
 
+    function pushDebugToken(name, value) {
+      if (isDebugEnabled()) {
+        if (value === undefined) {
+          debugContextStack.push(name);
+        } else {
+          debugContextStack.push(name + ' ' + value);
+        }
+      }
+    }
+
     function parseSimpleLiteralValue(token, decoderStream) {
       var n;
       if (token === 0x20) { // empty string
-        if (isDebugEnabled()) {
-          debugContextStack.push('EMPTYSTRING');
-        }
+        pushDebugToken('EMPTYSTRING');
         return '';
       } else if (token === 0x21) { // null
-        if (isDebugEnabled()) {
-          debugContextStack.push('NULL');
-        }
+        pushDebugToken('NULL');
         return null;
       } else if (token === 0x22) { // false
-        if (isDebugEnabled()) {
-          debugContextStack.push('FALSE');
-        }
+        pushDebugToken('FALSE');
         return false;
       } else if (token === 0x23) { // true
-        if (isDebugEnabled()) {
-          debugContextStack.push('TRUE');
-        }
+        pushDebugToken('TRUE');
         return true;
       } else if (token === 0x24) { // 32-bit integer; zigzag encoded, 1 - 5 data bytes
         n = decoderStream.readSignedVint();
-        if (isDebugEnabled()) {
-          debugContextStack.push('INT32 ' + n);
-        }
+        pushDebugToken('INT32', n);
         return n;
       } else if (token === 0x25) { // 64-bit integer; zigzag encoded, 5 - 10 data bytes
         n = decoderStream.readSignedVint();
-        if (isDebugEnabled()) {
-          debugContextStack.push('INT64 ' + n);
-        }
+        pushDebugToken('INT64', n);
         return n;
       } else if (token === 0x26) { // BigInteger
         n = decoderStream.readBigInt();
-        if (isDebugEnabled()) {
-          debugContextStack.push('BIGINT ' + n);
-        }
+        pushDebugToken('BIGINT', n);
         return n;
       } else if (token === 0x28) { // 32-bit float
         n = decoderStream.readFloat32();
-        if (isDebugEnabled()) {
-          debugContextStack.push('FLOAT32 ' + n);
-        }
+        pushDebugToken('FLOAT32', n);
         return n;
       } else if (token === 0x29) { // 64-bit double
         n = decoderStream.readFloat64();
-        if (isDebugEnabled()) {
-          debugContextStack.push('FLOAT64 ' + n);
-        }
+        pushDebugToken('FLOAT64', n);
         return n;
       } else if (token === 0x2a) { // BigDecimal
         n = decoderStream.readBigDecimal();
-        if (isDebugEnabled()) {
-          debugContextStack.push('BIGDECIMAL ' + n);
-        }
+        pushDebugToken('BIGDECIMAL', n);
         return n;
       } else {
         throw new Smile.SmileError('Invalid value token 0x' + token.toString(16));
@@ -492,45 +482,33 @@
         value;
       if (tokenClass === 0) { // Short Shared Value String reference (single byte)
         value = sharedStringValues.getString(token & 0x1f);
-        if (isDebugEnabled()) {
-          debugContextStack.push('SHORTSTRREF ' + value);
-        }
+        pushDebugToken('SHORTSTRREF', value);
         return value;
       } else if (tokenClass === 1) { // Simple literals, numbers
         return parseSimpleLiteralValue(token, decoderStream);
       } else if (tokenClass === 2) { // Tiny ASCII (1 - 32 bytes == chars)
         value = decoderStream.readAscii((token & 0x1f) + 1);
         sharedStringValues.addString(value);
-        if (isDebugEnabled()) {
-          debugContextStack.push('TINYASCII ' + value);
-        }
+        pushDebugToken('TINYASCII', value);
         return value;
       } else if (tokenClass === 3) { // Short ASCII (33 - 64 bytes == chars)
         value = decoderStream.readAscii((token & 0x1f) + 33);
         sharedStringValues.addString(value);
-        if (isDebugEnabled()) {
-          debugContextStack.push('SHORTASCII ' + value);
-        }
+        pushDebugToken('SHORTASCII', value);
         return value;
       } else if (tokenClass === 4) { // Tiny Unicode (2 - 33 bytes; <= 33 characters)
         value = decoderStream.readUtf8((token & 0x1f) + 2);
         sharedStringValues.addString(value);
-        if (isDebugEnabled()) {
-          debugContextStack.push('TINYUTF8 ' + value);
-        }
+        pushDebugToken('TINYUTF8', value);
         return value;
       } else if (tokenClass === 5) { // Short Unicode (34 - 64 bytes; <= 64 characters)
         value = decoderStream.readUtf8((token & 0x1f) + 34);
         sharedStringValues.addString(value);
-        if (isDebugEnabled()) {
-          debugContextStack.push('SHORTUTF8 ' + value);
-        }
+        pushDebugToken('SHORTUTF8', value);
         return value;
       } else if (tokenClass === 6) { // Small integers (single byte)
         value = Smile.Decoder.decodeZigZag(token & 0x1f);
-        if (isDebugEnabled()) {
-          debugContextStack.push('SMALLINT ' + value);
-        }
+        pushDebugToken('SMALLINT', value);
         return value;
       } else if (tokenClass === 7) { // Binary / Long text / structure markers
         return parseBinaryLongTextStructureValues(token, decoderStream);
@@ -542,9 +520,7 @@
         reference,
         s;
       if (token === 0x20) { // Special constant name '' (empty String)
-        if (isDebugEnabled()) {
-          debugContextStack.push('EMPTYSTRING');
-        }
+        pushDebugToken('EMPTYSTRING');
         return '';
       } else if ((token >= 0x30) && (token <= 0x33)) { // 'Long' shared key name reference (2 byte token)
         reference = ((token & 0x03) << 8) | decoderStream.read();
@@ -552,9 +528,7 @@
           throw new Smile.SmileError('Invalid long shared key name reference.');
         }
         s = sharedPropertyNames.getString(reference);
-        if (isDebugEnabled()) {
-          debugContextStack.push('LONGSTRREF ' + s);
-        }
+        pushDebugToken('LONGSTRREF', s);
         return s;
       } else if (token === 0x34) { // Long (not-yet-shared) Unicode name
         // TODO
@@ -562,23 +536,17 @@
       } else if ((token >= 0x40) && (token <= 0x7f)) { // 'Short' shared key name reference
         reference = token & 0x3f;
         s = sharedPropertyNames.getString(reference);
-        if (isDebugEnabled()) {
-          debugContextStack.push('SHORTSTRREF ' + s);
-        }
+        pushDebugToken('SHORTSTRREF', s);
         return s;
       } else if ((token >= 0x80) && (token <= 0xbf)) { // Short Ascii names
         s = decoderStream.readAscii((token & 0x3f) + 1);
         sharedPropertyNames.addString(s);
-        if (isDebugEnabled()) {
-          debugContextStack.push('SHORTASCII ' + s);
-        }
+        pushDebugToken('SHORTASCII', s);
         return s;
       } else if ((token >= 0xc0) && (token <= 0xf7)) { // Short Unicode names
         s = decoderStream.readUtf8((token & 0x3f) + 2);
         sharedPropertyNames.addString(s);
-        if (isDebugEnabled()) {
-          debugContextStack.push('SHORTUTF8 ' + s);
-        }
+        pushDebugToken('SHORTUTF8', s);
         return s;
       } else {
         throw new Smile.SmileError('Invalid key token 0x' + token.toString(16));
