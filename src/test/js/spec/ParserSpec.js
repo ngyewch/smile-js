@@ -1,4 +1,8 @@
 describe('Parser', function() {
+  var smileParserOptions = {
+    'debug': true
+  };
+
   function toUint8Array(base64) {
     var binary_string = atob(base64);
     var len = binary_string.length;
@@ -14,7 +18,7 @@ describe('Parser', function() {
   }
 
   function parseSmile(name) {
-    return Smile.Parser.parse(getTestData(name));
+    return Smile.Parser.parse(getTestData(name), smileParserOptions);
   }
 
   function parseJson(name) {
@@ -27,5 +31,9 @@ describe('Parser', function() {
 
   it('should parse basicObject.smile correctly', function() {
     expect(parseSmile('basicObject.smile')).toEqual(parseJson('basicObject.min.json'));
+  });
+
+  it('should parse basicSimpleLiteralValues.smile correctly', function() {
+    expect(parseSmile('basicSimpleLiteralValues.smile')).toEqual(parseJson('basicSimpleLiteralValues.min.json'));
   });
 });

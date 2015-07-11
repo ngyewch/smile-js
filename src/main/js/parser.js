@@ -1,43 +1,90 @@
-/* global window */
+/* global window, console */
 
 (function(Smile, undefined) {
   'use strict';
 
   Smile.Parser = {};
 
-  function ParserContext() {
-    var sharedPropertyName = false,
+  function ParserContext(opts) {
+    var options = opts,
+      sharedPropertyName = false,
       sharedStringValue = false,
       rawBinary = false,
       version = 0,
       sharedPropertyNames,
       sharedStringValues,
-      decoderStream;
+      decoderStream,
+      debugContextStack = [];
+
+    function isDebugEnabled() {
+      return options && options.debug;
+    }
+
+    function getCurrentDebugContext() {
+      if (debugContextStack.length === 0) {
+        return;
+      }
+      return debugContextStack[debugContextStack.length - 1];
+    }
 
     function parseSimpleLiteralValue(token, decoderStream) {
+      var n;
       if (token === 0x20) { // empty string
+        if (isDebugEnabled()) {
+          debugContextStack.push('EMPTYSTRING');
+        }
         return '';
       } else if (token === 0x21) { // null
+        if (isDebugEnabled()) {
+          debugContextStack.push('NULL');
+        }
         return null;
       } else if (token === 0x22) { // false
+        if (isDebugEnabled()) {
+          debugContextStack.push('FALSE');
+        }
         return false;
       } else if (token === 0x23) { // true
+        if (isDebugEnabled()) {
+          debugContextStack.push('TRUE');
+        }
         return true;
       } else if (token === 0x24) { // 32-bit integer; zigzag encoded, 1 - 5 data bytes
-        return decoderStream.readSignedVint();
+        n = decoderStream.readSignedVint();
+        if (isDebugEnabled()) {
+          debugContextStack.push('INT32 ' + n);
+        }
+        return n;
       } else if (token === 0x25) { // 64-bit integer; zigzag encoded, 5 - 10 data bytes
-        // TODO
-        throw new Smile.SmileError('Value token 0x' + token.toString(16) + ' not supported yet.');
+        n = decoderStream.readSignedVint();
+        if (isDebugEnabled()) {
+          debugContextStack.push('INT64 ' + n);
+        }
+        return n;
       } else if (token === 0x26) { // BigInteger
-        // TODO
-        throw new Smile.SmileError('Value token 0x' + token.toString(16) + ' not supported yet.');
+        n = decoderStream.readBigInt();
+        if (isDebugEnabled()) {
+          debugContextStack.push('BIGINT ' + n);
+        }
+        return n;
       } else if (token === 0x28) { // 32-bit float
-        return decoderStream.readFloat32();
+        n = decoderStream.readFloat32();
+        if (isDebugEnabled()) {
+          debugContextStack.push('FLOAT32 ' + n);
+        }
+        return n;
       } else if (token === 0x29) { // 64-bit double
-        return decoderStream.readFloat64();
+        n = decoderStream.readFloat64();
+        if (isDebugEnabled()) {
+          debugContextStack.push('FLOAT64 ' + n);
+        }
+        return n;
       } else if (token === 0x2a) { // BigDecimal
-        // TODO
-        throw new Smile.SmileError('Value token 0x' + token.toString(16) + ' not supported yet.');
+        n = decoderStream.readBigDecimal();
+        if (isDebugEnabled()) {
+          debugContextStack.push('BIGDECIMAL ' + n);
+        }
+        return n;
       } else {
         throw new Smile.SmileError('Invalid value token 0x' + token.toString(16));
       }
@@ -62,17 +109,32 @@
         throw new Smile.SmileError('Value token 0x' + token.toString(16) + ' not supported yet.');
       } else if (token === 0xf8) { // START_ARRAY
         array = [];
+        if (isDebugEnabled()) {
+          debugContextStack.push([]);
+        }
         while (decoderStream.peek() !== 0xf9) { // END_ARRAY
           array.push(parseValue(decoderStream));
+          if (isDebugEnabled()) {
+            value = debugContextStack.pop();
+            getCurrentDebugContext().push(value);
+          }
         }
         decoderStream.read(); // consume END_ARRAY
         return array;
       } else if (token === 0xfa) { // START_OBJECT
         object = {};
+        if (isDebugEnabled()) {
+          debugContextStack.push({});
+        }
         while (decoderStream.peek() !== 0xfb) { // END_OBJECT
           key = parseKey(decoderStream);
           value = parseValue(decoderStream);
           object[key] = value;
+          if (isDebugEnabled()) {
+            value = debugContextStack.pop();
+            key = debugContextStack.pop();
+            getCurrentDebugContext()[key] = value;
+          }
         }
         decoderStream.read(); // consume END_OBJECT
         return object;
@@ -87,29 +149,49 @@
     function parseValue(decoderStream) {
       var token = decoderStream.read(),
         tokenClass = token >> 5,
-        s;
+        value;
       if (tokenClass === 0) { // Short Shared Value String reference (single byte)
-        return sharedStringValues.getString(token & 0x1f);
+        value = sharedStringValues.getString(token & 0x1f);
+        if (isDebugEnabled()) {
+          debugContextStack.push('SHORTSTRREF ' + value);
+        }
+        return value;
       } else if (tokenClass === 1) { // Simple literals, numbers
         return parseSimpleLiteralValue(token, decoderStream);
       } else if (tokenClass === 2) { // Tiny ASCII (1 - 32 bytes == chars)
-        s = decoderStream.readAscii((token & 0x1f) + 1);
-        sharedStringValues.addString(s);
-        return s;
+        value = decoderStream.readAscii((token & 0x1f) + 1);
+        sharedStringValues.addString(value);
+        if (isDebugEnabled()) {
+          debugContextStack.push('TINYASCII ' + value);
+        }
+        return value;
       } else if (tokenClass === 3) { // Short ASCII (33 - 64 bytes == chars)
-        s = decoderStream.readAscii((token & 0x1f) + 33);
-        sharedStringValues.addString(s);
-        return s;
+        value = decoderStream.readAscii((token & 0x1f) + 33);
+        sharedStringValues.addString(value);
+        if (isDebugEnabled()) {
+          debugContextStack.push('SHORTASCII ' + value);
+        }
+        return value;
       } else if (tokenClass === 4) { // Tiny Unicode (2 - 33 bytes; <= 33 characters)
-        s = decoderStream.readUtf8((token & 0x1f) + 2);
-        sharedStringValues.addString(s);
-        return s;
+        value = decoderStream.readUtf8((token & 0x1f) + 2);
+        sharedStringValues.addString(value);
+        if (isDebugEnabled()) {
+          debugContextStack.push('TINYUTF8 ' + value);
+        }
+        return value;
       } else if (tokenClass === 5) { // Short Unicode (34 - 64 bytes; <= 64 characters)
-        s = decoderStream.readUtf8((token & 0x1f) + 34);
-        sharedStringValues.addString(s);
-        return s;
+        value = decoderStream.readUtf8((token & 0x1f) + 34);
+        sharedStringValues.addString(value);
+        if (isDebugEnabled()) {
+          debugContextStack.push('SHORTUTF8 ' + value);
+        }
+        return value;
       } else if (tokenClass === 6) { // Small integers (single byte)
-        return Smile.Decoder.decodeZigZag(token & 0x1f);
+        value = Smile.Decoder.decodeZigZag(token & 0x1f);
+        if (isDebugEnabled()) {
+          debugContextStack.push('SMALLINT ' + value);
+        }
+        return value;
       } else if (tokenClass === 7) { // Binary / Long text / structure markers
         return parseBinaryLongTextStructureValues(token, decoderStream);
       }
@@ -120,26 +202,43 @@
         reference,
         s;
       if (token === 0x20) { // Special constant name '' (empty String)
+        if (isDebugEnabled()) {
+          debugContextStack.push('EMPTYSTRING');
+        }
         return '';
       } else if ((token >= 0x30) && (token <= 0x33)) { // 'Long' shared key name reference (2 byte token)
         reference = ((token & 0x03) << 8) | decoderStream.read();
         if (reference < 64) {
           throw new Smile.SmileError('Invalid long shared key name reference.');
         }
-        return sharedPropertyNames.getString(reference);
+        s = sharedPropertyNames.getString(reference);
+        if (isDebugEnabled()) {
+          debugContextStack.push('LONGSTRREF ' + s);
+        }
+        return s;
       } else if (token === 0x34) { // Long (not-yet-shared) Unicode name
         // TODO
         throw new Smile.SmileError('Key token 0x' + token.toString(16) + ' not supported yet.');
       } else if ((token >= 0x40) && (token <= 0x7f)) { // 'Short' shared key name reference
         reference = token & 0x3f;
-        return sharedPropertyNames.getString(reference);
+        s = sharedPropertyNames.getString(reference);
+        if (isDebugEnabled()) {
+          debugContextStack.push('SHORTSTRREF ' + s);
+        }
+        return s;
       } else if ((token >= 0x80) && (token <= 0xbf)) { // Short Ascii names
         s = decoderStream.readAscii((token & 0x3f) + 1);
         sharedPropertyNames.addString(s);
+        if (isDebugEnabled()) {
+          debugContextStack.push('SHORTASCII ' + s);
+        }
         return s;
       } else if ((token >= 0xc0) && (token <= 0xf7)) { // Short Unicode names
         s = decoderStream.readUtf8((token & 0x3f) + 2);
         sharedPropertyNames.addString(s);
+        if (isDebugEnabled()) {
+          debugContextStack.push('SHORTUTF8 ' + s);
+        }
         return s;
       } else {
         throw new Smile.SmileError('Invalid key token 0x' + token.toString(16));
@@ -147,7 +246,7 @@
     }
 
     this.parse = function(buffer) {
-      var b0, b1, b2, b3;
+      var b0, b1, b2, b3, value;
 
       decoderStream = new Smile.DecoderStream(new Smile.InputStream(buffer));
 
@@ -169,11 +268,15 @@
       sharedPropertyNames = new Smile.SharedStringBuffer(sharedPropertyName, 1024);
       sharedStringValues = new Smile.SharedStringBuffer(sharedStringValue, 1024);
 
-      return parseValue(decoderStream);
+      value = parseValue(decoderStream);
+      if (isDebugEnabled()) {
+        console.log(debugContextStack.pop());
+      }
+      return value;
     };
   }
 
-  Smile.Parser.parse = function(buffer) {
-    return new ParserContext().parse(buffer);
+  Smile.Parser.parse = function(buffer, opts) {
+    return new ParserContext(opts).parse(buffer);
   };
 }(window.Smile = window.Smile || {}));
