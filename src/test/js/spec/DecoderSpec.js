@@ -55,4 +55,6 @@ describe('Decoder', function() {
     buffer = toArrayBuffer([0x00, 0x41, 0x33, 0x63, 0x05, 0x1c, 0x1f, 0x4d, 0x37, 0x27], false);
     expect(Smile.Decoder.decodeFixedLengthBigEndianEncodedBits(buffer, 64, false)).toEqual(buffer0);
   });
+
+  // TODO should decode safe binary encoded bits
 });

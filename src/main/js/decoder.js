@@ -117,4 +117,40 @@
     return output;
   };
 
+  Smile.Decoder.decodeSafeBinaryEncodedBits = function(array, bits) {
+    var inputView = new Uint8Array(array),
+      output = new ArrayBuffer(Math.ceil(bits / 8)),
+      outputView = new Uint8Array(output),
+      iByte = 0,
+      iBitsRemaining = 7,
+      oByte = 0,
+      oBitsWritten = 0,
+      currentInput = inputView[iByte],
+      currentOutput = 0,
+      bitsToWrite;
+    while (oByte < outputView.length) {
+      bitsToWrite = Math.min(iBitsRemaining, (8 - oBitsWritten));
+      currentOutput <<= bitsToWrite;
+      currentOutput |= currentInput >> (iBitsRemaining - bitsToWrite);
+      iBitsRemaining -= bitsToWrite;
+      currentInput &= bitMask[iBitsRemaining];
+      oBitsWritten += bitsToWrite;
+      if (iBitsRemaining === 0) {
+        iByte++;
+        iBitsRemaining = 7;
+        currentInput = inputView[iByte];
+      }
+      if (oBitsWritten === 8) {
+        outputView[oByte] = currentOutput;
+        oByte++;
+        oBitsWritten = 0;
+        currentOutput = 0;
+      }
+    }
+    if (oBitsWritten > 0) {
+      currentOutput <<= (8 - oBitsWritten);
+      outputView[oByte] = currentOutput;
+    }
+    return outputView;
+  };
 }(window.Smile = window.Smile || {}));
