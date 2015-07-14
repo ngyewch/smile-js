@@ -46,4 +46,8 @@ describe('DecoderStream', function() {
   // TODO should decode safe binary values
   // TODO should decode bigint values
   // TODO should decode bigdecimal values
+  // TODO should decode long string values
+  // TODO should decode long ASCII string values
+  // TODO should decode long UTF-8 string values
+  // TODO should decode raw binary values
 });

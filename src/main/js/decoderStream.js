@@ -1,4 +1,4 @@
-/* global window */
+/* global window, Uint8Array */
 
 (function(Smile, undefined) {
   'use strict';
@@ -94,4 +94,25 @@
     var magnitude = this.readBigInt();
     return magnitude * Math.pow(10, scale);
   };
+
+  Smile.DecoderStream.prototype.readLongString = function() {
+    var buffer = new Uint8Array(), c;
+    while (true) {
+      c = this._inputStream().read();
+      if (c === 0xfc) {
+        break;
+      }
+      buffer.push(c);
+    }
+    return buffer;
+  };
+
+  Smile.DecoderStream.prototype.readLongAscii = function() {
+    return Smile.Decoder.decodeAscii(this.readLongString());
+  };
+
+  Smile.DecoderStream.prototype.readLongUtf8 = function() {
+    return Smile.Decoder.decodeUtf8(this.readLongString());
+  };
+
 }(window.Smile = window.Smile || {}));
