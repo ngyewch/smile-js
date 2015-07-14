@@ -1,3 +1,5 @@
-.gradle
-build
+/.gradle/
+/build/
 /.nb-gradle/
+/node_modules/
+/coverage/

@@ -1,0 +1,32 @@
+{
+  "name": "smile-js",
+  "version": "0.0.1",
+  "description": "Javascript Smile implementation.",
+  "main": "dist/smile.min.js",
+  "scripts": {
+    "test": "echo TODO"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ngyewch/smile-js.git"
+  },
+  "author": "Ng Yew Choong",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/ngyewch/smile-js/issues"
+  },
+  "homepage": "https://github.com/ngyewch/smile-js#readme",
+  "dependencies": {
+    "karma": "^0.12.37"
+  },
+  "devDependencies": {
+    "jasmine-core": "^2.3.4",
+    "karma": "^0.12.37",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-coverage": "^0.4.2",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-jasmine": "^0.3.6",
+    "karma-phantomjs-launcher": "^0.2.0",
+    "phantomjs": "^1.9.17"
+  }
+}
