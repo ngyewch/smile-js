@@ -96,9 +96,9 @@
   };
 
   Smile.DecoderStream.prototype.readLongString = function() {
-    var buffer = new Uint8Array(), c;
+    var buffer = [], c;
     while (true) {
-      c = this._inputStream().read();
+      c = this._inputStream.read();
       if (c === 0xfc) {
         break;
       }
