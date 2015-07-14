@@ -36,4 +36,12 @@ describe('Parser', function() {
   it('should parse basicSimpleLiteralValues.smile correctly', function() {
     expect(parseSmile('basicSimpleLiteralValues.smile')).toEqual(parseJson('basicSimpleLiteralValues.min.json'));
   });
+
+  it('should parse basicLongStrings.smile correctly', function() {
+    expect(parseSmile('basicLongStrings.smile')).toEqual(parseJson('basicLongStrings.min.json'));
+  });
+
+  it('should parse complexStructures.smile correctly', function() {
+    expect(parseSmile('complexStructures.smile')).toEqual(parseJson('complexStructures.min.json'));
+  });
 });
