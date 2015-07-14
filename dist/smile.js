@@ -167,7 +167,7 @@
   };
 }(window.Smile = window.Smile || {}));
 
-/* global window */
+/* global window, Uint8Array */
 
 (function(Smile, undefined) {
   'use strict';
@@ -263,6 +263,27 @@
     var magnitude = this.readBigInt();
     return magnitude * Math.pow(10, scale);
   };
+
+  Smile.DecoderStream.prototype.readLongString = function() {
+    var buffer = new Uint8Array(), c;
+    while (true) {
+      c = this._inputStream().read();
+      if (c === 0xfc) {
+        break;
+      }
+      buffer.push(c);
+    }
+    return buffer;
+  };
+
+  Smile.DecoderStream.prototype.readLongAscii = function() {
+    return Smile.Decoder.decodeAscii(this.readLongString());
+  };
+
+  Smile.DecoderStream.prototype.readLongUtf8 = function() {
+    return Smile.Decoder.decodeUtf8(this.readLongString());
+  };
+
 }(window.Smile = window.Smile || {}));
 
 /* global window */
@@ -424,19 +445,29 @@
       var array,
         object,
         key,
-        value;
+        value,
+        len,
+        reference;
       if (token === 0xe0) { // Long (variable length) ASCII text
-        // TODO
-        throw new Smile.SmileError('Value token 0x' + token.toString(16) + ' not supported yet.');
+        value = decoderStream.readLongAscii();
+        pushDebugToken('LONGASCII', value);
+        return value;
       } else if (token === 0xe4) { // Long (variable length) Unicode text
-        // TODO
-        throw new Smile.SmileError('Value token 0x' + token.toString(16) + ' not supported yet.');
+        value = decoderStream.readLongUtf8();
+        pushDebugToken('LONGUTF8', value);
+        return value;
       } else if (token === 0xe8) { // Binary, 7-bit encoded
-        // TODO
-        throw new Smile.SmileError('Value token 0x' + token.toString(16) + ' not supported yet.');
-      } else if (token === 0xec) { // Shared String reference, long
-        // TODO
-        throw new Smile.SmileError('Value token 0x' + token.toString(16) + ' not supported yet.');
+        value = decoderStream.readSafeBinary();
+        pushDebugToken('BINARY', value);
+        return value;
+      } else if ((token >= 0xec) && (token <= 0xef)) { // Shared String reference, long
+        reference = ((token & 0x03) << 8) | decoderStream.read();
+        if (reference < 64) {
+          throw new Smile.SmileError('Invalid long shared value name reference.');
+        }
+        value = sharedStringValues.getString(reference);
+        pushDebugToken('LONGSTRREF', value);
+        return value;
       } else if (token === 0xf8) { // START_ARRAY
         array = [];
         if (isDebugEnabled()) {
@@ -469,8 +500,10 @@
         decoderStream.read(); // consume END_OBJECT
         return object;
       } else if (token === 0xfd) { // Binary (raw)
-        // TODO
-        throw new Smile.SmileError('Value token 0x' + token.toString(16) + ' not supported yet.');
+        len = decoderStream.readUnsignedVint();
+        array = decoderStream.readArray(len);
+        pushDebugToken('RAWBINARY', array);
+        return array;
       } else {
         throw new Smile.SmileError('Invalid value token 0x' + token.toString(16));
       }
@@ -531,8 +564,9 @@
         pushDebugToken('LONGSTRREF', s);
         return s;
       } else if (token === 0x34) { // Long (not-yet-shared) Unicode name
-        // TODO
-        throw new Smile.SmileError('Key token 0x' + token.toString(16) + ' not supported yet.');
+        s = decoderStream.readLongUtf8();
+        pushDebugToken('LONGUTF8', s);
+        return s;
       } else if ((token >= 0x40) && (token <= 0x7f)) { // 'Short' shared key name reference
         reference = token & 0x3f;
         s = sharedPropertyNames.getString(reference);
