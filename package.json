@@ -4,7 +4,7 @@
   "description": "Javascript Smile implementation.",
   "main": "dist/smile.min.js",
   "scripts": {
-    "test": "echo TODO"
+    "test": "./node_modules/.bin/karma start"
   },
   "repository": {
     "type": "git",
