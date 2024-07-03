@@ -1,7 +1,6 @@
 Javascript Smile implementation
 ===============================
 
-[![bitHound Score](https://www.bithound.io/github/ngyewch/smile-js/badges/score.svg)](https://www.bithound.io/github/ngyewch/smile-js)
 [![Status](https://img.shields.io/badge/status-alpha-red.svg)](https://img.shields.io/badge/status-alpha-red.svg)
 
 
