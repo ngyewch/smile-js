@@ -1,4 +1,10 @@
-# Javascript Smile implementation
+[![npm](https://img.shields.io/npm/v/smile-js)](https://www.npmjs.com/package/@arl/leaflet-tracksymbol2)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ngyewch/smile-js/CI.yml)
+![GitHub last commit](https://img.shields.io/github/last-commit/ngyewch/smile-js)
+
+# smile-js
+
+Javascript Smile implementation.
 
 ## Overview
 
