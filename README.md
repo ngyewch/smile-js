@@ -15,3 +15,5 @@ This project is an implementation of Jackson's [Smile format](https://github.com
 ```
 <script src="https://cdn.jsdelivr.net/npm/smile-js@0.2.0/dist/smile-js.iife.js"></script>
 ```
+
+[Example](https://github.com/ngyewch/smile-js/blob/master/src/test/test.html)
