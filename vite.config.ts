@@ -6,7 +6,8 @@ export default defineConfig({
         sourcemap: true,
         lib: {
             entry: './src/main/js/index.ts',
-            name: 'smile-js',
+            name: 'smile',
+            formats: ['es', 'cjs', 'iife'],
         },
     },
     plugins: [
