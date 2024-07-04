@@ -4,21 +4,36 @@
     <title>Test</title>
 </head>
 <body>
+<div>
+    <label for="file">Select SMILE-encoded file</label>
+    <input id="file" type="file" onchange="onChooseFile(event)"/>
+</div>
+<div>
+    <label for="output">JSON representation:</label>
+    <pre id="output"></pre>
+</div>
 <!--
-<script src="https://cdn.jsdelivr.net/npm/smile-js@0.1.0/dist/smile-js.umd.cjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/smile-js@0.2.0/dist/smile-js.iife.js"></script>
 -->
 <script src="../../dist/smile-js.iife.js"></script>
 <script>
-    function toUint8Array(base64) {
-        const binaryString = atob(base64);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-        }
-        return bytes;
+    function onChooseFile(e) {
+        const file = e.target.files.item(0)
+        file.arrayBuffer()
+            .then(arrayBuffer => {
+                const data = new Uint8Array(arrayBuffer);
+                try {
+                    const o = window.smile.parse(data);
+                    console.log(o);
+                    document.getElementById("output").innerText = JSON.stringify(o, null, 2);
+                } catch (e) {
+                    alert(e);
+                }
+            })
+            .catch(e => {
+                alert(e);
+            });
     }
-
-    console.log(window.smile.parse(toUint8Array('OikKAfqIZW1wbG95ZWVz+PqDbmFtZUVBbmRyZXeJZGVwYXJ0bWVudERTYWxlc\/v6QUJCb2JCQUhS+\/pBRkNoYXJsZXNCQUlU+\/n7')));
 </script>
 </body>
 </html>
