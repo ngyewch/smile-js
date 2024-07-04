@@ -5,7 +5,7 @@ import {SharedStringBuffer} from './sharedStringBuffer.js';
 import {Decoder} from './decoder.js';
 
 /**
- * Parser options
+ * Parser options.
  */
 export interface ParserOptions {
 }
