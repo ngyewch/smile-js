@@ -30,6 +30,9 @@ public class TestDataGenerator {
         try (final PrintWriter pw = new PrintWriter(writer)) {
           pw.println("export const testData: { [key: string]: string } = {};");
           for (final File file : dataDir.listFiles()) {
+            if (file.isDirectory() || !file.getName().endsWith(".json")) {
+              continue;
+            }
             final Object o = jsonObjectMapper.readValue(file, Object.class);
             final File jsonFile = getTargetFile(outputDir, file, ".min.json");
             pw.format(
@@ -37,7 +40,7 @@ public class TestDataGenerator {
                 StringEscapeUtils.escapeEcmaScript(jsonFile.getName()),
                 StringEscapeUtils.escapeEcmaScript(jsonObjectMapper.writeValueAsString(o)));
             jsonObjectMapper.writeValue(jsonFile, o);
-            final File smileFile = getTargetFile(outputDir, file, ".smile");
+            final File smileFile = getTargetFile(outputDir, file, ".sml");
             smileObjectMapper.writeValue(smileFile, o);
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             smileObjectMapper.writeValue(baos, o);

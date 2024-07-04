@@ -43,8 +43,17 @@ tasks {
 
         dependsOn("run")
 
-        from("build/test/data/testData.ts")
-        into("src/test/js")
+        from("build/test/data") {
+            include("testData.ts")
+            into("js")
+        }
+
+        from("build/test/data") {
+            include("*.sml")
+            into("data")
+        }
+
+        into("src/test")
     }
 }
 
