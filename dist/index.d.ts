@@ -7,11 +7,14 @@
 export declare function parse(data: Uint8Array, options?: ParserOptions): any;
 
 /**
- * Parser options
+ * Parser options.
  */
 declare interface ParserOptions {
 }
 
+/**
+ * SMILE error.
+ */
 export declare class SmileError extends Error {
     constructor(msg: string);
 }
