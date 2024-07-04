@@ -1,32 +1,49 @@
 {
   "name": "smile-js",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "type": "module",
   "description": "Javascript Smile implementation.",
-  "main": "dist/smile.min.js",
-  "scripts": {
-    "test": "./node_modules/.bin/karma start"
-  },
+  "author": "Nick Ng",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/ngyewch/smile-js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ngyewch/smile-js.git"
   },
-  "author": "Ng Yew Choong",
-  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/ngyewch/smile-js/issues"
   },
-  "homepage": "https://github.com/ngyewch/smile-js#readme",
-  "dependencies": {
-    "karma": "^0.12.37"
+  "exports": {
+    ".": {
+      "import": "./dist/smile-js.js",
+      "require": "./dist/smile-js.umd.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "module": "./dist/smile-js.js",
+  "main": "./dist/smile-js.umd.cjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "doBuild": "vite build",
+    "check": "tsc --noEmit && tsc-strict",
+    "build": "run-s check doBuild",
+    "test": "tap run"
   },
   "devDependencies": {
-    "jasmine-core": "^2.3.4",
-    "karma": "^0.12.37",
-    "karma-chrome-launcher": "^0.2.0",
-    "karma-coverage": "^0.4.2",
-    "karma-firefox-launcher": "^0.1.6",
-    "karma-jasmine": "^0.3.6",
-    "karma-phantomjs-launcher": "^0.2.0",
-    "phantomjs": "^1.9.17"
-  }
+    "@tapjs/core": "3.0.3",
+    "@tapjs/mocha-globals": "3.0.3",
+    "js-testdiff": "1.0.5",
+    "npm-run-all": "4.1.5",
+    "tap": "20.0.3",
+    "typescript": "5.5.3",
+    "typescript-strict-plugin": "2.4.4",
+    "vite": "5.3.3",
+    "vite-plugin-dts": "3.9.1"
+  },
+  "keywords": [
+    "smile"
+  ],
+  "files": [
+    "dist/*"
+  ]
 }

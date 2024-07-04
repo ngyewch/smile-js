@@ -1,0 +1,3 @@
+[constraints]
+node = '^20'
+java = '^11'

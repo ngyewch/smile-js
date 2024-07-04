@@ -1,11 +1,11 @@
-testData = {};
-testData['basicArray.min.json'] = '[\"hello\",123,5.0]';
-testData['basicArray.smile'] = 'OikKAfhEaGVsbG8kA7YpAEAKAAAAAAAAAPk=';
-testData['basicLongStrings.min.json'] = '{\"this-is-a-very-very-very-very-very-very-very-very-very-long-ascii-key\":\"this-is-a-very-very-very-very-very-very-very-very-very-long-ascii-value\",\"this-is-a-very-very-very-very-very-very-very-very-very-long-utf8-key-\u4E94\":\"this-is-a-very-very-very-very-very-very-very-very-very-long-utf8-value-\u4E03\"}';
-testData['basicLongStrings.smile'] = 'OikKAfo0dGhpcy1pcy1hLXZlcnktdmVyeS12ZXJ5LXZlcnktdmVyeS12ZXJ5LXZlcnktdmVyeS12ZXJ5LWxvbmctYXNjaWkta2V5\/OB0aGlzLWlzLWEtdmVyeS12ZXJ5LXZlcnktdmVyeS12ZXJ5LXZlcnktdmVyeS12ZXJ5LXZlcnktbG9uZy1hc2NpaS12YWx1Zfw0dGhpcy1pcy1hLXZlcnktdmVyeS12ZXJ5LXZlcnktdmVyeS12ZXJ5LXZlcnktdmVyeS12ZXJ5LWxvbmctdXRmOC1rZXkt5LqU\/OR0aGlzLWlzLWEtdmVyeS12ZXJ5LXZlcnktdmVyeS12ZXJ5LXZlcnktdmVyeS12ZXJ5LXZlcnktbG9uZy11dGY4LXZhbHVlLeS4g\/z7';
+export const testData: { [key: string]: string } = {};
 testData['basicObject.min.json'] = '{\"name\":\"Bob\",\"age\":25,\"score\":96.8}';
 testData['basicObject.smile'] = 'OikKAfqDbmFtZUJCb2KCYWdlJLKEc2NvcmUpAEAsDGYzGUxmM\/s=';
 testData['basicSimpleLiteralValues.min.json'] = '{\"emptyString\":\"\",\"null\":null,\"false\":false,\"true\":true,\"int32\":2147483647,\"int64_1\":2147483648,\"int64_2\":9007199254740991,\"int64_3\":9007199254740992,\"int64_4\":9223372036854775807,\"bigint\":9223372036854775808,\"float32\":1234.567,\"float64\":1.234567812345679E7,\"bigdecimal\":1.2345678900123458E9}';
 testData['basicSimpleLiteralValues.smile'] = 'OikKAfqKZW1wdHlTdHJpbmcgg251bGwhhGZhbHNlIoN0cnVlI4RpbnQzMiQff39\/voZpbnQ2NF8xJSAAAACAhmludDY0XzIlP39\/f39\/f76GaW50NjRfMyVAAAAAAAAAgIZpbnQ2NF80JQN\/f39\/f39\/f76FYmlnaW50JokAIAAAAAAAAAAAAIZmbG9hdDMyKQBASVJISV0XRlSGZmxvYXQ2NCkAQTNjBRwfTTcniWJpZ2RlY2ltYWwpAEFpGTALJAMURvs=';
+testData['basicLongStrings.min.json'] = '{\"this-is-a-very-very-very-very-very-very-very-very-very-long-ascii-key\":\"this-is-a-very-very-very-very-very-very-very-very-very-long-ascii-value\",\"this-is-a-very-very-very-very-very-very-very-very-very-long-utf8-key-\u4E94\":\"this-is-a-very-very-very-very-very-very-very-very-very-long-utf8-value-\u4E03\"}';
+testData['basicLongStrings.smile'] = 'OikKAfo0dGhpcy1pcy1hLXZlcnktdmVyeS12ZXJ5LXZlcnktdmVyeS12ZXJ5LXZlcnktdmVyeS12ZXJ5LWxvbmctYXNjaWkta2V5\/OB0aGlzLWlzLWEtdmVyeS12ZXJ5LXZlcnktdmVyeS12ZXJ5LXZlcnktdmVyeS12ZXJ5LXZlcnktbG9uZy1hc2NpaS12YWx1Zfw0dGhpcy1pcy1hLXZlcnktdmVyeS12ZXJ5LXZlcnktdmVyeS12ZXJ5LXZlcnktdmVyeS12ZXJ5LWxvbmctdXRmOC1rZXkt5LqU\/OR0aGlzLWlzLWEtdmVyeS12ZXJ5LXZlcnktdmVyeS12ZXJ5LXZlcnktdmVyeS12ZXJ5LXZlcnktbG9uZy11dGY4LXZhbHVlLeS4g\/z7';
 testData['complexStructures.min.json'] = '{\"employees\":[{\"name\":\"Andrew\",\"department\":\"Sales\"},{\"name\":\"Bob\",\"department\":\"HR\"},{\"name\":\"Charles\",\"department\":\"IT\"}]}';
 testData['complexStructures.smile'] = 'OikKAfqIZW1wbG95ZWVz+PqDbmFtZUVBbmRyZXeJZGVwYXJ0bWVudERTYWxlc\/v6QUJCb2JCQUhS+\/pBRkNoYXJsZXNCQUlU+\/n7';
+testData['basicArray.min.json'] = '[\"hello\",123,5.0]';
+testData['basicArray.smile'] = 'OikKAfhEaGVsbG8kA7YpAEAKAAAAAAAAAPk=';

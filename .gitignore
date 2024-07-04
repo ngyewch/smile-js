@@ -1,5 +1,5 @@
 /.gradle/
+/.tap/
 /build/
-/.nb-gradle/
 /node_modules/
-/coverage/
+/tsconfig.tsbuildinfo
