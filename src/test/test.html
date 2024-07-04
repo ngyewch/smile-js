@@ -4,7 +4,10 @@
     <title>Test</title>
 </head>
 <body>
-<script src="../../dist/smile-js.umd.js"></script>
+<!--
+<script src="https://cdn.jsdelivr.net/npm/smile-js@0.1.0/dist/smile-js.umd.cjs"></script>
+-->
+<script src="../../dist/smile-js.iife.js"></script>
 <script>
     function toUint8Array(base64) {
         const binaryString = atob(base64);
@@ -15,9 +18,7 @@
         return bytes;
     }
 
-    console.log(window);
-    console.log(window['smile-js']);
-    console.log(window['smile-js'].parse(toUint8Array('OikKAfqIZW1wbG95ZWVz+PqDbmFtZUVBbmRyZXeJZGVwYXJ0bWVudERTYWxlc\/v6QUJCb2JCQUhS+\/pBRkNoYXJsZXNCQUlU+\/n7')));
+    console.log(window.smile.parse(toUint8Array('OikKAfqIZW1wbG95ZWVz+PqDbmFtZUVBbmRyZXeJZGVwYXJ0bWVudERTYWxlc\/v6QUJCb2JCQUhS+\/pBRkNoYXJsZXNCQUlU+\/n7')));
 </script>
 </body>
 </html>
