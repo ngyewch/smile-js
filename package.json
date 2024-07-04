@@ -27,7 +27,8 @@
     "doBuild": "vite build",
     "check": "tsc --noEmit && tsc-strict",
     "build": "run-s check doBuild",
-    "test": "tap run"
+    "test": "tap run",
+    "typedoc": "typedoc"
   },
   "devDependencies": {
     "@tapjs/core": "3.0.3",
@@ -35,6 +36,7 @@
     "js-testdiff": "1.0.5",
     "npm-run-all": "4.1.5",
     "tap": "20.0.3",
+    "typedoc": "0.26.3",
     "typescript": "5.5.3",
     "typescript-strict-plugin": "2.4.4",
     "vite": "5.3.3",
