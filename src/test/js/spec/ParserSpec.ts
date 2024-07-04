@@ -21,15 +21,15 @@ function toUint8Array(base64: string): Uint8Array {
 }
 
 t.test('should parse correctly', t => {
-    objectEqual(t, parseSmile('basicArray.smile'), parseJson('basicArray.min.json'));
+    objectEqual(t, parseSmile('basicArray.sml'), parseJson('basicArray.min.json'));
 
-    objectEqual(t, parseSmile('basicObject.smile'), parseJson('basicObject.min.json'));
+    objectEqual(t, parseSmile('basicObject.sml'), parseJson('basicObject.min.json'));
 
-    objectEqual(t, parseSmile('basicSimpleLiteralValues.smile'), parseJson('basicSimpleLiteralValues.min.json'));
+    objectEqual(t, parseSmile('basicSimpleLiteralValues.sml'), parseJson('basicSimpleLiteralValues.min.json'));
 
-    objectEqual(t, parseSmile('basicLongStrings.smile'), parseJson('basicLongStrings.min.json'));
+    objectEqual(t, parseSmile('basicLongStrings.sml'), parseJson('basicLongStrings.min.json'));
 
-    objectEqual(t, parseSmile('complexStructures.smile'), parseJson('complexStructures.min.json'));
+    objectEqual(t, parseSmile('complexStructures.sml'), parseJson('complexStructures.min.json'));
 
     t.end();
 });
