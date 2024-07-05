@@ -28,11 +28,7 @@
     "check": "tsc --noEmit && tsc-strict",
     "build": "run-s check doBuild",
     "test": "tap run",
-    "typedoc": "typedoc",
-    "docs:clean": "rm -rf build/gh-pages",
-    "docs:mkdir": "mkdir -p build/gh-pages",
-    "docs:generate": "run-s docs:clean docs:mkdir typedoc",
-    "docs:deploy": "gh-pages -d build/gh-pages --nojekyll"
+    "typedoc": "typedoc"
   },
   "devDependencies": {
     "@tapjs/core": "3.0.3",

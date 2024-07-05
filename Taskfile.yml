@@ -38,6 +38,11 @@ tasks:
     cmds:
       - rm -rf build/gh-pages
 
+  site-deploy:
+    desc: Deploy site
+    cmds:
+      - gh-pages -d build/gh-pages --nojekyll
+
   site-build-typedoc:
     desc: Generate typedoc
     cmds:
