@@ -56,7 +56,7 @@ tasks:
   site-build-example-html:
     cmds:
       - mkdir -p build/gh-pages/examples/html
-      - cp src/test/test.html build/gh-pages/examples/html/
+      - cp -r examples/html/* build/gh-pages/examples/html/
 
   site-build-example-svelte:
     deps: [ build-example ]

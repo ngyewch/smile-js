@@ -10,8 +10,8 @@ The module will be exported as `windows.smile`.
 
 ## Example
 
-[Demo](./examples/html/test.html)
+[Demo](./examples/html/index.html)
 
 ```html
-{{#include ../../test/test.html}}
+{{#include ../../../examples/html/index.html}}
 ```
