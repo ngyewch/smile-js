@@ -22,3 +22,34 @@ tasks:
     desc: Generate test data
     cmds:
       - ./gradlew copyTestData
+
+  site-build:
+    desc: Build site
+    cmds:
+      - task: site-clean
+      - mkdir -p build/gh-pages
+      - task: site-build-mdbook
+      - task: site-build-typedoc
+      - mkdir -p build/gh-pages/examples
+      - cp src/test/test.html build/gh-pages/examples/
+
+  site-clean:
+    desc: Clean site
+    cmds:
+      - rm -rf build/gh-pages
+
+  site-build-typedoc:
+    desc: Generate typedoc
+    cmds:
+      - pnpm run typedoc
+
+  site-build-mdbook:
+    desc: Generate mdbook
+    cmds:
+      - mdbook build --dest-dir $(pwd)/build/gh-pages src/main/mdbook
+
+  mdbook-serve:
+    desc: Serve mdbook
+    dir: src/main/mdbook
+    cmds:
+      - mdbook serve
