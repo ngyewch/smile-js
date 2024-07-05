@@ -30,8 +30,8 @@ tasks:
       - mkdir -p build/gh-pages
       - task: site-build-mdbook
       - task: site-build-typedoc
-      - mkdir -p build/gh-pages/examples
-      - cp src/test/test.html build/gh-pages/examples/
+      - task: site-build-example-html
+      - task: site-build-example-svelte
 
   site-clean:
     desc: Clean site
@@ -52,6 +52,17 @@ tasks:
     desc: Generate mdbook
     cmds:
       - mdbook build --dest-dir $(pwd)/build/gh-pages src/main/mdbook
+
+  site-build-example-html:
+    cmds:
+      - mkdir -p build/gh-pages/examples/html
+      - cp src/test/test.html build/gh-pages/examples/html/
+
+  site-build-example-svelte:
+    deps: [ build-example ]
+    cmds:
+      - mkdir -p build/gh-pages/examples/svelte
+      - cp -r examples/svelte/dist/* build/gh-pages/examples/svelte/
 
   mdbook-serve:
     desc: Serve mdbook
