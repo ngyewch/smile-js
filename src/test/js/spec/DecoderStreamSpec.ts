@@ -39,6 +39,30 @@ t.test('should decode unsigned Vint values', t => {
     t.end()
 });
 
+t.test('should decode signed Vint values', t => {
+    {
+        const decoderStream = newDecoderStream([0x80]);
+        t.equal(decoderStream.readSignedVint(), 0);
+    }
+
+    {
+        const decoderStream = newDecoderStream([0x81]);
+        t.equal(decoderStream.readSignedVint(), -1);
+    }
+
+    {
+        const decoderStream = newDecoderStream([0x0f, 0x7f, 0x7f, 0x7f, 0xbf]);
+        t.equal(decoderStream.readSignedVint(), -1073741824);
+    }
+
+    {
+        const decoderStream = newDecoderStream([0x10, 0x00, 0x00, 0x00, 0x80]);
+        t.equal(decoderStream.readSignedVint(), 1073741824);
+    }
+
+    t.end();
+});
+
 t.test('should decode 32-bit float values', t => {
     {
         const decoderStream = newDecoderStream([0x04, 0x24, 0x69, 0x24, 0x25]);
@@ -57,12 +81,31 @@ t.test('should decode 64-bit float values', t => {
     t.end()
 });
 
+t.test('should decode ASCII values', t => {
+    {
+        const data = [0x61, 0x62, 0x63];
+        const decoderStream = newDecoderStream(data);
+        t.equal(decoderStream.readAscii(data.length), 'abc');
+    }
+
+    t.end();
+});
+
+t.test('should decode UTF-8 values', t => {
+    {
+        const data = [0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0xe6, 0x82, 0xa8, 0xe5, 0xa5, 0xbd];
+        const decoderStream = newDecoderStream(data);
+        t.equal(decoderStream.readUtf8(data.length), 'Hello 您好');
+    }
+
+    t.end();
+});
+
 function newDecoderStream(data: number[]): DecoderStream {
     return new DecoderStream(new InputStream(new Uint8Array(data)));
 }
 
 /*
-  // TODO should decode signed Vint values
   // TODO should decode safe binary values
   // TODO should decode bigint values
   // TODO should decode bigdecimal values
