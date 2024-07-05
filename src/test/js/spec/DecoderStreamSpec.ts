@@ -3,6 +3,18 @@ import {DecoderStream} from '../../../main/js/decoderStream.js';
 import {InputStream} from '../../../main/js/inputStream.js';
 import {approx} from './utils.js';
 
+t.test('simple operations', t => {
+    const decoderStream = newDecoderStream([0x80]);
+
+    t.notOk(decoderStream.isEof());
+    t.equal(decoderStream.peek(), 0x80);
+    t.notOk(decoderStream.isEof());
+    t.equal(decoderStream.read(), 0x80);
+    t.ok(decoderStream.isEof());
+
+    t.end();
+});
+
 t.test('should decode unsigned Vint values', t => {
     {
         const decoderStream = newDecoderStream([0x80]);
