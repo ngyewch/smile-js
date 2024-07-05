@@ -53,3 +53,17 @@ tasks:
     dir: src/main/mdbook
     cmds:
       - mdbook serve
+
+  build-example:
+    desc: Build example
+    dir: examples/svelte
+    cmds:
+      - pnpm install
+      - pnpm run build
+
+  run-example:
+    desc: Build example
+    dir: examples/svelte
+    cmds:
+      - pnpm install
+      - pnpm run dev

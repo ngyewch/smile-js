@@ -1,0 +1,25 @@
+{
+  "name": "smile-js-example-basic",
+  "type": "module",
+  "scripts": {
+    "doDev": "vite",
+    "doBuild": "vite build",
+    "check": "svelte-check --tsconfig ./tsconfig.json --compiler-warnings a11y-click-events-have-key-events:ignore",
+    "watch:check": "svelte-check --tsconfig ./tsconfig.json --watch --compiler-warnings a11y-click-events-have-key-events:ignore",
+    "dev": "run-p watch:* doDev",
+    "build": "run-s check doBuild"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.1.0",
+    "@tsconfig/svelte": "^5.0.4",
+    "npm-run-all": "4.1.5",
+    "svelte-check": "^3.6.9",
+    "typescript": "5.5.3",
+    "typescript-strict-plugin": "2.4.4",
+    "vite": "5.3.3"
+  },
+  "dependencies": {
+    "smile-js": "0.2.0",
+    "svelte": "^4.2.13"
+  }
+}
