@@ -6,3 +6,5 @@ src = "."
 title = "smile-js"
 
 [output.html]
+git-repository-url = "https://github.com/ngyewch/smile-js"
+site-url = "/smile-js/"
