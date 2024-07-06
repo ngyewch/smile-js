@@ -1,6 +1,6 @@
 {
   "name": "smile-js",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "description": "Javascript Smile implementation.",
   "author": "Nick Ng",
