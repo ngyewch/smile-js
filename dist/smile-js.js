@@ -1,14 +1,44 @@
-class a extends Error {
+class n extends Error {
   constructor(e) {
     super(e);
   }
 }
 const S = [0, 1, 3, 7, 15, 31, 63, 127, 255];
 class m {
+  decodeVInt(e) {
+    if (e.length <= 0)
+      throw new n("invalid VInt");
+    let t = BigInt(0);
+    for (let i = 0; i < e.length; i++) {
+      const r = e[i];
+      if (i < e.length - 1) {
+        if (r & 128)
+          throw new n("invalid VInt");
+        t = t * BigInt(128) + BigInt(r & 127);
+      } else {
+        if ((r & 128) !== 128)
+          throw new n("invalid VInt");
+        t = t * BigInt(64) + BigInt(r & 63);
+        break;
+      }
+    }
+    return t >= BigInt(Number.MIN_SAFE_INTEGER) && t <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(t) : t;
+  }
   decodeZigZag(e) {
     if (e < 0)
-      throw new a("illegal zigzag value");
-    return e <= 2147483647 ? e & 1 ? -(e >> 1) - 1 : e >> 1 : e & 1 ? -Math.floor(e / 2) - 1 : Math.floor(e / 2);
+      throw new n("illegal zigzag value");
+    if (typeof e == "bigint") {
+      if (e <= BigInt(2147483647))
+        return e % BigInt(2) === BigInt(1) ? Number(-(e >> BigInt(1)) - BigInt(1)) : Number(e >> BigInt(1));
+      if (e % BigInt(2) === BigInt(1)) {
+        const t = (e - BigInt(1)) / BigInt(2);
+        return Number(-t - BigInt(1));
+      } else {
+        const t = e / BigInt(2);
+        return Number(t);
+      }
+    } else
+      return e <= 2147483647 ? e % 2 === 1 ? -(e >> 1) - 1 : e >> 1 : e % 2 === 1 ? -((e - 1) / 2) - 1 : e / 2;
   }
   decodeAscii(e) {
     return new TextDecoder("ascii").decode(e);
@@ -32,21 +62,21 @@ class m {
   }
   decodeFixedLengthBigEndianEncodedBits(e, t) {
     const i = new Uint8Array(Math.ceil(t / 8));
-    let r = 0, s = t % 7, o = 0, n = 0, u = e[r], d = 0, h;
+    let r = 0, s = t % 7, o = 0, a = 0, c = e[r], d = 0, h;
     for (; r < e.length; ) {
-      const l = Math.min(s, 8 - n);
-      d <<= l, d |= u >> s - l, s -= l, u &= S[s], n += l, s === 0 && (r++, s = 7, u = e[r]), n === 8 && (h = o, i[h] = d, o++, n = 0, d = 0);
+      const g = Math.min(s, 8 - a);
+      d <<= g, d |= c >> s - g, s -= g, c &= S[s], a += g, s === 0 && (r++, s = 7, c = e[r]), a === 8 && (h = o, i[h] = d, o++, a = 0, d = 0);
     }
-    return n > 0 && (d <<= 8 - n, h = o, i[h] = d), i;
+    return a > 0 && (d <<= 8 - a, h = o, i[h] = d), i;
   }
   decodeSafeBinaryEncodedBits(e, t) {
     const i = new Uint8Array(Math.ceil(t / 8));
-    let r = 0, s = 7, o = 0, n = 0, u = e[r], d = 0;
+    let r = 0, s = 7, o = 0, a = 0, c = e[r], d = 0;
     for (; o < i.length; ) {
-      const h = Math.min(s, 8 - n);
-      d <<= h, d |= u >> s - h, s -= h, u &= S[s], n += h, s === 0 && (r++, s = 7, u = e[r]), n === 8 && (i[o] = d, o++, n = 0, d = 0);
+      const h = Math.min(s, 8 - a);
+      d <<= h, d |= c >> s - h, s -= h, c &= S[s], a += h, s === 0 && (r++, s = 7, c = e[r]), a === 8 && (i[o] = d, o++, a = 0, d = 0);
     }
-    return n > 0 && (d <<= 8 - n, i[o] = d), i;
+    return a > 0 && (d <<= 8 - a, i[o] = d), i;
   }
 }
 class w {
@@ -62,18 +92,18 @@ class w {
   peek() {
     return this.inputStream.peek();
   }
-  readUnsignedVint() {
-    let e = 0, t = 0;
-    function i(r, s) {
-      const o = [0, 1, 3, 7, 15, 31, 63, 127, 255], n = [1, 2, 4, 8, 16, 32, 64, 128];
-      t + s < 32 ? (e <<= s, e |= r & o[s]) : (e *= n[s], e += r & o[s]), t += s;
-    }
+  readVIntBytes() {
+    const e = [];
     for (; ; ) {
-      const r = this.inputStream.read();
-      if (r & 128)
-        return i(r, 6), e;
-      i(r, 7);
+      const t = this.read();
+      if (e.push(t), (t & 128) === 128)
+        break;
     }
+    return new Uint8Array(e);
+  }
+  readUnsignedVint() {
+    const e = this.readVIntBytes();
+    return this.decoder.decodeVInt(e);
   }
   readSignedVint() {
     return this.decoder.decodeZigZag(this.readUnsignedVint());
@@ -95,7 +125,10 @@ class w {
     return this.decoder.decodeFixedLengthBigEndianEncodedBits(t, e);
   }
   readSafeBinary() {
-    const e = this.readUnsignedVint(), t = this.inputStream.readArray(Math.ceil(e * 8 / 7));
+    const e = this.readUnsignedVint();
+    if (typeof e == "bigint")
+      throw new n("invalid length");
+    const t = this.inputStream.readArray(Math.ceil(e * 8 / 7));
     return this.decoder.decodeSafeBinaryEncodedBits(t, e * 8);
   }
   readBigInt() {
@@ -107,6 +140,8 @@ class w {
   }
   readBigDecimal() {
     const e = this.readSignedVint();
+    if (typeof e == "bigint")
+      throw new n("invalid scale");
     return this.readBigInt() * Math.pow(10, e);
   }
   readLongString() {
@@ -129,8 +164,8 @@ class w {
     return this.inputStream.readArray(e);
   }
 }
-const g = new a("end of input stream reached");
-class p {
+const f = new n("end of input stream reached");
+class y {
   constructor(e) {
     this.index = 0, this.array = e;
   }
@@ -139,65 +174,74 @@ class p {
   }
   read() {
     if (this.isEof())
-      throw g;
+      throw f;
     const e = this.array[this.index];
     return this.index++, e;
   }
   readArray(e) {
     if (this.isEof())
-      throw g;
+      throw f;
     if (e < 0)
-      throw new a("invalid read amount");
+      throw new n("invalid read amount");
     const t = Math.min(this.array.length, this.index + e), i = this.array.subarray(this.index, t);
     return this.index = t, i;
   }
   peek() {
     if (this.isEof())
-      throw g;
+      throw f;
     return this.array[this.index];
   }
   skip(e) {
     if (this.isEof())
-      throw g;
+      throw f;
     if (e < 0)
-      throw new a("invalid skip amount");
+      throw new n("invalid skip amount");
     this.index += e;
   }
 }
-class f {
-  constructor(e, t) {
-    if (t > 1024)
-      throw new a("maxStrings must be <= 1024");
-    this.enabled = e, this.maxStrings = t, this.strings = [];
+class u {
+  constructor(e, t, i, r) {
+    this.name = e, this.keyMode = t, this.enabled = i, this.maxStrings = r, this.reset(), this.strings = [], this.stringMap = {}, this.reset();
+  }
+  reset() {
+    this.keyMode ? (this.strings = [], this.stringMap = {}) : (this.strings = [""], this.stringMap = {});
+  }
+  static newValues(e) {
+    return new u("values", !1, e, 1024);
+  }
+  static newKeyNames(e) {
+    return new u("keyNames", !0, e, 1024);
   }
   addString(e) {
-    if (!this.enabled)
+    if (!this.enabled || new TextEncoder().encode(e).length > 64)
       return -1;
-    this.strings.length >= this.maxStrings && (this.strings = []);
-    const t = this.strings.length;
-    return this.strings.push(e), t;
+    if (e in this.stringMap)
+      return this.stringMap[e];
+    this.keyMode ? this.strings.length >= this.maxStrings && this.reset() : this.strings.length > this.maxStrings && this.reset();
+    const i = this.strings.length;
+    return this.strings.push(e), this.stringMap[e] = i, i;
   }
   getString(e) {
     if (!this.enabled)
-      throw new a("shared strings are not enabled.");
+      throw new n("shared strings are not enabled");
     if (e >= this.strings.length)
-      throw new a("shared string reference out of range.");
+      throw new n("shared string reference out of range");
     return this.strings[e];
   }
 }
-function B(c, e) {
-  return new y(c, e).parse();
+function B(l, e) {
+  return new p(l, e).parse();
 }
-class y {
+class p {
   constructor(e, t) {
-    this.decoderStream = new w(new p(e)), this.options = t, this.decoder = new m(), this.sharedPropertyName = !1, this.sharedStringValue = !1, this.rawBinary = !1, this.version = 0, this.sharedPropertyNames = new f(!1, 1024), this.sharedStringValues = new f(!1, 1024);
+    this.decoderStream = new w(new y(e)), this.options = t, this.decoder = new m(), this.sharedPropertyName = !1, this.sharedStringValue = !1, this.rawBinary = !1, this.version = 0, this.sharedPropertyNames = u.newKeyNames(!1), this.sharedStringValues = u.newValues(!1);
   }
   parse() {
     const e = this.decoderStream.read(), t = this.decoderStream.read(), i = this.decoderStream.read();
     if (e !== 58 || t !== 41 || i !== 10)
-      throw new a("invalid Smile header");
+      throw new n("invalid Smile header");
     const r = this.decoderStream.read();
-    return this.sharedPropertyName = (r & 1) === 1, this.sharedStringValue = (r & 2) === 2, this.rawBinary = (r & 4) === 4, this.version = r >> 4, this.sharedPropertyNames = new f(this.sharedPropertyName, 1024), this.sharedStringValues = new f(this.sharedStringValue, 1024), this.readValue();
+    return this.sharedPropertyName = (r & 1) === 1, this.sharedStringValue = (r & 2) === 2, this.rawBinary = (r & 4) === 4, this.version = r >> 4, this.sharedPropertyNames = u.newKeyNames(this.sharedPropertyName), this.sharedStringValues = u.newValues(this.sharedStringValue), this.readValue();
   }
   readValue() {
     const e = this.decoderStream.read(), t = e >> 5, i = e & 31;
@@ -227,7 +271,7 @@ class y {
       case 7:
         return this.readBinaryLongTextStructureValues(e);
       default:
-        throw new a(`unknown token class: ${t}`);
+        throw new n(`unknown token class: ${t}`);
     }
   }
   readSimpleLiteralValue(e) {
@@ -251,7 +295,7 @@ class y {
       return this.decoderStream.readFloat64();
     if (e === 42)
       return this.decoderStream.readBigDecimal();
-    throw new a("invalid value token 0x" + e.toString(16));
+    throw new n("invalid value token 0x" + e.toString(16));
   }
   readBinaryLongTextStructureValues(e) {
     if (e === 224)
@@ -262,8 +306,6 @@ class y {
       return this.decoderStream.readSafeBinary();
     if (e >= 236 && e <= 239) {
       const t = (e & 3) << 8 | this.decoderStream.read();
-      if (t < 64)
-        throw new a("invalid long shared value name reference");
       return this.sharedStringValues.getString(t);
     } else if (e === 248) {
       const t = [];
@@ -279,9 +321,11 @@ class y {
       return this.decoderStream.read(), t;
     } else if (e === 253) {
       const t = this.decoderStream.readUnsignedVint();
+      if (typeof t == "bigint")
+        throw new n("invalid length");
       return this.decoderStream.readBytes(t);
     } else
-      throw new a("invalid value token 0x" + e.toString(16));
+      throw new n("invalid value token 0x" + e.toString(16));
   }
   readKey() {
     const e = this.decoderStream.read();
@@ -289,8 +333,6 @@ class y {
       return "";
     if (e >= 48 && e <= 51) {
       const t = (e & 3) << 8 | this.decoderStream.read();
-      if (t < 64)
-        throw new a("invalid long shared key name reference.");
       return this.sharedPropertyNames.getString(t);
     } else {
       if (e === 52)
@@ -305,12 +347,12 @@ class y {
         const t = this.decoderStream.readUtf8((e & 63) + 2);
         return this.sharedPropertyNames.addString(t), t;
       } else
-        throw new a("invalid key token 0x" + e.toString(16));
+        throw new n("invalid key token 0x" + e.toString(16));
     }
   }
 }
 export {
-  a as SmileError,
+  n as SmileError,
   B as parse
 };
 //# sourceMappingURL=smile-js.js.map
