@@ -4,6 +4,7 @@ import picocli.CommandLine;
 @CommandLine.Command(
     subcommands = {
       GenerateTestData.class,
+      GenerateTestData2.class,
     })
 public class Main implements Callable<Integer> {
   public static void main(String... args) {

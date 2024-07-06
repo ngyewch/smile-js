@@ -42,13 +42,15 @@ public class GenerateTestData implements Callable<Integer> {
                 continue;
               }
               final Object o = jsonObjectMapper.readValue(file, Object.class);
-              final File jsonFile = new File(outputDirectory, adjustFileExtension(file.getName(), ".min.json"));
+              final File jsonFile =
+                  new File(outputDirectory, adjustFileExtension(file.getName(), ".min.json"));
               pw.format(
                   "testData['%s'] = '%s';\n",
                   StringEscapeUtils.escapeEcmaScript(jsonFile.getName()),
                   StringEscapeUtils.escapeEcmaScript(jsonObjectMapper.writeValueAsString(o)));
               jsonObjectMapper.writeValue(jsonFile, o);
-              final File smileFile = new File(outputDirectory, adjustFileExtension(file.getName(), ".sml"));
+              final File smileFile =
+                  new File(outputDirectory, adjustFileExtension(file.getName(), ".sml"));
               smileObjectMapper.writeValue(smileFile, o);
               final ByteArrayOutputStream baos = new ByteArrayOutputStream();
               smileObjectMapper.writeValue(baos, o);

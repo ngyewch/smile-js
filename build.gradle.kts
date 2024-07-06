@@ -32,32 +32,6 @@ application {
     mainClass = "Main"
 }
 
-tasks {
-    getByName<JavaExec>("run") {
-        outputs.upToDateWhen { false }
-
-        args("generateTestData", "src/test/data", "build/test/data/testData.ts")
-    }
-
-    register<Copy>("copyTestData") {
-        outputs.upToDateWhen { false }
-
-        dependsOn("run")
-
-        from("build/test/data") {
-            include("testData.ts")
-            into("js")
-        }
-
-        from("build/test/data") {
-            include("*.sml")
-            into("data")
-        }
-
-        into("src/test")
-    }
-}
-
 versionsFilter {
     gradleReleaseChannel.set("current")
     checkConstraints.set(true)
