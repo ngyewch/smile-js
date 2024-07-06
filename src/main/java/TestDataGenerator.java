@@ -7,9 +7,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class TestDataGenerator {
 
@@ -25,29 +26,34 @@ public class TestDataGenerator {
     final File outputDir = new File(args[1]);
     outputDir.mkdirs();
 
-    try (final OutputStream ostrm = new FileOutputStream(new File(outputDir, "testData.ts"))) {
-      try (final Writer writer = new OutputStreamWriter(ostrm, "UTF-8")) {
+    try (final OutputStream outputStream =
+        new FileOutputStream(new File(outputDir, "testData.ts"))) {
+      try (final Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
         try (final PrintWriter pw = new PrintWriter(writer)) {
           pw.println("export const testData: { [key: string]: string } = {};");
-          for (final File file : dataDir.listFiles()) {
-            if (file.isDirectory() || !file.getName().endsWith(".json")) {
-              continue;
+          final File[] files = dataDir.listFiles();
+          if (files != null) {
+            for (final File file : files) {
+              if (file.isDirectory() || !file.getName().endsWith(".json")) {
+                continue;
+              }
+              final Object o = jsonObjectMapper.readValue(file, Object.class);
+              final File jsonFile = getTargetFile(outputDir, file, ".min.json");
+              pw.format(
+                  "testData['%s'] = '%s';\n",
+                  StringEscapeUtils.escapeEcmaScript(jsonFile.getName()),
+                  StringEscapeUtils.escapeEcmaScript(jsonObjectMapper.writeValueAsString(o)));
+              jsonObjectMapper.writeValue(jsonFile, o);
+              final File smileFile = getTargetFile(outputDir, file, ".sml");
+              smileObjectMapper.writeValue(smileFile, o);
+              final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+              smileObjectMapper.writeValue(baos, o);
+              pw.format(
+                  "testData['%s'] = '%s';\n",
+                  StringEscapeUtils.escapeEcmaScript(smileFile.getName()),
+                  StringEscapeUtils.escapeEcmaScript(
+                      Base64.encodeBase64String(baos.toByteArray())));
             }
-            final Object o = jsonObjectMapper.readValue(file, Object.class);
-            final File jsonFile = getTargetFile(outputDir, file, ".min.json");
-            pw.format(
-                "testData['%s'] = '%s';\n",
-                StringEscapeUtils.escapeEcmaScript(jsonFile.getName()),
-                StringEscapeUtils.escapeEcmaScript(jsonObjectMapper.writeValueAsString(o)));
-            jsonObjectMapper.writeValue(jsonFile, o);
-            final File smileFile = getTargetFile(outputDir, file, ".sml");
-            smileObjectMapper.writeValue(smileFile, o);
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            smileObjectMapper.writeValue(baos, o);
-            pw.format(
-                "testData['%s'] = '%s';\n",
-                StringEscapeUtils.escapeEcmaScript(smileFile.getName()),
-                StringEscapeUtils.escapeEcmaScript(Base64.encodeBase64String(baos.toByteArray())));
           }
         }
       }
