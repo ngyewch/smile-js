@@ -7,7 +7,6 @@ export function arrayEqual(t: Test, found: Uint8Array, wanted: Uint8Array, ...[m
         return t.fail({
             msg: msg,
             ...extra,
-            value: found,
             wanted: wanted,
             found: found,
         });
@@ -17,7 +16,6 @@ export function arrayEqual(t: Test, found: Uint8Array, wanted: Uint8Array, ...[m
             return t.fail({
                 msg: msg,
                 ...extra,
-                value: found,
                 wanted: wanted,
                 found: found,
             });
@@ -40,7 +38,6 @@ export function approx(t: Test, found: number, wanted: number, epsilon: number, 
         return t.fail({
             msg: msg,
             ...extra,
-            value: found,
             wanted: wanted,
             found: found,
         });
@@ -58,7 +55,6 @@ export function objectEqual(t: Test, found: any, wanted: any, ...[msg, extra]: M
         return t.fail({
             msg: msg,
             ...extra,
-            value: found,
             wanted: wanted,
             found: found,
         });
