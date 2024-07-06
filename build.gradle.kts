@@ -24,18 +24,19 @@ dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-smile")
     implementation("commons-codec:commons-codec:1.17.0")
     implementation("commons-io:commons-io:2.16.1")
+    implementation("info.picocli:picocli:4.7.6")
     implementation("org.apache.commons:commons-text:1.12.0")
 }
 
 application {
-    mainClass = "TestDataGenerator"
+    mainClass = "Main"
 }
 
 tasks {
     getByName<JavaExec>("run") {
         outputs.upToDateWhen { false }
 
-        args("src/test/data", "build/test/data")
+        args("generateTestData", "src/test/data", "build/test/data/testData.ts")
     }
 
     register<Copy>("copyTestData") {

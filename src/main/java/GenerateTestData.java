@@ -8,43 +8,47 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.Callable;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import picocli.CommandLine;
 
-public class TestDataGenerator {
+@CommandLine.Command(name = "generateTestData", description = "Generate test data.")
+public class GenerateTestData implements Callable<Integer> {
 
-  private static File getTargetFile(File outputDir, File file, String extension) {
-    return new File(outputDir, FilenameUtils.getBaseName(file.getPath()) + extension);
-  }
+  @CommandLine.Parameters(index = "0", description = "Directory containing JSON input files")
+  private File inputDirectory;
 
-  public static void main(String[] args) throws Exception {
-    final ObjectMapper jsonObjectMapper = new ObjectMapper();
-    final ObjectMapper smileObjectMapper = new ObjectMapper(new SmileFactory());
+  @CommandLine.Parameters(index = "1", description = "Javascript output file")
+  private File outputFile;
 
-    final File dataDir = new File(args[0]);
-    final File outputDir = new File(args[1]);
-    outputDir.mkdirs();
+  private final ObjectMapper jsonObjectMapper = new ObjectMapper();
+  private final ObjectMapper smileObjectMapper = new ObjectMapper(new SmileFactory());
 
-    try (final OutputStream outputStream =
-        new FileOutputStream(new File(outputDir, "testData.ts"))) {
+  @Override
+  public Integer call() throws Exception {
+    final File outputDirectory = outputFile.getParentFile();
+    outputDirectory.mkdirs();
+
+    try (final OutputStream outputStream = new FileOutputStream(outputFile)) {
       try (final Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
         try (final PrintWriter pw = new PrintWriter(writer)) {
           pw.println("export const testData: { [key: string]: string } = {};");
-          final File[] files = dataDir.listFiles();
+          final File[] files = inputDirectory.listFiles();
           if (files != null) {
             for (final File file : files) {
               if (file.isDirectory() || !file.getName().endsWith(".json")) {
                 continue;
               }
               final Object o = jsonObjectMapper.readValue(file, Object.class);
-              final File jsonFile = getTargetFile(outputDir, file, ".min.json");
+              final File jsonFile = new File(outputDirectory, adjustFileExtension(file.getName(), ".min.json"));
               pw.format(
                   "testData['%s'] = '%s';\n",
                   StringEscapeUtils.escapeEcmaScript(jsonFile.getName()),
                   StringEscapeUtils.escapeEcmaScript(jsonObjectMapper.writeValueAsString(o)));
               jsonObjectMapper.writeValue(jsonFile, o);
-              final File smileFile = getTargetFile(outputDir, file, ".sml");
+              final File smileFile = new File(outputDirectory, adjustFileExtension(file.getName(), ".sml"));
               smileObjectMapper.writeValue(smileFile, o);
               final ByteArrayOutputStream baos = new ByteArrayOutputStream();
               smileObjectMapper.writeValue(baos, o);
@@ -58,5 +62,10 @@ public class TestDataGenerator {
         }
       }
     }
+    return 0;
+  }
+
+  private static String adjustFileExtension(String filename, String extension) {
+    return FilenameUtils.getBaseName(filename) + extension;
   }
 }
