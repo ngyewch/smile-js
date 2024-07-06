@@ -42,8 +42,8 @@ class ParserContext {
         this.version = 0;
 
         // TODO
-        this.sharedPropertyNames = new SharedStringBuffer(false, 1024);
-        this.sharedStringValues = new SharedStringBuffer(false, 1024);
+        this.sharedPropertyNames = SharedStringBuffer.newKeyNames(false);
+        this.sharedStringValues = SharedStringBuffer.newValues(false);
     }
 
     public parse(): any {
@@ -62,8 +62,8 @@ class ParserContext {
         this.rawBinary = (b3 & 0x04) === 0x04;
         this.version = b3 >> 4;
 
-        this.sharedPropertyNames = new SharedStringBuffer(this.sharedPropertyName, 1024);
-        this.sharedStringValues = new SharedStringBuffer(this.sharedStringValue, 1024);
+        this.sharedPropertyNames = SharedStringBuffer.newKeyNames(this.sharedPropertyName);
+        this.sharedStringValues = SharedStringBuffer.newValues(this.sharedStringValue);
 
         return this.readValue();
     };
@@ -146,9 +146,6 @@ class ParserContext {
             return this.decoderStream.readSafeBinary();
         } else if ((token >= 0xec) && (token <= 0xef)) { // Shared String reference, long
             const reference = ((token & 0x03) << 8) | this.decoderStream.read();
-            if (reference < 64) {
-                throw new SmileError('invalid long shared value name reference');
-            }
             return this.sharedStringValues.getString(reference);
         } else if (token === 0xf8) { // START_ARRAY
             const array: any[] = [];
@@ -168,6 +165,9 @@ class ParserContext {
             return object;
         } else if (token === 0xfd) { // Binary (raw)
             const len = this.decoderStream.readUnsignedVint();
+            if (typeof(len) === 'bigint') {
+                throw new SmileError('invalid length');
+            }
             return this.decoderStream.readBytes(len);
         } else {
             throw new SmileError('invalid value token 0x' + token.toString(16));
@@ -180,9 +180,6 @@ class ParserContext {
             return '';
         } else if ((token >= 0x30) && (token <= 0x33)) { // 'Long' shared key name reference (2 byte token)
             const reference = ((token & 0x03) << 8) | this.decoderStream.read();
-            if (reference < 64) {
-                throw new SmileError('invalid long shared key name reference.');
-            }
             return this.sharedPropertyNames.getString(reference);
         } else if (token === 0x34) { // Long (not-yet-shared) Unicode name
             return this.decoderStream.readLongUtf8();

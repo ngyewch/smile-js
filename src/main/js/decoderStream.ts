@@ -1,5 +1,6 @@
 import {InputStream} from './inputStream.js';
 import {Decoder} from './decoder.js';
+import {SmileError} from './error.js';
 
 export class DecoderStream {
     private readonly inputStream: InputStream;
@@ -22,36 +23,24 @@ export class DecoderStream {
         return this.inputStream.peek();
     }
 
-    public readUnsignedVint(): number {
-        let value = 0;
-        let bits = 0;
-
-        function safeLeftShift(n: number, shift: number): void {
-            const bitMask = [0x00, 0x01, 0x03, 0x07, 0x0f, 0x1f, 0x3f, 0x7f, 0xff];
-            const shiftMultiplier = [1, 2, 4, 8, 16, 32, 64, 128];
-
-            if ((bits + shift) < 32) {
-                value <<= shift;
-                value |= n & bitMask[shift];
-            } else {
-                value *= shiftMultiplier[shift];
-                value += n & bitMask[shift];
-            }
-            bits += shift;
-        }
-
+    private readVIntBytes(): Uint8Array {
+        const bytes: number[] = [];
         while (true) {
-            const n = this.inputStream.read();
-            if (n & 0x80) {
-                safeLeftShift(n, 6);
-                return value;
-            } else {
-                safeLeftShift(n, 7);
+            const n = this.read();
+            bytes.push(n);
+            if ((n & 0x80) === 0x80) {
+                break;
             }
         }
+        return new Uint8Array(bytes);
     }
 
-    public readSignedVint(): number {
+    public readUnsignedVint(): number | bigint {
+        const bytes = this.readVIntBytes();
+        return this.decoder.decodeVInt(bytes);
+    }
+
+    public readSignedVint(): number | bigint {
         return this.decoder.decodeZigZag(this.readUnsignedVint());
     }
 
@@ -59,7 +48,7 @@ export class DecoderStream {
         return this.decoder.decodeAscii(this.inputStream.readArray(len));
     }
 
-    public readUtf8(len: number):string {
+    public readUtf8(len: number): string {
         return this.decoder.decodeUtf8(this.inputStream.readArray(len));
     }
 
@@ -78,6 +67,9 @@ export class DecoderStream {
 
     public readSafeBinary(): Uint8Array {
         const len = this.readUnsignedVint();
+        if (typeof(len) === 'bigint') {
+            throw new SmileError('invalid length');
+        }
         const bytes = this.inputStream.readArray(Math.ceil(len * 8 / 7));
         return this.decoder.decodeSafeBinaryEncodedBits(bytes, len * 8);
     }
@@ -93,6 +85,9 @@ export class DecoderStream {
 
     public readBigDecimal(): number {
         const scale = this.readSignedVint();
+        if (typeof(scale) === 'bigint') {
+            throw new SmileError('invalid scale');
+        }
         const magnitude = this.readBigInt();
         return magnitude * Math.pow(10, scale);
     }
