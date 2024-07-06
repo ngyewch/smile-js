@@ -40,7 +40,7 @@ public class GenerateTestData2 implements Callable<Integer> {
       final File currentOutputDirectory = new File(outputDirectory, relativePath).getParentFile();
       currentOutputDirectory.mkdirs();
       final File smileOutputFile =
-          new File(currentOutputDirectory, adjustFileExtension(jsonInputFile.getName(), ".sml"));
+          new File(currentOutputDirectory, adjustFileExtension(jsonInputFile.getName(), ".smile"));
       smileObjectMapper.writeValue(smileOutputFile, inputData.getValue());
 
       final File jsonOutputFile = new File(currentOutputDirectory, jsonInputFile.getName());
