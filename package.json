@@ -27,13 +27,14 @@
     "doBuild": "vite build",
     "check": "tsc --noEmit && tsc-strict",
     "build": "run-s check doBuild",
-    "test": "tap run",
+    "test": "tap",
     "typedoc": "typedoc"
   },
   "devDependencies": {
     "@tapjs/core": "3.0.3",
     "@tapjs/mocha-globals": "3.0.3",
     "gh-pages": "6.1.1",
+    "glob": "10.4.3",
     "js-testdiff": "1.0.5",
     "npm-run-all": "4.1.5",
     "tap": "20.0.3",

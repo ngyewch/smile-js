@@ -17,6 +17,9 @@ importers:
       gh-pages:
         specifier: 6.1.1
         version: 6.1.1
+      glob:
+        specifier: 10.4.3
+        version: 10.4.3
       js-testdiff:
         specifier: 1.0.5
         version: 1.0.5
@@ -1130,9 +1133,9 @@ packages:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
     engines: {node: '>= 6'}
 
-  glob@10.4.2:
-    resolution: {integrity: sha512-GwMlUF6PkPo3Gk21UxkCohOv0PLcIXVtKyLlpEI28R/cO/4eNOdmLk3CMW1wROV/WR/EsZOWAfBbBOqYvs88/w==}
-    engines: {node: '>=16 || 14 >=14.18'}
+  glob@10.4.3:
+    resolution: {integrity: sha512-Q38SGlYRpVtDBPSWEylRyctn7uDeTp4NQERTLiCT1FqA9JXPYWqAVmQU6qh4r/zMM5ehxTcbaO8EjhWnvEhmyg==}
+    engines: {node: '>=18'}
     hasBin: true
 
   glob@7.2.3:
@@ -2651,7 +2654,7 @@ snapshots:
   '@npmcli/package-json@5.2.0':
     dependencies:
       '@npmcli/git': 5.0.7
-      glob: 10.4.2
+      glob: 10.4.3
       hosted-git-info: 7.0.2
       json-parse-even-better-errors: 3.0.2
       normalize-package-data: 6.0.2
@@ -2960,7 +2963,7 @@ snapshots:
       chalk: 5.3.0
       chokidar: 3.6.0
       foreground-child: 3.2.1
-      glob: 10.4.2
+      glob: 10.4.3
       minipass: 7.1.2
       mkdirp: 3.0.1
       opener: 1.5.2
@@ -3028,7 +3031,7 @@ snapshots:
       '@tapjs/stdin': 3.0.3(@tapjs/core@3.0.3(@types/node@20.14.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@tapjs/typescript': 2.0.3(@tapjs/core@3.0.3(@types/node@20.14.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/node@20.14.9)(typescript@5.5.3)
       '@tapjs/worker': 3.0.3(@tapjs/core@3.0.3(@types/node@20.14.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
-      glob: 10.4.2
+      glob: 10.4.3
       jackspeak: 3.4.0
       mkdirp: 3.0.1
       package-json-from-dist: 1.0.0
@@ -3264,7 +3267,7 @@ snapshots:
     dependencies:
       '@npmcli/fs': 3.1.1
       fs-minipass: 3.0.3
-      glob: 10.4.2
+      glob: 10.4.3
       lru-cache: 10.3.0
       minipass: 7.1.2
       minipass-collect: 2.0.1
@@ -3706,7 +3709,7 @@ snapshots:
     dependencies:
       is-glob: 4.0.3
 
-  glob@10.4.2:
+  glob@10.4.3:
     dependencies:
       foreground-child: 3.2.1
       jackspeak: 3.4.0
@@ -4168,7 +4171,7 @@ snapshots:
     dependencies:
       env-paths: 2.2.1
       exponential-backoff: 3.1.1
-      glob: 10.4.2
+      glob: 10.4.3
       graceful-fs: 4.2.11
       make-fetch-happen: 13.0.1
       nopt: 7.2.1
@@ -4482,7 +4485,7 @@ snapshots:
 
   resolve-import@1.4.5:
     dependencies:
-      glob: 10.4.2
+      glob: 10.4.3
       walk-up-path: 3.0.1
 
   resolve@1.19.0:
@@ -4510,7 +4513,7 @@ snapshots:
 
   rimraf@5.0.7:
     dependencies:
-      glob: 10.4.2
+      glob: 10.4.3
 
   rollup@4.18.0:
     dependencies:
@@ -4765,7 +4768,7 @@ snapshots:
 
   sync-content@1.0.2:
     dependencies:
-      glob: 10.4.2
+      glob: 10.4.3
       mkdirp: 3.0.1
       path-scurry: 1.11.1
       rimraf: 5.0.7
@@ -4837,7 +4840,7 @@ snapshots:
   test-exclude@7.0.1:
     dependencies:
       '@istanbuljs/schema': 0.1.3
-      glob: 10.4.2
+      glob: 10.4.3
       minimatch: 9.0.5
 
   to-fast-properties@2.0.0: {}
