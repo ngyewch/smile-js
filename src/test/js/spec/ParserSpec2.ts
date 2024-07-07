@@ -1,19 +1,15 @@
-import t, {Test} from 'tap';
-import {parse} from '../../../main/js/parser.js';
-import {objectEqual} from './utils.js';
+import t from 'tap';
+import {verifyFiles} from './utils.js';
 import path from 'path';
-import fs from 'fs';
-import {globSync} from 'glob';
 
-//const testSuiteDir = "serde-smile/tests";
 const testSuiteDir = "src/test/data/serde-smile";
 
 t.test('serde-smile test suite', t => {
-    //verifyFiles(t, path.resolve(testSuiteDir, "big_decimal/*.smile"));
+    verifyFiles(t, path.resolve(testSuiteDir, "big_decimal/*.smile"));
 
-    //verifyFiles(t, path.resolve(testSuiteDir, "big_integer/*.smile"));
+    //verifyFiles(t, path.resolve(testSuiteDir, "big_integer/*.smile")); // skipped as tests fail due to Javascript Number.MAX_SAFE_INTEGER limitation.
 
-    //verifyFiles(t, path.resolve(testSuiteDir, "binary/*.smile"));
+    verifyFiles(t, path.resolve(testSuiteDir, "binary/*.smile"));
 
     verifyFiles(t, path.resolve(testSuiteDir, "boolean/*.smile"));
 
@@ -42,42 +38,3 @@ t.test('serde-smile test suite', t => {
 
     t.end();
 });
-
-function verifyFiles(t: Test, pattern: string | string[]): void {
-    const smileFiles = globSync(pattern, {
-        nodir: true,
-    })
-        .filter(smileFile => {
-            const parsedPath = path.parse(smileFile);
-            const jsonFile = path.resolve(parsedPath.dir, parsedPath.name + ".json");
-            return fs.existsSync(jsonFile);
-        });
-    for (const smileFile of smileFiles) {
-        verifyFile(t, smileFile);
-    }
-}
-
-function verifyFile(t: Test, smileFile: string): void {
-    const relativePath = path.relative(testSuiteDir, smileFile);
-    console.log(`[${relativePath}] ------------------------------`);
-    t.test(relativePath, t => {
-        const parsedPath = path.parse(smileFile);
-        const jsonFile = path.resolve(parsedPath.dir, parsedPath.name + ".json");
-        const smileData = fs.readFileSync(smileFile);
-        const jsonData = fs.readFileSync(jsonFile);
-        const smileValue = parse(smileData);
-        const wrappedSmileValue = {
-            value: smileValue,
-        };
-        const jsonValue = JSON.parse(jsonData.toString());
-        const jsonKeys = Object.keys(jsonValue);
-        for (const jsonKey of jsonKeys) {
-            if (jsonKey === 'value') {
-                continue;
-            }
-            delete jsonValue[jsonKey];
-        }
-        objectEqual(t, wrappedSmileValue, jsonValue);
-        t.end();
-    });
-}

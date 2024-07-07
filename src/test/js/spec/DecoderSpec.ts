@@ -86,4 +86,12 @@ t.test('should decode fixed-length big-endian encoded bits', t => {
     t.end();
 })
 
-// TODO should decode safe binary encoded bits
+t.test('should decode safe binary encoded bits', t => {
+    const decoder = new Decoder();
+
+    const wanted = new Uint8Array([0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]);
+    const data = new Uint8Array([0x00, 0x3f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x03]);
+    arrayEqual(t, decoder.decodeSafeBinaryEncodedBits(data, wanted.length), wanted);
+
+    t.end();
+});
