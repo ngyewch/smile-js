@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      bit-buffer:
+        specifier: 0.2.5
+        version: 0.2.5
     devDependencies:
       '@tapjs/core':
         specifier: 3.0.3
@@ -747,6 +751,9 @@ packages:
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
+
+  bit-buffer@0.2.5:
+    resolution: {integrity: sha512-x1yGnmXvFg6e3DiyRztElbcn1bsCTFSoM/ncAzY62uE0JdTl5xlKJd0ooqLYoPbhdsnpehSIQrdIvclcZJYwiA==}
 
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
@@ -3224,6 +3231,8 @@ snapshots:
   base64-js@1.5.1: {}
 
   binary-extensions@2.3.0: {}
+
+  bit-buffer@0.2.5: {}
 
   bl@4.1.0:
     dependencies:

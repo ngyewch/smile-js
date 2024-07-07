@@ -1,4 +1,5 @@
 import {SmileError} from './error.js';
+import {BitView} from 'bit-buffer';
 
 const bitMask = [0x00, 0x01, 0x03, 0x07, 0x0f, 0x1f, 0x3f, 0x7f, 0xff];
 
@@ -131,37 +132,25 @@ export class Decoder {
         return output;
     }
 
-    public decodeSafeBinaryEncodedBits(bytes: Uint8Array, bits: number): Uint8Array {
-        const output = new Uint8Array(Math.ceil(bits / 8));
-        let iByte = 0;
-        let iBitsRemaining = 7;
-        let oByte = 0;
-        let oBitsWritten = 0;
-        let currentInput = bytes[iByte];
-        let currentOutput = 0;
-        while (oByte < output.length) {
-            const bitsToWrite = Math.min(iBitsRemaining, (8 - oBitsWritten));
-            currentOutput <<= bitsToWrite;
-            currentOutput |= currentInput >> (iBitsRemaining - bitsToWrite);
-            iBitsRemaining -= bitsToWrite;
-            currentInput &= bitMask[iBitsRemaining];
-            oBitsWritten += bitsToWrite;
-            if (iBitsRemaining === 0) {
-                iByte++;
-                iBitsRemaining = 7;
-                currentInput = bytes[iByte];
-            }
-            if (oBitsWritten === 8) {
-                output[oByte] = currentOutput;
-                oByte++;
-                oBitsWritten = 0;
-                currentOutput = 0;
-            }
+    public decodeSafeBinaryEncodedBits(bytes: Uint8Array, decodedByteLen: number): Uint8Array {
+        if (decodedByteLen === 0) {
+            return new Uint8Array(0);
         }
-        if (oBitsWritten > 0) {
-            currentOutput <<= (8 - oBitsWritten);
-            output[oByte] = currentOutput;
+        const arrayBuffer = new ArrayBuffer(decodedByteLen);
+        const bitView = new BitView(arrayBuffer);
+        bitView.bigEndian = true;
+        let bitOffset = 0;
+        let remainingBits = decodedByteLen * 8;
+        for (let i = 0; i < bytes.length - 1; i++) {
+            let b = bytes[i];
+            bitView.setBits(bitOffset, b, 7);
+            bitOffset += 7;
+            remainingBits -= 7;
         }
-        return output;
+        if (remainingBits > 0) {
+            const b = bytes[bytes.length - 1];
+            bitView.setBits(bitOffset, b, remainingBits);
+        }
+        return new Uint8Array(arrayBuffer);
     }
 }

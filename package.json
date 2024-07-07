@@ -44,6 +44,9 @@
     "vite": "5.3.3",
     "vite-plugin-dts": "3.9.1"
   },
+  "dependencies": {
+    "bit-buffer": "0.2.5"
+  },
   "keywords": [
     "smile"
   ],

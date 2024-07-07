@@ -66,30 +66,38 @@ export class DecoderStream {
     }
 
     public readSafeBinary(): Uint8Array {
-        const len = this.readUnsignedVint();
-        if (typeof(len) === 'bigint') {
+        const decodedByteLen = this.readUnsignedVint();
+        if (typeof (decodedByteLen) === 'bigint') {
             throw new SmileError('invalid length');
         }
-        const bytes = this.inputStream.readArray(Math.ceil(len * 8 / 7));
-        return this.decoder.decodeSafeBinaryEncodedBits(bytes, len * 8);
+        const encodedByteLen = Math.ceil(decodedByteLen * 8 / 7);
+        const bytes = this.inputStream.readArray(encodedByteLen);
+        return this.decoder.decodeSafeBinaryEncodedBits(bytes, decodedByteLen);
     }
 
-    public readBigInt(): number {
+    public readBigInt(): bigint {
         const bytes = this.readSafeBinary();
-        let n = 0;
+        let n = BigInt(0);
+        if (bytes.length === 0) {
+            return n;
+        }
+        const isNegative = (bytes[0] & 0x80) === 0x80;
         for (let i = 0; i < bytes.length; i++) {
-            n = (n * 256) + bytes[i];
+            n = (n * BigInt(256)) + BigInt(isNegative ? bytes[i] ^ 0xff : bytes[i]);
+        }
+        if (isNegative) {
+            n = -n - BigInt(1);
         }
         return n;
     }
 
     public readBigDecimal(): number {
         const scale = this.readSignedVint();
-        if (typeof(scale) === 'bigint') {
+        if (typeof (scale) === 'bigint') {
             throw new SmileError('invalid scale');
         }
         const magnitude = this.readBigInt();
-        return magnitude * Math.pow(10, scale);
+        return Number(magnitude) * Math.pow(10, scale);
     }
 
     public readLongString(): Uint8Array {
