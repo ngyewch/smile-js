@@ -13,7 +13,7 @@ This project is an implementation of Jackson's [Smile format](https://github.com
 ## Using a hosted version
 
 ```
-<script src="https://cdn.jsdelivr.net/npm/smile-js@0.3.0/dist/smile-js.iife.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/smile-js@0.4.0/dist/smile-js.iife.js"></script>
 ```
 
 [Example](https://github.com/ngyewch/smile-js/blob/master/src/test/test.html)
