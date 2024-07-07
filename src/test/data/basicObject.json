@@ -1,5 +1,7 @@
 {
-  "name" : "Bob",
-  "age" : 25,
-  "score" : 96.8
+  "value": {
+    "name": "Bob",
+    "age": 25,
+    "score": 96.8
+  }
 }

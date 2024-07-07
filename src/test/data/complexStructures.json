@@ -1,12 +1,18 @@
 {
-    "employees" : [{
-        "name" : "Andrew",
-        "department" : "Sales"
-    }, {
-        "name" : "Bob",
-        "department" : "HR"
-    }, {
-        "name" : "Charles",
-        "department" : "IT"
-    }]
+  "value": {
+    "employees": [
+      {
+        "name": "Andrew",
+        "department": "Sales"
+      },
+      {
+        "name": "Bob",
+        "department": "HR"
+      },
+      {
+        "name": "Charles",
+        "department": "IT"
+      }
+    ]
+  }
 }

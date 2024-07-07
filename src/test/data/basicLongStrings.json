@@ -1,4 +1,6 @@
 {
-    "this-is-a-very-very-very-very-very-very-very-very-very-long-ascii-key" : "this-is-a-very-very-very-very-very-very-very-very-very-long-ascii-value",
-    "this-is-a-very-very-very-very-very-very-very-very-very-long-utf8-key-五" : "this-is-a-very-very-very-very-very-very-very-very-very-long-utf8-value-七"
+  "value": {
+    "this-is-a-very-very-very-very-very-very-very-very-very-long-ascii-key": "this-is-a-very-very-very-very-very-very-very-very-very-long-ascii-value",
+    "this-is-a-very-very-very-very-very-very-very-very-very-long-utf8-key-五": "this-is-a-very-very-very-very-very-very-very-very-very-long-utf8-value-七"
+  }
 }
