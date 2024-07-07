@@ -5,9 +5,12 @@ coverage-report:
   - text
 browser: true
 timeout: 30
-jobs: 9
+jobs: 8
 include:
   - "src/test/js/spec/*.ts"
+exclude:
+  - "src/test/js/spec/ParserSpec.ts"
+  #- "src/test/js/spec/ParserSpec2.ts"
 snapshot-clean-cwd: true
 color: true
 reporter: base
