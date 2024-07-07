@@ -19,7 +19,7 @@
     "vite": "5.3.3"
   },
   "dependencies": {
-    "smile-js": "0.3.0",
+    "smile-js": "0.4.0",
     "svelte": "^4.2.13"
   }
 }

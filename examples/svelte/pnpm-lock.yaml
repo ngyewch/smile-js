@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       smile-js:
-        specifier: 0.2.0
-        version: 0.2.0
+        specifier: 0.4.0
+        version: 0.4.0
       svelte:
         specifier: ^4.2.13
         version: 4.2.18
@@ -351,6 +351,9 @@ packages:
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
+
+  bit-buffer@0.2.5:
+    resolution: {integrity: sha512-x1yGnmXvFg6e3DiyRztElbcn1bsCTFSoM/ncAzY62uE0JdTl5xlKJd0ooqLYoPbhdsnpehSIQrdIvclcZJYwiA==}
 
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
@@ -1004,8 +1007,8 @@ packages:
   signal-exit@3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
 
-  smile-js@0.2.0:
-    resolution: {integrity: sha512-omTfyG47X6oxB9ck/pR8BCX2X97PrDY1XECkWChIav5qHUa+eoaqNuRaAlxChuoKLKDzl/WyOaUwJCPOwnePGQ==}
+  smile-js@0.4.0:
+    resolution: {integrity: sha512-sICq/++XDIN55bhHC93syBITcKdseTsgvDeovje1ivepF/k9XfqiIlD0OkpcgOzm0soiL6ycq5wS8Sv+YcOZPQ==}
 
   sorcery@0.11.1:
     resolution: {integrity: sha512-o7npfeJE6wi6J9l0/5LKshFzZ2rMatRiCDwYeDQaOzqdzRJwALhX7mk/A/ecg6wjMu7wdZbmXfD2S/vpOg0bdQ==}
@@ -1462,6 +1465,8 @@ snapshots:
   base64-js@1.5.1: {}
 
   binary-extensions@2.3.0: {}
+
+  bit-buffer@0.2.5: {}
 
   bl@4.1.0:
     dependencies:
@@ -2234,7 +2239,9 @@ snapshots:
 
   signal-exit@3.0.7: {}
 
-  smile-js@0.2.0: {}
+  smile-js@0.4.0:
+    dependencies:
+      bit-buffer: 0.2.5
 
   sorcery@0.11.1:
     dependencies:
