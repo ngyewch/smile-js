@@ -1,17 +1,13 @@
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.smile.SmileFactory;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
+import com.fasterxml.jackson.dataformat.smile.SmileGenerator;
+import java.io.*;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.Callable;
-import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.text.StringEscapeUtils;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "generateTestData", description = "Generate test data.")
@@ -20,54 +16,107 @@ public class GenerateTestData implements Callable<Integer> {
   @CommandLine.Parameters(index = "0", description = "Directory containing JSON input files")
   private File inputDirectory;
 
-  @CommandLine.Parameters(index = "1", description = "Javascript output file")
-  private File outputFile;
+  @CommandLine.Parameters(index = "1", description = "Output directory for SMILE-encoded files")
+  private File outputDirectory;
 
-  private final ObjectMapper jsonObjectMapper = new ObjectMapper();
-  private final ObjectMapper smileObjectMapper = new ObjectMapper(new SmileFactory());
+  @CommandLine.Option(
+      names = {"-r", "--recursive"},
+      description = "Recursive")
+  private boolean recursive;
+
+  @CommandLine.Option(
+      names = {"--compare-reference"},
+      description = "Compare reference")
+  private boolean compareReference;
 
   @Override
   public Integer call() throws Exception {
-    final File outputDirectory = outputFile.getParentFile();
-    outputDirectory.mkdirs();
+    final Collection<File> jsonInputFiles =
+        FileUtils.listFiles(inputDirectory, new String[] {"json"}, recursive);
+    for (final File jsonInputFile : jsonInputFiles) {
+      final String relativePath =
+          inputDirectory.toURI().relativize(jsonInputFile.toURI()).getPath();
+      final InputData inputData = readInputData(jsonInputFile);
 
-    try (final OutputStream outputStream = new FileOutputStream(outputFile)) {
-      try (final Writer writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)) {
-        try (final PrintWriter pw = new PrintWriter(writer)) {
-          pw.println("export const testData: { [key: string]: string } = {};");
-          final File[] files = inputDirectory.listFiles();
-          if (files != null) {
-            for (final File file : files) {
-              if (file.isDirectory() || !file.getName().endsWith(".json")) {
-                continue;
-              }
-              final Object o = jsonObjectMapper.readValue(file, Object.class);
-              final File jsonFile =
-                  new File(outputDirectory, adjustFileExtension(file.getName(), ".min.json"));
-              pw.format(
-                  "testData['%s'] = '%s';\n",
-                  StringEscapeUtils.escapeEcmaScript(jsonFile.getName()),
-                  StringEscapeUtils.escapeEcmaScript(jsonObjectMapper.writeValueAsString(o)));
-              jsonObjectMapper.writeValue(jsonFile, o);
-              final File smileFile =
-                  new File(outputDirectory, adjustFileExtension(file.getName(), ".sml"));
-              smileObjectMapper.writeValue(smileFile, o);
-              final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-              smileObjectMapper.writeValue(baos, o);
-              pw.format(
-                  "testData['%s'] = '%s';\n",
-                  StringEscapeUtils.escapeEcmaScript(smileFile.getName()),
-                  StringEscapeUtils.escapeEcmaScript(
-                      Base64.encodeBase64String(baos.toByteArray())));
-            }
-          }
+      final SmileFactory smileFactory = new SmileFactory();
+      smileFactory.configure(
+          SmileGenerator.Feature.CHECK_SHARED_NAMES, inputData.isSharedProperties());
+      smileFactory.configure(
+          SmileGenerator.Feature.CHECK_SHARED_STRING_VALUES, inputData.isSharedStrings());
+      smileFactory.configure(
+          SmileGenerator.Feature.ENCODE_BINARY_AS_7BIT, !inputData.isRawBinary());
+
+      final ObjectMapper smileObjectMapper = new ObjectMapper(smileFactory);
+      final File currentOutputDirectory = new File(outputDirectory, relativePath).getParentFile();
+      currentOutputDirectory.mkdirs();
+      final File smileOutputFile =
+          new File(currentOutputDirectory, adjustFileExtension(jsonInputFile.getName(), ".smile"));
+      smileObjectMapper.writeValue(smileOutputFile, inputData.getValue());
+
+      final File jsonOutputFile = new File(currentOutputDirectory, jsonInputFile.getName());
+      FileUtils.copyFile(jsonInputFile, jsonOutputFile);
+
+      if (compareReference) {
+        final File currentInputDirectory = new File(inputDirectory, relativePath).getParentFile();
+        final File referenceFile =
+            new File(currentInputDirectory, adjustFileExtension(jsonInputFile.getName(), ".smile"));
+
+        final byte[] outputBytes = FileUtils.readFileToByteArray(smileOutputFile);
+        final byte[] referenceBytes = FileUtils.readFileToByteArray(referenceFile);
+        if (!Arrays.equals(outputBytes, referenceBytes)) {
+          System.out.printf("[MISMATCH] %s\n", relativePath);
         }
       }
     }
     return 0;
   }
 
+  private InputData readInputData(File inputFile) throws IOException {
+    final ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+    return objectMapper.readValue(inputFile, InputData.class);
+  }
+
   private static String adjustFileExtension(String filename, String extension) {
     return FilenameUtils.getBaseName(filename) + extension;
+  }
+
+  public static class InputData {
+    private Object value;
+    private boolean sharedStrings;
+    private boolean sharedProperties;
+    private boolean rawBinary;
+
+    public Object getValue() {
+      return value;
+    }
+
+    public void setValue(Object value) {
+      this.value = value;
+    }
+
+    public boolean isSharedStrings() {
+      return sharedStrings;
+    }
+
+    public void setSharedStrings(boolean sharedStrings) {
+      this.sharedStrings = sharedStrings;
+    }
+
+    public boolean isSharedProperties() {
+      return sharedProperties;
+    }
+
+    public void setSharedProperties(boolean sharedProperties) {
+      this.sharedProperties = sharedProperties;
+    }
+
+    public boolean isRawBinary() {
+      return rawBinary;
+    }
+
+    public void setRawBinary(boolean rawBinary) {
+      this.rawBinary = rawBinary;
+    }
   }
 }
