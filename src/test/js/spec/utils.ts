@@ -4,7 +4,8 @@ import testDiff from 'js-testdiff';
 import {globSync} from 'glob';
 import path from 'path';
 import fs from 'fs';
-import {parse} from '../../../main/js/parser.js';
+import {parse as jsonParse, stringify as jsonStringify, isInteger} from 'lossless-json';
+import {parse as smileParse} from '../../../main/js/parser.js';
 
 export function arrayEqual(t: Test, found: Uint8Array, wanted: Uint8Array, ...[msg, extra]: MessageExtra): boolean {
     if (found.length != wanted.length) {
@@ -87,10 +88,28 @@ export function verifyFile(t: Test, smileFile: string): void {
         const jsonFile = path.resolve(parsedPath.dir, parsedPath.name + ".json");
         const smileData = fs.readFileSync(smileFile);
         const jsonData = fs.readFileSync(jsonFile);
-        const smileValue = parse(smileData);
-        const wrappedJsonValue = JSON.parse(jsonData.toString());
+        const smileValue = smileParse(smileData);
+        const wrappedJsonValue = jsonParse(jsonData.toString(), null, v => {
+            if (isInteger(v)) {
+                const b = BigInt(v);
+                if ((b >= BigInt(Number.MIN_SAFE_INTEGER)) && (b <= BigInt(Number.MAX_SAFE_INTEGER))) {
+                    return Number(b);
+                } else {
+                    return b;
+                }
+            } else {
+                return parseFloat(v);
+            }
+        });
         const jsonValue = wrappedJsonValue['value'];
         objectEqual(t, smileValue, jsonValue);
+
+        const parsedPath2 = path.parse(relativePath);
+        const outputJsonFile = path.resolve('build/test', parsedPath2.dir, parsedPath2.name + ".json");
+        fs.mkdirSync(path.parse(outputJsonFile).dir, {recursive: true});
+        wrappedJsonValue.value = smileValue;
+        fs.writeFileSync(outputJsonFile, jsonStringify(wrappedJsonValue));
+
         t.end();
     });
 }
