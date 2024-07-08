@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+exec diff <(jq --sort-keys . $1) <(jq --sort-keys . $2)

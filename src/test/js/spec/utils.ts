@@ -4,6 +4,7 @@ import testDiff from 'js-testdiff';
 import {globSync} from 'glob';
 import path from 'path';
 import fs from 'fs';
+import {execSync, type SpawnSyncReturns} from 'child_process';
 import {parse as jsonParse, stringify as jsonStringify, isInteger} from 'lossless-json';
 import {parse as smileParse} from '../../../main/js/parser.js';
 
@@ -80,9 +81,16 @@ export function verifyFiles(t: Test, pattern: string | string[]): void {
     }
 }
 
+interface WrappedJSONValue {
+    sharedStrings?: boolean;
+    sharedProperties?: boolean;
+    rawBinary?: boolean;
+    value: any;
+}
+
 export function verifyFile(t: Test, smileFile: string): void {
     const relativePath = path.relative(process.cwd(), smileFile);
-    console.log(`[${relativePath}] ------------------------------`);
+    //console.log(`[${relativePath}] ------------------------------`);
     t.test(relativePath, t => {
         const parsedPath = path.parse(smileFile);
         const jsonFile = path.resolve(parsedPath.dir, parsedPath.name + ".json");
@@ -100,15 +108,38 @@ export function verifyFile(t: Test, smileFile: string): void {
             } else {
                 return parseFloat(v);
             }
-        });
-        const jsonValue = wrappedJsonValue['value'];
-        objectEqual(t, smileValue, jsonValue);
+        }) as WrappedJSONValue;
+        const jsonValue = wrappedJsonValue.value;
+        const pass = objectEqual(t, smileValue, jsonValue);
+        const skipJsonDiff = relativePath.startsWith('src/test/data/serde-smile/double/')
+            || relativePath.startsWith('src/test/data/serde-smile/float/');
 
-        const parsedPath2 = path.parse(relativePath);
-        const outputJsonFile = path.resolve('build/test', parsedPath2.dir, parsedPath2.name + ".json");
-        fs.mkdirSync(path.parse(outputJsonFile).dir, {recursive: true});
-        wrappedJsonValue.value = smileValue;
-        fs.writeFileSync(outputJsonFile, jsonStringify(wrappedJsonValue));
+        if (pass && !skipJsonDiff) {
+            t.test('json diff', t => {
+                wrappedJsonValue.value = smileValue;
+                const outputJson = jsonStringify(wrappedJsonValue);
+                if (outputJson !== undefined) {
+                    const parsedPath2 = path.parse(relativePath);
+                    const outputJsonFile = path.resolve('build/test', parsedPath2.dir, parsedPath2.name + ".json");
+                    fs.mkdirSync(path.parse(outputJsonFile).dir, {recursive: true});
+                    fs.writeFileSync(outputJsonFile, outputJson);
+
+                    const jsonDiffCmd = `./json-diff ${jsonFile} ${outputJsonFile}`;
+                    try {
+                        const jsonDiff = execSync(jsonDiffCmd);
+                    } catch (e) {
+                        const returns = e as SpawnSyncReturns<Buffer>;
+                        t.fail({
+                            doNotWant: returns.stdout.toString(),
+                        });
+                    }
+                } else {
+                    t.fail('could not write output JSON');
+                }
+
+                t.end();
+            });
+        }
 
         t.end();
     });
