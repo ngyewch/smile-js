@@ -53,17 +53,17 @@ export class DecoderStream {
     }
 
     public readFloat32(): number {
-        return this.decoder.decodeFloat32(this.readFixedLengthBigEndianEncodedBits(32));
+        return this.decoder.decodeFloat32(this.readFixedLengthBigEndianEncodedBytes(4));
     }
 
     public readFloat64(): number {
-        return this.decoder.decodeFloat64(this.readFixedLengthBigEndianEncodedBits(64));
+        return this.decoder.decodeFloat64(this.readFixedLengthBigEndianEncodedBytes(8));
     }
 
-    public readFixedLengthBigEndianEncodedBits(bits: number): Uint8Array {
-        const encodedByteLen = Math.ceil(bits / 7);
+    public readFixedLengthBigEndianEncodedBytes(decodedByteLen: number): Uint8Array {
+        const encodedByteLen = Math.ceil(decodedByteLen * 8 / 7);
         const bytes = this.inputStream.readArray(encodedByteLen);
-        return this.decoder.decodeFixedLengthBigEndianEncodedBits(bytes, bits);
+        return this.decoder.decodeFixedLengthBigEndianEncodedBits(bytes, decodedByteLen * 8);
     }
 
     public readSafeBinary(): Uint8Array {
