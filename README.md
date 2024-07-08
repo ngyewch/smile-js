@@ -10,10 +10,7 @@ Javascript Smile implementation.
 
 This project is an implementation of Jackson's [Smile format](https://github.com/FasterXML/smile-format-specification/blob/master/smile-specification.md). The library currently only supports decoding.
 
-## Using a hosted version
+## Documentation
 
-```
-<script src="https://cdn.jsdelivr.net/npm/smile-js@0.4.0/dist/smile-js.iife.js"></script>
-```
+See https://ngyewch.github.io/smile-js/
 
-[Example](https://github.com/ngyewch/smile-js/blob/master/src/test/test.html)
