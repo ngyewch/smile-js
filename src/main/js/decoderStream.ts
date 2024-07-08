@@ -63,7 +63,7 @@ export class DecoderStream {
     public readFixedLengthBigEndianEncodedBytes(decodedByteLen: number): Uint8Array {
         const encodedByteLen = Math.ceil(decodedByteLen * 8 / 7);
         const bytes = this.inputStream.readArray(encodedByteLen);
-        return this.decoder.decodeFixedLengthBigEndianEncodedBits(bytes, decodedByteLen * 8);
+        return this.decoder.decodeFixedLengthBigEndianEncodedBytes(bytes, decodedByteLen);
     }
 
     public readSafeBinary(): Uint8Array {

@@ -103,41 +103,20 @@ export class Decoder {
         return this.toDataView(bytes).getFloat64(0, false);
     }
 
-    public decodeFixedLengthBigEndianEncodedBits(bytes: Uint8Array, bits: number): Uint8Array {
-        const output = new Uint8Array(Math.ceil(bits / 8));
-        let iByte = 0;
-        let iBitsRemaining = bits % 7;
-        let oByte = 0;
-        let oBitsWritten = 0;
-        let currentInput = bytes[iByte];
-        let currentOutput = 0;
-        let oIndex;
-        while (iByte < bytes.length) {
-            const bitsToWrite = Math.min(iBitsRemaining, (8 - oBitsWritten));
-            currentOutput <<= bitsToWrite;
-            currentOutput |= currentInput >> (iBitsRemaining - bitsToWrite);
-            iBitsRemaining -= bitsToWrite;
-            currentInput &= bitMask[iBitsRemaining];
-            oBitsWritten += bitsToWrite;
-            if (iBitsRemaining === 0) {
-                iByte++;
-                iBitsRemaining = 7;
-                currentInput = bytes[iByte];
-            }
-            if (oBitsWritten === 8) {
-                oIndex = oByte;
-                output[oIndex] = currentOutput;
-                oByte++;
-                oBitsWritten = 0;
-                currentOutput = 0;
-            }
+    public decodeFixedLengthBigEndianEncodedBytes(bytes: Uint8Array, decodedByteLen: number): Uint8Array {
+        const arrayBuffer = new ArrayBuffer(decodedByteLen);
+        const bitView = new BitView(arrayBuffer);
+        bitView.bigEndian = true;
+        let bitOffset = 0;
+        let remainingBits = decodedByteLen * 8;
+        for (let i = 0; i < bytes.length; i++) {
+            const b = bytes[i];
+            const bitsToWrite = Math.min(remainingBits, i === 0 ? 7 - ((bytes.length * 7) - (decodedByteLen * 8)) : 7);
+            bitView.setBits(bitOffset, b, bitsToWrite);
+            bitOffset += bitsToWrite;
+            remainingBits -= bitsToWrite;
         }
-        if (oBitsWritten > 0) {
-            currentOutput <<= (8 - oBitsWritten);
-            oIndex = oByte;
-            output[oIndex] = currentOutput;
-        }
-        return output;
+        return new Uint8Array(arrayBuffer);
     }
 
     public decodeSafeBinaryEncodedBits(bytes: Uint8Array, decodedByteLen: number): Uint8Array {
