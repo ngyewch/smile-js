@@ -21,8 +21,8 @@ tasks:
   generateTestData:
     desc: Generate test data
     cmds:
-      - ./gradlew run --args="generateTestData src/test/data build/basic/tests"
-      - cp build/basic/tests/*.smile src/test/data/
+      - ./gradlew run --args="generateTestData --recursive src/test/data/basic build/basic/tests/basic"
+      - cp -r build/basic/tests/basic/* src/test/data/basic/
       - ./gradlew run --args="generateTestData --recursive --compare-reference serde-smile/tests build/serde-smile/tests"
       - rm -rf src/test/data/serde-smile
       - cp -r build/serde-smile/tests src/test/data/serde-smile
