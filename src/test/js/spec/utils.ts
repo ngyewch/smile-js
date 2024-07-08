@@ -88,18 +88,9 @@ export function verifyFile(t: Test, smileFile: string): void {
         const smileData = fs.readFileSync(smileFile);
         const jsonData = fs.readFileSync(jsonFile);
         const smileValue = parse(smileData);
-        const wrappedSmileValue = {
-            value: smileValue,
-        };
-        const jsonValue = JSON.parse(jsonData.toString());
-        const jsonKeys = Object.keys(jsonValue);
-        for (const jsonKey of jsonKeys) {
-            if (jsonKey === 'value') {
-                continue;
-            }
-            delete jsonValue[jsonKey];
-        }
-        objectEqual(t, wrappedSmileValue, jsonValue);
+        const wrappedJsonValue = JSON.parse(jsonData.toString());
+        const jsonValue = wrappedJsonValue['value'];
+        objectEqual(t, smileValue, jsonValue);
         t.end();
     });
 }
