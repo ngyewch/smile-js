@@ -31,7 +31,7 @@ var A = { exports: {} };
       if (i > o)
         throw new Error("Cannot get " + i + " bit(s) from offset " + t + ", " + o + " available");
       for (var h = 0, f = 0; f < i; ) {
-        var x = i - f, w = t & 7, l = this._view[t >> 3], g = Math.min(x, 8 - w), S, m;
+        var v = i - f, w = t & 7, l = this._view[t >> 3], g = Math.min(v, 8 - w), S, m;
         this.bigEndian ? (S = ~(255 << g), m = l >> 8 - g - w & S, h <<= g, h |= m) : (S = ~(255 << g), m = l >> w & S, h |= m << f), t += g, f += g;
       }
       return d ? (i !== 32 && h & 1 << i - 1 && (h |= -1 ^ (1 << i) - 1), h) : h >>> 0;
@@ -40,13 +40,13 @@ var A = { exports: {} };
       if (d > o)
         throw new Error("Cannot set " + d + " bit(s) from offset " + t + ", " + o + " available");
       for (var h = 0; h < d; ) {
-        var f = d - h, x = t & 7, w = t >> 3, l = Math.min(f, 8 - x), g, S, m;
+        var f = d - h, v = t & 7, w = t >> 3, l = Math.min(f, 8 - v), g, S, m;
         if (this.bigEndian) {
           g = ~(-1 << l), S = i >> d - h - l & g;
-          var V = 8 - x - l;
+          var V = 8 - v - l;
           m = ~(g << V), this._view[w] = this._view[w] & m | S << V;
         } else
-          g = ~(255 << l), S = i & g, i >>= l, m = ~(g << x), this._view[w] = this._view[w] & m | S << x;
+          g = ~(255 << l), S = i & g, i >>= l, m = ~(g << v), this._view[w] = this._view[w] & m | S << v;
         t += l, h += l;
       }
     }, r.prototype.getBoolean = function(t) {
@@ -105,10 +105,10 @@ var A = { exports: {} };
     function c(t, i, d) {
       if (i === 0)
         return "";
-      var o = 0, h = [], f = !0, x = !!i;
+      var o = 0, h = [], f = !0, v = !!i;
       for (i || (i = Math.floor((t._length - t._index) / 8)); o < i; ) {
         var w = t.readUint8();
-        if (w === 0 && (f = !1, !x))
+        if (w === 0 && (f = !1, !v))
           break;
         f && h.push(w), o++;
       }
@@ -126,7 +126,7 @@ var A = { exports: {} };
       for (var o = d || i.length + 1, h = 0; h < o; h++)
         t.writeUint8(h < i.length ? i.charCodeAt(h) : 0);
     }
-    function v(t, i, d) {
+    function x(t, i, d) {
       for (var o = U(i), h = d || o.length + 1, f = 0; f < h; f++)
         t.writeUint8(f < o.length ? o[f] : 0);
     }
@@ -210,7 +210,7 @@ var A = { exports: {} };
     }, a.prototype.writeASCIIString = function(t, i) {
       I(this, t, i);
     }, a.prototype.writeUTF8String = function(t, i) {
-      v(this, t, i);
+      x(this, t, i);
     }, a.prototype.readBitStream = function(t) {
       var i = new a(this._view);
       return i._startIndex = this._index, i._index = this._index, i.length = t, this._index += t, i;
@@ -230,8 +230,11 @@ var A = { exports: {} };
   })();
 })(A);
 var E = A.exports;
-const N = [0, 1, 3, 7, 15, 31, 63, 127, 255];
+const M = [0, 1, 3, 7, 15, 31, 63, 127, 255];
 class F {
+  normalizeInt(e) {
+    return typeof e == "bigint" && e >= BigInt(Number.MIN_SAFE_INTEGER) && e <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(e) : e;
+  }
   decodeVInt(e) {
     if (e.length <= 0)
       throw new u("invalid VInt");
@@ -249,20 +252,20 @@ class F {
         break;
       }
     }
-    return r >= BigInt(Number.MIN_SAFE_INTEGER) && r <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(r) : r;
+    return this.normalizeInt(r);
   }
   decodeZigZag(e) {
     if (e < 0)
       throw new u("illegal zigzag value");
     if (typeof e == "bigint") {
       if (e <= BigInt(2147483647))
-        return e % BigInt(2) === BigInt(1) ? Number(-(e >> BigInt(1)) - BigInt(1)) : Number(e >> BigInt(1));
+        return e % BigInt(2) === BigInt(1) ? this.normalizeInt(-(e >> BigInt(1)) - BigInt(1)) : this.normalizeInt(e >> BigInt(1));
       if (e % BigInt(2) === BigInt(1)) {
         const r = (e - BigInt(1)) / BigInt(2);
-        return Number(-r - BigInt(1));
+        return this.normalizeInt(-r - BigInt(1));
       } else {
         const r = e / BigInt(2);
-        return Number(r);
+        return this.normalizeInt(r);
       }
     } else
       return e <= 2147483647 ? e % 2 === 1 ? -(e >> 1) - 1 : e >> 1 : e % 2 === 1 ? -((e - 1) / 2) - 1 : e / 2;
@@ -289,12 +292,12 @@ class F {
   }
   decodeFixedLengthBigEndianEncodedBits(e, r) {
     const s = new Uint8Array(Math.ceil(r / 8));
-    let n = 0, p = r % 7, B = 0, c = 0, I = e[n], v = 0, U;
+    let n = 0, p = r % 7, B = 0, c = 0, I = e[n], x = 0, U;
     for (; n < e.length; ) {
       const a = Math.min(p, 8 - c);
-      v <<= a, v |= I >> p - a, p -= a, I &= N[p], c += a, p === 0 && (n++, p = 7, I = e[n]), c === 8 && (U = B, s[U] = v, B++, c = 0, v = 0);
+      x <<= a, x |= I >> p - a, p -= a, I &= M[p], c += a, p === 0 && (n++, p = 7, I = e[n]), c === 8 && (U = B, s[U] = x, B++, c = 0, x = 0);
     }
-    return c > 0 && (v <<= 8 - c, U = B, s[U] = v), s;
+    return c > 0 && (x <<= 8 - c, U = B, s[U] = x), s;
   }
   decodeSafeBinaryEncodedBits(e, r) {
     if (r === 0)
@@ -313,7 +316,7 @@ class F {
     return new Uint8Array(s);
   }
 }
-class M {
+class N {
   constructor(e) {
     this.inputStream = e, this.decoder = new F();
   }
@@ -472,7 +475,7 @@ function T(y, e) {
 }
 class L {
   constructor(e, r) {
-    this.decoderStream = new M(new P(e)), this.options = r, this.decoder = new F(), this.sharedPropertyName = !1, this.sharedStringValue = !1, this.rawBinary = !1, this.version = 0, this.sharedPropertyNames = _.newKeyNames(!1), this.sharedStringValues = _.newValues(!1);
+    this.decoderStream = new N(new P(e)), this.options = r, this.decoder = new F(), this.sharedPropertyName = !1, this.sharedStringValue = !1, this.rawBinary = !1, this.version = 0, this.sharedPropertyNames = _.newKeyNames(!1), this.sharedStringValues = _.newValues(!1);
   }
   parse() {
     const e = this.decoderStream.read(), r = this.decoderStream.read(), s = this.decoderStream.read();
