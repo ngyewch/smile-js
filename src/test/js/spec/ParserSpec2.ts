@@ -29,10 +29,7 @@ t.test('serde-smile test suite', t => {
 
     verifyFiles(t, path.resolve(testSuiteDir, "shared_property/*.smile"));
 
-    //verifyFiles(t, path.resolve(testSuiteDir, "shared_string/*.smile"));
-    verifyFiles(t, path.resolve(testSuiteDir, "shared_string/ab.smile"));
-    verifyFiles(t, path.resolve(testSuiteDir, "shared_string/evict.smile"));
-    //verifyFiles(t, path.resolve(testSuiteDir, "shared_string/large.smile")); // FAILS this test
+    verifyFiles(t, path.resolve(testSuiteDir, "shared_string/*.smile"));
 
     verifyFiles(t, path.resolve(testSuiteDir, "string/*.smile"));
 
