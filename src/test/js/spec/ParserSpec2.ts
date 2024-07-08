@@ -7,7 +7,7 @@ const testSuiteDir = "src/test/data/serde-smile";
 t.test('serde-smile test suite', t => {
     verifyFiles(t, path.resolve(testSuiteDir, "big_decimal/*.smile"));
 
-    //verifyFiles(t, path.resolve(testSuiteDir, "big_integer/*.smile")); // skipped as tests fail due to Javascript Number.MAX_SAFE_INTEGER limitation.
+    verifyFiles(t, path.resolve(testSuiteDir, "big_integer/*.smile"));
 
     verifyFiles(t, path.resolve(testSuiteDir, "binary/*.smile"));
 
