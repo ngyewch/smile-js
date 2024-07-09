@@ -2,7 +2,6 @@
 authors = ["Nick Ng"]
 language = "en"
 multilingual = false
-src = "."
 title = "smile-js"
 
 [output.html]

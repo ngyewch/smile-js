@@ -35,6 +35,11 @@ tasks:
     env:
       TOOLDIR: tools/test-data-generator/build/install/test-data-generator
 
+  site-clean:
+    desc: Clean site
+    cmds:
+      - rm -rf build/gh-pages
+
   site-build:
     desc: Build site
     cmds:
@@ -45,25 +50,21 @@ tasks:
       - task: site-build-example-html
       - task: site-build-example-svelte
 
-  site-clean:
-    desc: Clean site
-    cmds:
-      - rm -rf build/gh-pages
-
   site-deploy:
     desc: Deploy site
+    deps: [ site-build ]
     cmds:
       - gh-pages -d build/gh-pages --nojekyll
+
+  site-build-mdbook:
+    desc: Generate mdbook
+    cmds:
+      - mdbook build --dest-dir $(pwd)/build/gh-pages docs/mdbook
 
   site-build-typedoc:
     desc: Generate typedoc
     cmds:
       - pnpm run typedoc
-
-  site-build-mdbook:
-    desc: Generate mdbook
-    cmds:
-      - mdbook build --dest-dir $(pwd)/build/gh-pages src/main/mdbook
 
   site-build-example-html:
     cmds:
@@ -71,27 +72,14 @@ tasks:
       - cp -r examples/html/* build/gh-pages/examples/html/
 
   site-build-example-svelte:
-    deps: [ build-example ]
+    deps: [ build-example-svelte ]
     cmds:
       - mkdir -p build/gh-pages/examples/svelte
       - cp -r examples/svelte/dist/* build/gh-pages/examples/svelte/
 
-  mdbook-serve:
-    desc: Serve mdbook
-    dir: src/main/mdbook
-    cmds:
-      - mdbook serve
-
-  build-example:
+  build-example-svelte:
     desc: Build example
     dir: examples/svelte
     cmds:
       - pnpm install
       - pnpm run build
-
-  run-example:
-    desc: Build example
-    dir: examples/svelte
-    cmds:
-      - pnpm install
-      - pnpm run dev
