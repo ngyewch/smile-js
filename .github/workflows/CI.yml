@@ -41,3 +41,11 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Install Dependencies (example)
+        working-directory: examples/basic
+        run: npm install
+
+      - name: Run (example)
+        working-directory: examples/basic
+        run: npm run example
