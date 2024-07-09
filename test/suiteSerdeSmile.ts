@@ -2,7 +2,7 @@ import t from 'tap';
 import path from 'path';
 import {verifyFiles} from './utils/helper.js';
 
-const testSuiteDir = "src/test/data/serde-smile";
+const testSuiteDir = "testdata/serde-smile";
 
 t.test('serde-smile test suite', t => {
     verifyFiles(t, path.resolve(testSuiteDir, "big_decimal/*.smile"));

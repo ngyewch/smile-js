@@ -111,8 +111,8 @@ export function verifyFile(t: Test, smileFile: string): void {
         }) as WrappedJSONValue;
         const jsonValue = wrappedJsonValue.value;
         const pass = objectEqual(t, smileValue, jsonValue);
-        const skipJsonDiff = relativePath.startsWith('src/test/data/serde-smile/double/')
-            || relativePath.startsWith('src/test/data/serde-smile/float/');
+        const skipJsonDiff = relativePath.startsWith('testdata/serde-smile/double/')
+            || relativePath.startsWith('testdata/serde-smile/float/');
 
         if (pass && !skipJsonDiff) {
             t.test('json diff', t => {
