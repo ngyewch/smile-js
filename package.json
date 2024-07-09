@@ -16,12 +16,12 @@
   "exports": {
     ".": {
       "import": "./dist/smile-js.js",
-      "require": "./dist/smile-js.umd.cjs",
+      "require": "./dist/smile-js.cjs",
       "types": "./dist/index.d.ts"
     }
   },
   "module": "./dist/smile-js.js",
-  "main": "./dist/smile-js.umd.cjs",
+  "main": "./dist/smile-js.cjs",
   "types": "./dist/index.d.ts",
   "scripts": {
     "doBuild": "vite build",
