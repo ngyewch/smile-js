@@ -18,14 +18,22 @@ tasks:
     cmds:
       - pnpm run test
 
+  build-test-data-generator:
+    dir: tools/test-data-generator
+    cmds:
+      - task build
+
   generateTestData:
     desc: Generate test data
+    deps: [ build-test-data-generator ]
     cmds:
-      - ./gradlew run --args="generateTestData --recursive src/test/data/basic build/basic/tests/basic"
+      - $TOOLDIR/bin/test-data-generator generateTestData --recursive src/test/data/basic build/basic/tests/basic
       - cp -r build/basic/tests/basic/* src/test/data/basic/
-      - ./gradlew run --args="generateTestData --recursive --compare-reference serde-smile/tests build/serde-smile/tests"
+      - $TOOLDIR/bin/test-data-generator generateTestData --recursive --compare-reference serde-smile/tests build/serde-smile/tests
       - rm -rf src/test/data/serde-smile
       - cp -r build/serde-smile/tests src/test/data/serde-smile
+    env:
+      TOOLDIR: tools/test-data-generator/build/install/test-data-generator
 
   site-build:
     desc: Build site

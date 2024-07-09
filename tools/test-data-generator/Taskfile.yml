@@ -1,0 +1,12 @@
+version: 3
+
+tasks:
+  clean:
+    desc: Clean
+    cmds:
+      - ./gradlew clean
+
+  build:
+    desc: Build
+    cmds:
+      - ./gradlew installDist

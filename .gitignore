@@ -1,8 +1,6 @@
-/.gradle/
 /.tap/
 /build/
 /node_modules/
 /tsconfig.tsbuildinfo
 /serde-smile
 /dist/
-
