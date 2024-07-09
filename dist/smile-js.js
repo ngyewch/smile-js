@@ -4,11 +4,11 @@ class u extends Error {
   }
 }
 var A = { exports: {} };
-(function(y) {
+(function(w) {
   (function(e) {
     var r = function(t, i, d) {
-      var o = t instanceof ArrayBuffer || typeof Buffer < "u" && t instanceof Buffer;
-      if (!o)
+      var a = t instanceof ArrayBuffer || typeof Buffer < "u" && t instanceof Buffer;
+      if (!a)
         throw new Error("Must specify a valid ArrayBuffer or Buffer.");
       i = i || 0, d = d || t.byteLength || t.length, this._view = new Uint8Array(t.buffer || t, i, d), this.bigEndian = !1;
     };
@@ -27,27 +27,27 @@ var A = { exports: {} };
     }), r.prototype._setBit = function(t, i) {
       i ? this._view[t >> 3] |= 1 << (t & 7) : this._view[t >> 3] &= ~(1 << (t & 7));
     }, r.prototype.getBits = function(t, i, d) {
-      var o = this._view.length * 8 - t;
-      if (i > o)
-        throw new Error("Cannot get " + i + " bit(s) from offset " + t + ", " + o + " available");
-      for (var h = 0, f = 0; f < i; ) {
-        var v = i - f, w = t & 7, l = this._view[t >> 3], g = Math.min(v, 8 - w), S, m;
-        this.bigEndian ? (S = ~(255 << g), m = l >> 8 - g - w & S, h <<= g, h |= m) : (S = ~(255 << g), m = l >> w & S, h |= m << f), t += g, f += g;
+      var a = this._view.length * 8 - t;
+      if (i > a)
+        throw new Error("Cannot get " + i + " bit(s) from offset " + t + ", " + a + " available");
+      for (var h = 0, c = 0; c < i; ) {
+        var m = i - c, p = t & 7, f = this._view[t >> 3], l = Math.min(m, 8 - p), B, S;
+        this.bigEndian ? (B = ~(255 << l), S = f >> 8 - l - p & B, h <<= l, h |= S) : (B = ~(255 << l), S = f >> p & B, h |= S << c), t += l, c += l;
       }
       return d ? (i !== 32 && h & 1 << i - 1 && (h |= -1 ^ (1 << i) - 1), h) : h >>> 0;
     }, r.prototype.setBits = function(t, i, d) {
-      var o = this._view.length * 8 - t;
-      if (d > o)
-        throw new Error("Cannot set " + d + " bit(s) from offset " + t + ", " + o + " available");
+      var a = this._view.length * 8 - t;
+      if (d > a)
+        throw new Error("Cannot set " + d + " bit(s) from offset " + t + ", " + a + " available");
       for (var h = 0; h < d; ) {
-        var f = d - h, v = t & 7, w = t >> 3, l = Math.min(f, 8 - v), g, S, m;
+        var c = d - h, m = t & 7, p = t >> 3, f = Math.min(c, 8 - m), l, B, S;
         if (this.bigEndian) {
-          g = ~(-1 << l), S = i >> d - h - l & g;
-          var V = 8 - v - l;
-          m = ~(g << V), this._view[w] = this._view[w] & m | S << V;
+          l = ~(-1 << f), B = i >> d - h - f & l;
+          var U = 8 - m - f;
+          S = ~(l << U), this._view[p] = this._view[p] & S | B << U;
         } else
-          g = ~(255 << l), S = i & g, i >>= l, m = ~(g << v), this._view[w] = this._view[w] & m | S << v;
-        t += l, h += l;
+          l = ~(255 << f), B = i & l, i >>= f, S = ~(l << m), this._view[p] = this._view[p] & S | B << m;
+        t += f, h += f;
       }
     }, r.prototype.getBoolean = function(t) {
       return this.getBits(t, 1, !1) !== 0;
@@ -80,8 +80,8 @@ var A = { exports: {} };
     }, r.prototype.setFloat64 = function(t, i) {
       r._scratch.setFloat64(0, i), this.setBits(t, r._scratch.getUint32(0), 32), this.setBits(t + 32, r._scratch.getUint32(4), 32);
     }, r.prototype.getArrayBuffer = function(t, i) {
-      for (var d = new Uint8Array(i), o = 0; o < i; o++)
-        d[o] = this.getUint8(t + o * 8);
+      for (var d = new Uint8Array(i), a = 0; a < i; a++)
+        d[a] = this.getUint8(t + a * 8);
       return d;
     };
     var s = function(t, i) {
@@ -96,53 +96,53 @@ var A = { exports: {} };
         this._view[t](this._index, d), this._index += i;
       };
     };
-    function p(t, i) {
-      return c(t, i, !1);
+    function x(t, i) {
+      return g(t, i, !1);
     }
-    function B(t, i) {
-      return c(t, i, !0);
+    function v(t, i) {
+      return g(t, i, !0);
     }
-    function c(t, i, d) {
+    function g(t, i, d) {
       if (i === 0)
         return "";
-      var o = 0, h = [], f = !0, v = !!i;
-      for (i || (i = Math.floor((t._length - t._index) / 8)); o < i; ) {
-        var w = t.readUint8();
-        if (w === 0 && (f = !1, !v))
+      var a = 0, h = [], c = !0, m = !!i;
+      for (i || (i = Math.floor((t._length - t._index) / 8)); a < i; ) {
+        var p = t.readUint8();
+        if (p === 0 && (c = !1, !m))
           break;
-        f && h.push(w), o++;
+        c && h.push(p), a++;
       }
-      var l = String.fromCharCode.apply(null, h);
+      var f = String.fromCharCode.apply(null, h);
       if (d)
         try {
-          return decodeURIComponent(escape(l));
+          return decodeURIComponent(escape(f));
         } catch {
-          return l;
+          return f;
         }
       else
-        return l;
+        return f;
     }
-    function I(t, i, d) {
-      for (var o = d || i.length + 1, h = 0; h < o; h++)
+    function _(t, i, d) {
+      for (var a = d || i.length + 1, h = 0; h < a; h++)
         t.writeUint8(h < i.length ? i.charCodeAt(h) : 0);
     }
-    function x(t, i, d) {
-      for (var o = U(i), h = d || o.length + 1, f = 0; f < h; f++)
-        t.writeUint8(f < o.length ? o[f] : 0);
+    function y(t, i, d) {
+      for (var a = E(i), h = d || a.length + 1, c = 0; c < h; c++)
+        t.writeUint8(c < a.length ? a[c] : 0);
     }
-    function U(t) {
-      var i = [], d, o;
+    function E(t) {
+      var i = [], d, a;
       for (d = 0; d < t.length; d++)
-        o = t.charCodeAt(d), o <= 127 ? i.push(o) : o <= 2047 ? (i.push(o >> 6 | 192), i.push(o & 63 | 128)) : o <= 65535 ? (i.push(o >> 12 | 224), i.push(o >> 6 & 63 | 128), i.push(o & 63 | 128)) : (i.push(o >> 18 | 240), i.push(o >> 12 & 63 | 128), i.push(o >> 6 & 63 | 128), i.push(o & 63 | 128));
+        a = t.charCodeAt(d), a <= 127 ? i.push(a) : a <= 2047 ? (i.push(a >> 6 | 192), i.push(a & 63 | 128)) : a <= 65535 ? (i.push(a >> 12 | 224), i.push(a >> 6 & 63 | 128), i.push(a & 63 | 128)) : (i.push(a >> 18 | 240), i.push(a >> 12 & 63 | 128), i.push(a >> 6 & 63 | 128), i.push(a & 63 | 128));
       return i;
     }
-    var a = function(t, i, d) {
-      var o = t instanceof ArrayBuffer || typeof Buffer < "u" && t instanceof Buffer;
-      if (!(t instanceof r) && !o)
+    var o = function(t, i, d) {
+      var a = t instanceof ArrayBuffer || typeof Buffer < "u" && t instanceof Buffer;
+      if (!(t instanceof r) && !a)
         throw new Error("Must specify a valid BitView, ArrayBuffer or Buffer");
-      o ? this._view = new r(t, i, d) : this._view = t, this._index = 0, this._startIndex = 0, this._length = this._view.byteLength * 8;
+      a ? this._view = new r(t, i, d) : this._view = t, this._index = 0, this._startIndex = 0, this._length = this._view.byteLength * 8;
     };
-    Object.defineProperty(a.prototype, "index", {
+    Object.defineProperty(o.prototype, "index", {
       get: function() {
         return this._index - this._startIndex;
       },
@@ -151,7 +151,7 @@ var A = { exports: {} };
       },
       enumerable: !0,
       configurable: !0
-    }), Object.defineProperty(a.prototype, "length", {
+    }), Object.defineProperty(o.prototype, "length", {
       get: function() {
         return this._length - this._startIndex;
       },
@@ -160,13 +160,13 @@ var A = { exports: {} };
       },
       enumerable: !0,
       configurable: !0
-    }), Object.defineProperty(a.prototype, "bitsLeft", {
+    }), Object.defineProperty(o.prototype, "bitsLeft", {
       get: function() {
         return this._length - this._index;
       },
       enumerable: !0,
       configurable: !0
-    }), Object.defineProperty(a.prototype, "byteIndex", {
+    }), Object.defineProperty(o.prototype, "byteIndex", {
       // Ceil the returned value, over compensating for the amount of
       // bits written to the stream.
       get: function() {
@@ -177,19 +177,19 @@ var A = { exports: {} };
       },
       enumerable: !0,
       configurable: !0
-    }), Object.defineProperty(a.prototype, "buffer", {
+    }), Object.defineProperty(o.prototype, "buffer", {
       get: function() {
         return this._view.buffer;
       },
       enumerable: !0,
       configurable: !1
-    }), Object.defineProperty(a.prototype, "view", {
+    }), Object.defineProperty(o.prototype, "view", {
       get: function() {
         return this._view;
       },
       enumerable: !0,
       configurable: !1
-    }), Object.defineProperty(a.prototype, "bigEndian", {
+    }), Object.defineProperty(o.prototype, "bigEndian", {
       get: function() {
         return this._view.bigEndian;
       },
@@ -198,39 +198,38 @@ var A = { exports: {} };
       },
       enumerable: !0,
       configurable: !1
-    }), a.prototype.readBits = function(t, i) {
+    }), o.prototype.readBits = function(t, i) {
       var d = this._view.getBits(this._index, t, i);
       return this._index += t, d;
-    }, a.prototype.writeBits = function(t, i) {
+    }, o.prototype.writeBits = function(t, i) {
       this._view.setBits(this._index, t, i), this._index += i;
-    }, a.prototype.readBoolean = s("getBoolean", 1), a.prototype.readInt8 = s("getInt8", 8), a.prototype.readUint8 = s("getUint8", 8), a.prototype.readInt16 = s("getInt16", 16), a.prototype.readUint16 = s("getUint16", 16), a.prototype.readInt32 = s("getInt32", 32), a.prototype.readUint32 = s("getUint32", 32), a.prototype.readFloat32 = s("getFloat32", 32), a.prototype.readFloat64 = s("getFloat64", 64), a.prototype.writeBoolean = n("setBoolean", 1), a.prototype.writeInt8 = n("setInt8", 8), a.prototype.writeUint8 = n("setUint8", 8), a.prototype.writeInt16 = n("setInt16", 16), a.prototype.writeUint16 = n("setUint16", 16), a.prototype.writeInt32 = n("setInt32", 32), a.prototype.writeUint32 = n("setUint32", 32), a.prototype.writeFloat32 = n("setFloat32", 32), a.prototype.writeFloat64 = n("setFloat64", 64), a.prototype.readASCIIString = function(t) {
-      return p(this, t);
-    }, a.prototype.readUTF8String = function(t) {
-      return B(this, t);
-    }, a.prototype.writeASCIIString = function(t, i) {
-      I(this, t, i);
-    }, a.prototype.writeUTF8String = function(t, i) {
-      x(this, t, i);
-    }, a.prototype.readBitStream = function(t) {
-      var i = new a(this._view);
+    }, o.prototype.readBoolean = s("getBoolean", 1), o.prototype.readInt8 = s("getInt8", 8), o.prototype.readUint8 = s("getUint8", 8), o.prototype.readInt16 = s("getInt16", 16), o.prototype.readUint16 = s("getUint16", 16), o.prototype.readInt32 = s("getInt32", 32), o.prototype.readUint32 = s("getUint32", 32), o.prototype.readFloat32 = s("getFloat32", 32), o.prototype.readFloat64 = s("getFloat64", 64), o.prototype.writeBoolean = n("setBoolean", 1), o.prototype.writeInt8 = n("setInt8", 8), o.prototype.writeUint8 = n("setUint8", 8), o.prototype.writeInt16 = n("setInt16", 16), o.prototype.writeUint16 = n("setUint16", 16), o.prototype.writeInt32 = n("setInt32", 32), o.prototype.writeUint32 = n("setUint32", 32), o.prototype.writeFloat32 = n("setFloat32", 32), o.prototype.writeFloat64 = n("setFloat64", 64), o.prototype.readASCIIString = function(t) {
+      return x(this, t);
+    }, o.prototype.readUTF8String = function(t) {
+      return v(this, t);
+    }, o.prototype.writeASCIIString = function(t, i) {
+      _(this, t, i);
+    }, o.prototype.writeUTF8String = function(t, i) {
+      y(this, t, i);
+    }, o.prototype.readBitStream = function(t) {
+      var i = new o(this._view);
       return i._startIndex = this._index, i._index = this._index, i.length = t, this._index += t, i;
-    }, a.prototype.writeBitStream = function(t, i) {
+    }, o.prototype.writeBitStream = function(t, i) {
       i || (i = t.bitsLeft);
       for (var d; i > 0; )
         d = Math.min(i, 32), this.writeBits(t.readBits(d), d), i -= d;
-    }, a.prototype.readArrayBuffer = function(t) {
+    }, o.prototype.readArrayBuffer = function(t) {
       var i = this._view.getArrayBuffer(this._index, t);
       return this._index += t * 8, i;
-    }, a.prototype.writeArrayBuffer = function(t, i) {
-      this.writeBitStream(new a(t), i * 8);
-    }, y.exports && (y.exports = {
+    }, o.prototype.writeArrayBuffer = function(t, i) {
+      this.writeBitStream(new o(t), i * 8);
+    }, w.exports && (w.exports = {
       BitView: r,
-      BitStream: a
+      BitStream: o
     });
   })();
 })(A);
-var E = A.exports;
-const M = [0, 1, 3, 7, 15, 31, 63, 127, 255];
+var V = A.exports;
 class F {
   normalizeInt(e) {
     return typeof e == "bigint" && e >= BigInt(Number.MIN_SAFE_INTEGER) && e <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(e) : e;
@@ -290,28 +289,23 @@ class F {
   decodeFloat64(e) {
     return this.toDataView(e).getFloat64(0, !1);
   }
-  decodeFixedLengthBigEndianEncodedBits(e, r) {
-    const s = new Uint8Array(Math.ceil(r / 8));
-    let n = 0, p = r % 7, B = 0, c = 0, I = e[n], x = 0, U;
-    for (; n < e.length; ) {
-      const a = Math.min(p, 8 - c);
-      x <<= a, x |= I >> p - a, p -= a, I &= M[p], c += a, p === 0 && (n++, p = 7, I = e[n]), c === 8 && (U = B, s[U] = x, B++, c = 0, x = 0);
+  decodeFixedLengthBigEndianEncodedBytes(e, r) {
+    const s = new ArrayBuffer(r), n = new V.BitView(s);
+    n.bigEndian = !0;
+    let x = 0, v = r * 8;
+    for (let g = 0; g < e.length; g++) {
+      const _ = e[g], y = Math.min(v, g === 0 ? 7 - (e.length * 7 - r * 8) : 7);
+      n.setBits(x, _, y), x += y, v -= y;
     }
-    return c > 0 && (x <<= 8 - c, U = B, s[U] = x), s;
+    return new Uint8Array(s);
   }
   decodeSafeBinaryEncodedBits(e, r) {
-    if (r === 0)
-      return new Uint8Array(0);
-    const s = new ArrayBuffer(r), n = new E.BitView(s);
+    const s = new ArrayBuffer(r), n = new V.BitView(s);
     n.bigEndian = !0;
-    let p = 0, B = r * 8;
-    for (let c = 0; c < e.length - 1; c++) {
-      let I = e[c];
-      n.setBits(p, I, 7), p += 7, B -= 7;
-    }
-    if (B > 0) {
-      const c = e[e.length - 1];
-      n.setBits(p, c, B);
+    let x = 0, v = r * 8;
+    for (let g = 0; g < e.length; g++) {
+      const _ = e[g], y = Math.min(v, 7);
+      n.setBits(x, _, y), x += y, v -= y;
     }
     return new Uint8Array(s);
   }
@@ -352,14 +346,14 @@ class N {
     return this.decoder.decodeUtf8(this.inputStream.readArray(e));
   }
   readFloat32() {
-    return this.decoder.decodeFloat32(this.readFixedLengthBigEndianEncodedBits(32));
+    return this.decoder.decodeFloat32(this.readFixedLengthBigEndianEncodedBytes(4));
   }
   readFloat64() {
-    return this.decoder.decodeFloat64(this.readFixedLengthBigEndianEncodedBits(64));
+    return this.decoder.decodeFloat64(this.readFixedLengthBigEndianEncodedBytes(8));
   }
-  readFixedLengthBigEndianEncodedBits(e) {
-    const r = this.inputStream.readArray(Math.ceil(e / 7));
-    return this.decoder.decodeFixedLengthBigEndianEncodedBits(r, e);
+  readFixedLengthBigEndianEncodedBytes(e) {
+    const r = Math.ceil(e * 8 / 7), s = this.inputStream.readArray(r);
+    return this.decoder.decodeFixedLengthBigEndianEncodedBytes(s, e);
   }
   readSafeBinary() {
     const e = this.readUnsignedVint();
@@ -440,25 +434,25 @@ class P {
     this.index += e;
   }
 }
-class _ {
-  constructor(e, r, s, n) {
-    this.name = e, this.keyMode = r, this.enabled = s, this.maxStrings = n, this.reset(), this.strings = [], this.stringMap = {}, this.reset();
+class I {
+  constructor(e, r, s) {
+    this.name = e, this.enabled = r, this.maxStrings = s, this.strings = [], this.stringMap = {}, this.reset();
   }
   reset() {
-    this.keyMode ? (this.strings = [], this.stringMap = {}) : (this.strings = [""], this.stringMap = {});
+    this.strings = [], this.stringMap = {};
   }
   static newValues(e) {
-    return new _("values", !1, e, 1024);
+    return new I("values", e, 1024);
   }
   static newKeyNames(e) {
-    return new _("keyNames", !0, e, 1024);
+    return new I("keyNames", e, 1024);
   }
   addString(e) {
     if (!this.enabled || new TextEncoder().encode(e).length > 64)
       return -1;
     if (e in this.stringMap)
       return this.stringMap[e];
-    this.keyMode ? this.strings.length >= this.maxStrings && this.reset() : this.strings.length > this.maxStrings && this.reset();
+    this.strings.length >= this.maxStrings && this.reset();
     const s = this.strings.length;
     return this.strings.push(e), this.stringMap[e] = s, s;
   }
@@ -470,25 +464,25 @@ class _ {
     return this.strings[e];
   }
 }
-function T(y, e) {
-  return new L(y, e).parse();
+function M(w, e) {
+  return new L(w, e).parse();
 }
 class L {
   constructor(e, r) {
-    this.decoderStream = new N(new P(e)), this.options = r, this.decoder = new F(), this.sharedPropertyName = !1, this.sharedStringValue = !1, this.rawBinary = !1, this.version = 0, this.sharedPropertyNames = _.newKeyNames(!1), this.sharedStringValues = _.newValues(!1);
+    this.decoderStream = new N(new P(e)), this.options = r, this.decoder = new F(), this.sharedPropertyName = !1, this.sharedStringValue = !1, this.rawBinary = !1, this.version = 0, this.sharedPropertyNames = I.newKeyNames(!1), this.sharedStringValues = I.newValues(!1);
   }
   parse() {
     const e = this.decoderStream.read(), r = this.decoderStream.read(), s = this.decoderStream.read();
     if (e !== 58 || r !== 41 || s !== 10)
       throw new u("invalid Smile header");
     const n = this.decoderStream.read();
-    return this.sharedPropertyName = (n & 1) === 1, this.sharedStringValue = (n & 2) === 2, this.rawBinary = (n & 4) === 4, this.version = n >> 4, this.sharedPropertyNames = _.newKeyNames(this.sharedPropertyName), this.sharedStringValues = _.newValues(this.sharedStringValue), this.readValue();
+    return this.sharedPropertyName = (n & 1) === 1, this.sharedStringValue = (n & 2) === 2, this.rawBinary = (n & 4) === 4, this.version = n >> 4, this.sharedPropertyNames = I.newKeyNames(this.sharedPropertyName), this.sharedStringValues = I.newValues(this.sharedStringValue), this.readValue();
   }
   readValue() {
     const e = this.decoderStream.read(), r = e >> 5, s = e & 31;
     switch (r) {
       case 0:
-        return this.sharedStringValues.getString(s);
+        return this.sharedStringValues.getString(s - 1);
       case 1:
         return this.readSimpleLiteralValue(e);
       case 2: {
@@ -594,6 +588,6 @@ class L {
 }
 export {
   u as SmileError,
-  T as parse
+  M as parse
 };
 //# sourceMappingURL=smile-js.js.map
