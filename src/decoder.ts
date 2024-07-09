@@ -1,5 +1,5 @@
-import {SmileError} from './error.js';
 import {BitView} from 'bit-buffer';
+import {SmileError} from './error.js';
 
 const bitMask = [0x00, 0x01, 0x03, 0x07, 0x0f, 0x1f, 0x3f, 0x7f, 0xff];
 

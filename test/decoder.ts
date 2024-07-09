@@ -1,7 +1,7 @@
 import t from 'tap';
-import {Decoder} from '../../../main/js/decoder.js';
-import {SmileError} from '../../../main/js/error.js';
-import {approx, arrayEqual} from './utils.js';
+import {Decoder} from '../src/decoder.js';
+import {SmileError} from '../src/error.js';
+import {approx, arrayEqual} from './utils/helper.js';
 
 t.test('should decode VInt values', t => {
     const decoder = new Decoder();

@@ -1,7 +1,7 @@
 import t from 'tap';
-import {DecoderStream} from '../../../main/js/decoderStream.js';
-import {InputStream} from '../../../main/js/inputStream.js';
-import {approx} from './utils.js';
+import {DecoderStream} from '../src/decoderStream.js';
+import {InputStream} from '../src/inputStream.js';
+import {approx} from './utils/helper.js';
 
 t.test('simple operations', t => {
     const decoderStream = newDecoderStream([0x80]);

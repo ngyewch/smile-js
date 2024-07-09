@@ -1,6 +1,6 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["./src/main/js/index.ts"],
+  "entryPoints": ["./src/index.ts"],
   "excludePrivate": true,
   "excludeProtected": false,
   "excludeNotDocumented": false,

@@ -1,7 +1,7 @@
 import t from 'tap';
-import {InputStream, eofError} from '../../../main/js/inputStream.js';
-import {SmileError} from '../../../main/js/error.js';
-import {arrayEqual} from './utils.js';
+import {InputStream, eofError} from '../src/inputStream.js';
+import {SmileError} from '../src/error.js';
+import {arrayEqual} from './utils/helper.js';
 
 const data = [0x61, 0x62, 0x63];
 const dataView = new Uint8Array(data);

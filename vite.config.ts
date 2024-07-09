@@ -5,7 +5,7 @@ export default defineConfig({
     build: {
         sourcemap: true,
         lib: {
-            entry: './src/main/js/index.ts',
+            entry: './src/index.ts',
             name: 'smile',
             formats: ['es', 'cjs', 'iife'],
         },

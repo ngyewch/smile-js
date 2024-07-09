@@ -6,7 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import {execSync, type SpawnSyncReturns} from 'child_process';
 import {parse as jsonParse, stringify as jsonStringify, isInteger} from 'lossless-json';
-import {parse as smileParse} from '../../../main/js/parser.js';
+import {parse as smileParse} from '../../src/parser.js';
 
 export function arrayEqual(t: Test, found: Uint8Array, wanted: Uint8Array, ...[msg, extra]: MessageExtra): boolean {
     if (found.length != wanted.length) {

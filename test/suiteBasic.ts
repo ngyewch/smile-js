@@ -1,6 +1,6 @@
 import t from 'tap';
-import {verifyFiles} from './utils.js';
 import path from 'path';
+import {verifyFiles} from './utils/helper.js';
 
 const testSuiteDir = "src/test/data/basic";
 

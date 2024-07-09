@@ -19,6 +19,9 @@
     "vite.config.ts",
     "src/**/*.d.ts",
     "src/**/*.ts",
-    "src/**/*.js"
+    "src/**/*.js",
+    "test/**/*.d.ts",
+    "test/**/*.ts",
+    "test/**/*.js"
   ]
 }

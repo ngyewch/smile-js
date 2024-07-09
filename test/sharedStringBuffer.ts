@@ -1,6 +1,6 @@
 import t from 'tap';
-import {SharedStringBuffer} from '../../../main/js/sharedStringBuffer.js';
-import {SmileError} from "../../../main/js/index.js";
+import {SharedStringBuffer} from '../src/sharedStringBuffer.js';
+import {SmileError} from "../src/error.js";
 
 t.test('when not enabled', t => {
     const ssb = new SharedStringBuffer('test', false, 4);
