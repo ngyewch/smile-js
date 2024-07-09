@@ -1,0 +1,11 @@
+{
+  "name": "smile-js-example-basic",
+  "scripts": {
+    "example": "ts-node ./example.ts"
+  },
+  "dependencies": {
+    "typescript": "5.5.3",
+    "smile-js": "file:../../",
+    "ts-node": "^10.9.2"
+  }
+}
