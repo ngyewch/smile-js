@@ -16,19 +16,21 @@
   "exports": {
     ".": {
       "import": "./dist/smile-js.js",
-      "require": "./dist/smile-js.umd.cjs",
+      "require": "./dist/smile-js.cjs",
       "types": "./dist/index.d.ts"
     }
   },
   "module": "./dist/smile-js.js",
-  "main": "./dist/smile-js.umd.cjs",
+  "main": "./dist/smile-js.cjs",
   "types": "./dist/index.d.ts",
   "scripts": {
     "doBuild": "vite build",
     "check": "tsc --noEmit && tsc-strict",
     "build": "run-s check doBuild",
     "test": "tap",
-    "typedoc": "typedoc"
+    "typedoc": "typedoc",
+    "postbuild": "validate-package-exports --check --verify",
+    "prepublishOnly": "validate-package-exports --check --verify"
   },
   "devDependencies": {
     "@tapjs/core": "3.0.3",
@@ -43,6 +45,7 @@
     "typedoc": "0.26.3",
     "typescript": "5.5.3",
     "typescript-strict-plugin": "2.4.4",
+    "validate-package-exports": "0.5.0",
     "vite": "5.3.3",
     "vite-plugin-dts": "3.9.1"
   },
