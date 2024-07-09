@@ -2,18 +2,15 @@ import {SmileError} from './error.js';
 
 export class SharedStringBuffer {
     private readonly name: string;
-    private readonly keyMode: boolean;
     private readonly enabled: boolean;
     private readonly maxStrings: number;
     private strings: string[];
     private stringMap: { [key: string]: number };
 
-    constructor(name: string, keyMode: boolean, enabled: boolean, maxStrings: number) {
+    constructor(name: string, enabled: boolean, maxStrings: number) {
         this.name = name;
-        this.keyMode = keyMode;
         this.enabled = enabled;
         this.maxStrings = maxStrings;
-        this.reset();
         this.strings = [];
         this.stringMap = {};
         this.reset();
@@ -21,21 +18,16 @@ export class SharedStringBuffer {
 
     private reset(): void {
         //console.log(`[${this.name}] ssb: reset`);
-        if (this.keyMode) {
-            this.strings = [];
-            this.stringMap = {};
-        } else {
-            this.strings = [''];
-            this.stringMap = {};
-        }
+        this.strings = [];
+        this.stringMap = {};
     }
 
     public static newValues(enabled: boolean): SharedStringBuffer {
-        return new SharedStringBuffer('values', false, enabled, 1024);
+        return new SharedStringBuffer('values', enabled, 1024);
     }
 
     public static newKeyNames(enabled: boolean): SharedStringBuffer {
-        return new SharedStringBuffer('keyNames', true, enabled, 1024);
+        return new SharedStringBuffer('keyNames', enabled, 1024);
     }
 
     public addString(s: string): number {
@@ -49,14 +41,8 @@ export class SharedStringBuffer {
         if (s in this.stringMap) {
             return this.stringMap[s];
         }
-        if (this.keyMode) {
-            if (this.strings.length >= this.maxStrings) {
-                this.reset();
-            }
-        } else {
-            if (this.strings.length > this.maxStrings) {
-                this.reset();
-            }
+        if (this.strings.length >= this.maxStrings) {
+            this.reset();
         }
         const index = this.strings.length;
         //console.log(`[${this.name}] ssb: add [${index}] '${s}'`);

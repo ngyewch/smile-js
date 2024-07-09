@@ -74,7 +74,7 @@ class ParserContext {
         const tokenValue = token & 0x1f;
         switch (tokenClass) {
             case 0: { // Short Shared Value String reference (single byte)
-                return this.sharedStringValues.getString(tokenValue);
+                return this.sharedStringValues.getString(tokenValue - 1);
             }
             case 1: { // Simple literals, numbers
                 return this.readSimpleLiteralValue(token);
