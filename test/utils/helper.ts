@@ -120,7 +120,7 @@ export function verifyFile(t: Test, smileFile: string): void {
                 const outputJson = jsonStringify(wrappedJsonValue);
                 if (outputJson !== undefined) {
                     const parsedPath2 = path.parse(relativePath);
-                    const outputJsonFile = path.resolve('build/test', parsedPath2.dir, parsedPath2.name + ".json");
+                    const outputJsonFile = path.resolve('build/test-output', parsedPath2.dir, parsedPath2.name + ".json");
                     fs.mkdirSync(path.parse(outputJsonFile).dir, {recursive: true});
                     fs.writeFileSync(outputJsonFile, outputJson);
 
