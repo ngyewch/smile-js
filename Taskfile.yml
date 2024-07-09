@@ -27,11 +27,11 @@ tasks:
     desc: Generate test data
     deps: [ build-test-data-generator ]
     cmds:
-      - $TOOLDIR/bin/test-data-generator generateTestData --recursive src/test/data/basic build/basic/tests/basic
-      - cp -r build/basic/tests/basic/* src/test/data/basic/
-      - $TOOLDIR/bin/test-data-generator generateTestData --recursive --compare-reference serde-smile/tests build/serde-smile/tests
-      - rm -rf src/test/data/serde-smile
-      - cp -r build/serde-smile/tests src/test/data/serde-smile
+      - $TOOLDIR/bin/test-data-generator generateTestData --recursive testdata/basic build/testdata/basic
+      - cp -r build/testdata/basic/* testdata/basic/
+      - $TOOLDIR/bin/test-data-generator generateTestData --recursive --compare-reference serde-smile/tests build/testdata/serde-smile
+      - rm -rf testdata/serde-smile
+      - cp -r build/testdata/serde-smile testdata/serde-smile
     env:
       TOOLDIR: tools/test-data-generator/build/install/test-data-generator
 
