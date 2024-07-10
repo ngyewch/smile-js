@@ -1,7 +1,6 @@
 import {Test} from 'tap';
 import {MessageExtra} from '@tapjs/core';
 import testDiff from 'js-testdiff';
-import {SmileError} from "../../src";
 
 export function arrayEqual(t: Test, found: Uint8Array, wanted: Uint8Array, ...[msg, extra]: MessageExtra): boolean {
     if (found.length != wanted.length) {
