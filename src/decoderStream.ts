@@ -6,7 +6,6 @@ import {ASCII} from './ascii.js';
 import {UTF8} from './utf8.js';
 import {FixedLengthBigEndian} from './fixedLengthBigEndian.js';
 import {SafeBinary} from './safeBinary.js';
-import {calcByteLen} from './utils.js';
 
 export class DecoderStream {
     private readonly inputStream: InputStream;
@@ -52,29 +51,11 @@ export class DecoderStream {
     }
 
     public readSafeBinary(): Uint8Array {
-        const decodedByteLen = this.readUnsignedVint();
-        if (typeof (decodedByteLen) === 'bigint') {
-            throw new SmileError('invalid length');
-        }
-        const encodedByteLen = calcByteLen(decodedByteLen, 8, 7);
-        const bytes = this.inputStream.readArray(encodedByteLen);
-        return SafeBinary.decode(bytes, decodedByteLen);
+        return SafeBinary.read(this.inputStream);
     }
 
     public readBigInt(): bigint {
-        const bytes = this.readSafeBinary();
-        let n = BigInt(0);
-        if (bytes.length === 0) {
-            return n;
-        }
-        const isNegative = (bytes[0] & 0x80) === 0x80;
-        for (let i = 0; i < bytes.length; i++) {
-            n = (n * BigInt(256)) + BigInt(isNegative ? bytes[i] ^ 0xff : bytes[i]);
-        }
-        if (isNegative) {
-            n = -n - BigInt(1);
-        }
-        return n;
+        return SafeBinary.readBigInt(this.inputStream);
     }
 
     public readBigDecimal(): number {
