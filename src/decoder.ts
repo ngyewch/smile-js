@@ -1,21 +1,8 @@
 import {BitView} from 'bit-buffer';
 import {SmileError} from './error.js';
-
-const bitMask = [0x00, 0x01, 0x03, 0x07, 0x0f, 0x1f, 0x3f, 0x7f, 0xff];
+import {normalizeNumber} from './utils.js';
 
 export class Decoder {
-    private normalizeInt(value: number | bigint): number | bigint {
-        if (typeof value === 'bigint') {
-            if ((value >= BigInt(Number.MIN_SAFE_INTEGER)) && (value <= BigInt(Number.MAX_SAFE_INTEGER))) {
-                return Number(value);
-            } else {
-                return value;
-            }
-        } else {
-            return value;
-        }
-    }
-
     public decodeVInt(bytes: Uint8Array): number | bigint {
         if (bytes.length <= 0) {
             throw new SmileError('invalid VInt');
@@ -36,7 +23,7 @@ export class Decoder {
                 break;
             }
         }
-        return this.normalizeInt(value);
+        return normalizeNumber(value);
     }
 
     public decodeZigZag(value: number | bigint): number | bigint {
@@ -46,17 +33,17 @@ export class Decoder {
         if (typeof value === 'bigint') {
             if (value <= BigInt(2147483647)) {
                 if ((value % BigInt(2)) === BigInt(1)) {
-                    return this.normalizeInt(-(value >> BigInt(1)) - BigInt(1));
+                    return normalizeNumber(-(value >> BigInt(1)) - BigInt(1));
                 } else {
-                    return this.normalizeInt(value >> BigInt(1));
+                    return normalizeNumber(value >> BigInt(1));
                 }
             } else {
                 if ((value % BigInt(2)) === BigInt(1)) {
                     const v = (value - BigInt(1)) / BigInt(2);
-                    return this.normalizeInt(-v - BigInt(1));
+                    return normalizeNumber(-v - BigInt(1));
                 } else {
                     const v = value / BigInt(2);
-                    return this.normalizeInt(v);
+                    return normalizeNumber(v);
                 }
             }
         } else {
