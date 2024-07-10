@@ -2,7 +2,7 @@ import {InputStream} from './inputStream.js';
 import {OutputStream} from './outputStream.js';
 
 const textDecoder = new TextDecoder('ascii');
-const textEncoder = new TextEncoder('ascii');
+const textEncoder = new TextEncoder(); // HACK 'utf8' is valid for 'ascii'
 
 export class ASCII {
     public static decode(bytes: Uint8Array): string {

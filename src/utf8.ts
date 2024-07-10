@@ -2,7 +2,7 @@ import {InputStream} from './inputStream.js';
 import {OutputStream} from './outputStream.js';
 
 const textDecoder = new TextDecoder('utf8');
-const textEncoder = new TextEncoder('utf8');
+const textEncoder = new TextEncoder();
 
 export class UTF8 {
     public static decode(bytes: Uint8Array): string {
