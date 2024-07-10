@@ -1,6 +1,7 @@
 import {SmileError} from './error.js';
 import {normalizeNumber} from './utils.js';
 import {InputStream} from './inputStream.js';
+import {OutputStream} from "./outputStream";
 
 export class VInt {
     public static decode(bytes: Uint8Array): number | bigint {
@@ -36,5 +37,29 @@ export class VInt {
             }
         }
         return VInt.decode(new Uint8Array(data));
+    }
+
+    public static encode(n: number | bigint): Uint8Array {
+        if (n < 0) {
+            throw new SmileError('invalid VInt');
+        }
+        const buffer: number[] = [];
+        let v = BigInt(n);
+        while (v > 0) {
+            if (buffer.length === 0) {
+                buffer.push(Number(v % BigInt(64)) | 0x80);
+                v /= BigInt(64);
+            } else {
+                buffer.push(Number(v % BigInt(128)));
+                v /= BigInt(128);
+            }
+        }
+        buffer.reverse();
+        return new Uint8Array(buffer);
+    }
+
+    public static write(outputStream: OutputStream, n: number | bigint): void {
+        const encodedBytes = VInt.encode(n);
+        outputStream.write(encodedBytes);
     }
 }
