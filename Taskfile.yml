@@ -18,22 +18,23 @@ tasks:
     cmds:
       - pnpm run test
 
-  build-test-data-generator:
-    dir: tools/test-data-generator
+  build-smile-cli:
+    dir: tools/smile-cli
     cmds:
       - task build
 
   generateTestData:
     desc: Generate test data
-    deps: [ build-test-data-generator ]
+    deps: [ build-smile-cli ]
     cmds:
-      - $TOOLDIR/bin/test-data-generator generateTestData --recursive testdata/basic build/testdata/basic
-      - cp -r build/testdata/basic/* testdata/basic/
-      - $TOOLDIR/bin/test-data-generator generateTestData --recursive --compare-reference serde-smile/tests build/testdata/serde-smile
+      - $SMILE_CLI generateTestData --recursive testdata/basic $OUTPUT_DIR/basic
+      - cp -r $OUTPUT_DIR/basic/* testdata/basic/
+      - $SMILE_CLI generateTestData --recursive --compare-reference serde-smile/tests $OUTPUT_DIR/serde-smile
       - rm -rf testdata/serde-smile
-      - cp -r build/testdata/serde-smile testdata/serde-smile
+      - cp -r $OUTPUT_DIR/serde-smile testdata/serde-smile
     env:
-      TOOLDIR: tools/test-data-generator/build/install/test-data-generator
+      SMILE_CLI: tools/smile-cli/build/install/smile-cli/bin/smile-cli
+      OUTPUT_DIR: build/testdata
 
   site-clean:
     desc: Clean site
