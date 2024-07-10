@@ -1,25 +1,6 @@
 import {BitView} from 'bit-buffer';
 
 export class Decoder {
-    private toDataView(bytes: Uint8Array): DataView {
-        const buffer = new ArrayBuffer(bytes.length);
-        const view = new DataView(buffer);
-        for (let i = 0; i < bytes.length; i++) {
-            view.setUint8(i, bytes[i])
-        }
-        return view;
-    }
-
-    // big-endian encoding
-    public decodeFloat32(bytes: Uint8Array): number {
-        return this.toDataView(bytes).getFloat32(0, false);
-    }
-
-    // big-endian encoding
-    public decodeFloat64(bytes: Uint8Array): number {
-        return this.toDataView(bytes).getFloat64(0, false);
-    }
-
     public decodeFixedLengthBigEndianEncodedBytes(bytes: Uint8Array, decodedByteLen: number): Uint8Array {
         const arrayBuffer = new ArrayBuffer(decodedByteLen);
         const bitView = new BitView(arrayBuffer);

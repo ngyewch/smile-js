@@ -5,6 +5,7 @@ import {ZigZag} from './zigZag.js';
 import {VInt} from './vInt.js';
 import {ASCII} from './ascii.js';
 import {UTF8} from './utf8.js';
+import {Float32, Float64} from './float.js';
 
 export class DecoderStream {
     private readonly inputStream: InputStream;
@@ -44,11 +45,11 @@ export class DecoderStream {
     }
 
     public readFloat32(): number {
-        return this.decoder.decodeFloat32(this.readFixedLengthBigEndianEncodedBytes(4));
+        return Float32.decode(this.readFixedLengthBigEndianEncodedBytes(4));
     }
 
     public readFloat64(): number {
-        return this.decoder.decodeFloat64(this.readFixedLengthBigEndianEncodedBytes(8));
+        return Float64.decode(this.readFixedLengthBigEndianEncodedBytes(8));
     }
 
     public readFixedLengthBigEndianEncodedBytes(decodedByteLen: number): Uint8Array {
