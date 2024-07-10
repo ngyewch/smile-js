@@ -1,6 +1,4 @@
 import {BitView} from 'bit-buffer';
-import {SmileError} from './error.js';
-import {normalizeNumber} from './utils.js';
 
 export class Decoder {
     public decodeAscii(bytes: Uint8Array): string {

@@ -25,18 +25,6 @@ export class DecoderStream {
         return this.inputStream.peek();
     }
 
-    private readVIntBytes(): Uint8Array {
-        const bytes: number[] = [];
-        while (true) {
-            const n = this.read();
-            bytes.push(n);
-            if ((n & 0x80) === 0x80) {
-                break;
-            }
-        }
-        return new Uint8Array(bytes);
-    }
-
     public readUnsignedVint(): number | bigint {
         return VInt.read(this.inputStream);
     }
