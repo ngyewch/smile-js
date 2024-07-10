@@ -2,6 +2,7 @@ import {InputStream} from './inputStream.js';
 import {Decoder} from './decoder.js';
 import {SmileError} from './error.js';
 import {ZigZag} from './zigZag.js';
+import {VInt} from './vInt.js';
 
 export class DecoderStream {
     private readonly inputStream: InputStream;
@@ -37,8 +38,7 @@ export class DecoderStream {
     }
 
     public readUnsignedVint(): number | bigint {
-        const bytes = this.readVIntBytes();
-        return this.decoder.decodeVInt(bytes);
+        return VInt.read(this.inputStream);
     }
 
     public readSignedVint(): number | bigint {
