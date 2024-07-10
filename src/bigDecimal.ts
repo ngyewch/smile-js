@@ -13,4 +13,6 @@ export class BigDecimal {
         const magnitude = SafeBinary.readBigInt(inputStream);
         return Number(magnitude) * Math.pow(10, scale);
     }
+
+    // TODO encode/write
 }

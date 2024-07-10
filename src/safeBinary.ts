@@ -46,4 +46,6 @@ export class SafeBinary {
         }
         return n;
     }
+
+    // TODO encode/write
 }

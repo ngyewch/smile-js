@@ -33,4 +33,6 @@ export class FixedLengthBigEndian {
     public static readFloat64(inputStream: InputStream): number {
         return Float64.decode(FixedLengthBigEndian.read(inputStream, 8));
     }
+
+    // TODO encode/write
 }
