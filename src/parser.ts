@@ -3,6 +3,7 @@ import {InputStream} from './inputStream.js';
 import {SmileError} from './error.js';
 import {SharedStringBuffer} from './sharedStringBuffer.js';
 import {Decoder} from './decoder.js';
+import {ZigZag} from './zigZag.js';
 
 /**
  * Parser options.
@@ -100,7 +101,7 @@ class ParserContext {
                 return value;
             }
             case 6: { // Small integers (single byte)
-                return this.decoder.decodeZigZag(tokenValue);
+                return ZigZag.decode(tokenValue);
             }
             case 7: { // Binary / Long text / structure markers
                 return this.readBinaryLongTextStructureValues(token);

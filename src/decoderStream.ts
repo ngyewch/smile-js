@@ -1,6 +1,7 @@
 import {InputStream} from './inputStream.js';
 import {Decoder} from './decoder.js';
 import {SmileError} from './error.js';
+import {ZigZag} from './zigZag.js';
 
 export class DecoderStream {
     private readonly inputStream: InputStream;
@@ -41,7 +42,7 @@ export class DecoderStream {
     }
 
     public readSignedVint(): number | bigint {
-        return this.decoder.decodeZigZag(this.readUnsignedVint());
+        return ZigZag.decode(this.readUnsignedVint());
     }
 
     public readAscii(len: number): string {

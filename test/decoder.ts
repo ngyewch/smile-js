@@ -1,6 +1,5 @@
 import t from 'tap';
 import {Decoder} from '../src/decoder.js';
-import {SmileError} from '../src/error.js';
 import {approx, arrayEqual} from './utils/helper.js';
 
 t.test('should decode VInt values', t => {
@@ -8,28 +7,6 @@ t.test('should decode VInt values', t => {
 
     t.equal(decoder.decodeVInt(new Uint8Array([0x15, 0x2a, 0x55, 0x2a, 0xaa])), 2863311530);
     t.equal(decoder.decodeVInt(new Uint8Array([0x01, 0x2a, 0x55, 0x2a, 0x55, 0x2a, 0x55, 0x2a, 0xa9])), BigInt('48038396025285289'));
-
-    t.end();
-});
-
-t.test('should decode ZigZag encoded values', t => {
-    const decoder = new Decoder();
-
-    t.equal(decoder.decodeZigZag(0), 0);
-    t.equal(decoder.decodeZigZag(1), -1);
-    t.equal(decoder.decodeZigZag(2), 1);
-    t.equal(decoder.decodeZigZag(3), -2);
-    t.equal(decoder.decodeZigZag(4294967294), 2147483647);
-    t.equal(decoder.decodeZigZag(4294967295), -2147483648);
-    t.equal(decoder.decodeZigZag(9007199254740990), 4503599627370495);
-    t.equal(decoder.decodeZigZag(9007199254740991), -4503599627370496);
-
-    try {
-        decoder.decodeZigZag(-1);
-        t.fail();
-    } catch (e) {
-        t.ok(e instanceof SmileError);
-    }
 
     t.end();
 });
