@@ -1,14 +1,12 @@
 import {SmileError} from './error.js';
 
 export class SharedStringBuffer {
-    private readonly name: string;
     private readonly enabled: boolean;
     private readonly maxStrings: number;
     private strings: string[];
     private stringMap: { [key: string]: number };
 
-    constructor(name: string, enabled: boolean, maxStrings: number) {
-        this.name = name;
+    constructor(enabled: boolean, maxStrings: number) {
         this.enabled = enabled;
         this.maxStrings = maxStrings;
         this.strings = [];
@@ -17,17 +15,8 @@ export class SharedStringBuffer {
     }
 
     private reset(): void {
-        //console.log(`[${this.name}] ssb: reset`);
         this.strings = [];
         this.stringMap = {};
-    }
-
-    public static newValues(enabled: boolean): SharedStringBuffer {
-        return new SharedStringBuffer('values', enabled, 1024);
-    }
-
-    public static newKeyNames(enabled: boolean): SharedStringBuffer {
-        return new SharedStringBuffer('keyNames', enabled, 1024);
     }
 
     public addString(s: string): number {
@@ -45,14 +34,12 @@ export class SharedStringBuffer {
             this.reset();
         }
         const index = this.strings.length;
-        //console.log(`[${this.name}] ssb: add [${index}] '${s}'`);
         this.strings.push(s);
         this.stringMap[s] = index;
         return index;
     };
 
     public getString(index: number): string {
-        //console.log(`[${this.name}] ssb: get [${index}] '${this.strings[index]}'`);
         if (!this.enabled) {
             throw new SmileError('shared strings are not enabled');
         }

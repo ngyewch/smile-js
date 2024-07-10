@@ -40,8 +40,8 @@ class ParserContext {
         this.version = 0;
 
         // TODO
-        this.sharedPropertyNames = SharedStringBuffer.newKeyNames(false);
-        this.sharedStringValues = SharedStringBuffer.newValues(false);
+        this.sharedPropertyNames = new SharedStringBuffer(false, 1024);
+        this.sharedStringValues = new SharedStringBuffer(false, 1024);
     }
 
     public parse(): any {
@@ -60,8 +60,8 @@ class ParserContext {
         this.rawBinary = (b3 & 0x04) === 0x04;
         this.version = b3 >> 4;
 
-        this.sharedPropertyNames = SharedStringBuffer.newKeyNames(this.sharedPropertyName);
-        this.sharedStringValues = SharedStringBuffer.newValues(this.sharedStringValue);
+        this.sharedPropertyNames = new SharedStringBuffer(this.sharedPropertyName, 1024);
+        this.sharedStringValues = new SharedStringBuffer(this.sharedStringValue, 1024);
 
         return this.readValue();
     };
