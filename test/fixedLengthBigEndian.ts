@@ -2,7 +2,6 @@ import t from 'tap';
 import {approx, arrayEqual} from './utils/assert.js';
 import {FixedLengthBigEndian} from '../src/fixedLengthBigEndian.js';
 import {InputStream} from '../src/inputStream.js';
-import {Float32} from "../src/float";
 
 t.test('should decode fixed-length big-endian encoded bits', t => {
     {

@@ -1,7 +1,7 @@
 import {SmileError} from './error.js';
 import {normalizeNumber} from './utils.js';
 import {InputStream} from './inputStream.js';
-import {OutputStream} from "./outputStream";
+import {OutputStream} from './outputStream.js';
 
 export class VInt {
     public static decode(bytes: Uint8Array): number | bigint {
