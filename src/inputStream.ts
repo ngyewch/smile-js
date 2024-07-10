@@ -24,11 +24,14 @@ export class InputStream {
     }
 
     public readArray(n: number): Uint8Array {
-        if (this.isEof()) {
-            throw eofError;
-        }
         if (n < 0) {
             throw new SmileError('invalid read amount');
+        }
+        if (n === 0) {
+            return new Uint8Array([]);
+        }
+        if (this.isEof()) {
+            throw eofError;
         }
         const endIndex = Math.min(this.array.length, this.index + n);
         const readData = this.array.subarray(this.index, endIndex);

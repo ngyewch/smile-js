@@ -64,6 +64,8 @@ t.test('should be able to read an array of data', t => {
     t.throws(() => istrm.readArray(10), eofError);
     t.ok(istrm.isEof())
 
+    arrayEqual(t, istrm.readArray(0), new Uint8Array([]));
+
     t.end();
 });
 
