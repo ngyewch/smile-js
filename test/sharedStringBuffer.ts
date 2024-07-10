@@ -1,18 +1,16 @@
 import t from 'tap';
 import {SharedStringBuffer} from '../src/sharedStringBuffer.js';
-import {SmileError} from "../src/error.js";
+import {SmileError} from '../src/error.js';
+import {throws} from './utils/assert.js';
 
 t.test('when not enabled', t => {
     const ssb = new SharedStringBuffer('test', false, 4);
 
     t.doesNotThrow(() => ssb.addString('test1'));
 
-    try {
+    throws(t, () => {
         ssb.getString(0);
-        t.fail();
-    } catch (e) {
-        t.ok(e instanceof SmileError);
-    }
+    }, e => e instanceof SmileError);
 
     t.end()
 });
@@ -25,12 +23,9 @@ t.test('when enabled', t => {
     t.equal(ssb.addString('test2'), 1);
     t.equal(ssb.getString(1), 'test2');
 
-    try {
+    throws(t, () => {
         ssb.getString(2);
-        t.fail();
-    } catch (e) {
-        t.ok(e instanceof SmileError);
-    }
+    }, e => e instanceof SmileError);
 
     t.equal(ssb.addString('test3'), 2);
     t.equal(ssb.getString(2), 'test3');
@@ -39,12 +34,9 @@ t.test('when enabled', t => {
     t.equal(ssb.addString('test5'), 0);
     t.equal(ssb.getString(0), 'test5');
 
-    try {
+    throws(t, () => {
         ssb.getString(2);
-        t.fail();
-    } catch (e) {
-        t.ok(e instanceof SmileError);
-    }
+    }, e => e instanceof SmileError);
 
     t.end();
 });

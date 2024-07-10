@@ -1,7 +1,7 @@
 import t from 'tap';
 import {InputStream, eofError} from '../src/inputStream.js';
 import {SmileError} from '../src/error.js';
-import {arrayEqual} from './utils/assert.js';
+import {arrayEqual, throws} from './utils/assert.js';
 
 const data = [0x61, 0x62, 0x63];
 const dataView = new Uint8Array(data);
@@ -70,12 +70,9 @@ t.test('should be able to read an array of data', t => {
 t.test('should not be able to read negative amounts of data', t => {
     const istrm = new InputStream(dataView);
 
-    try {
+    throws(t, () => {
         istrm.readArray(-1);
-        t.fail();
-    } catch (e) {
-        t.ok(e instanceof SmileError);
-    }
+    }, e => e instanceof SmileError);
 
     t.end();
 });
@@ -107,12 +104,9 @@ t.test('should be able to skip past the end of data', t => {
 t.test('should not be able to skip negative amounts of data', t => {
     const istrm = new InputStream(dataView);
 
-    try {
+    throws(t, () => {
         istrm.skip(-1);
-        t.fail();
-    } catch (e) {
-        t.ok(e instanceof SmileError);
-    }
+    }, e => e instanceof SmileError);
 
     t.end();
 });

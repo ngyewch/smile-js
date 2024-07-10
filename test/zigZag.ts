@@ -1,6 +1,7 @@
 import t from 'tap';
 import {SmileError} from '../src/error.js';
 import {ZigZag} from '../src/zigZag.js';
+import {throws} from './utils/assert.js';
 
 t.test('should decode ZigZag encoded values', t => {
     t.equal(ZigZag.decode(0), 0);
@@ -23,12 +24,9 @@ t.test('should decode ZigZag encoded values', t => {
     t.equal(ZigZag.decode(BigInt(9007199254740990)), 4503599627370495);
     t.equal(ZigZag.decode(BigInt(9007199254740991)), -4503599627370496);
 
-    try {
+    throws(t, () => {
         ZigZag.decode(-1);
-        t.fail();
-    } catch (e) {
-        t.ok(e instanceof SmileError);
-    }
+    }, e => e instanceof SmileError);
 
     t.end();
 });
