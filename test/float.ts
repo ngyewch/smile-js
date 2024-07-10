@@ -1,5 +1,5 @@
 import t from 'tap';
-import {approx} from './utils/helper.js';
+import {approx} from './utils/assert.js';
 import {Float32, Float64} from '../src/float.js';
 
 t.test('should decode 32-bit float values', t => {

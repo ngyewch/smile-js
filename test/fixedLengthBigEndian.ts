@@ -1,5 +1,5 @@
 import t from 'tap';
-import {arrayEqual} from './utils/helper.js';
+import {arrayEqual} from './utils/assert.js';
 import {FixedLengthBigEndian} from '../src/fixedLengthBigEndian.js';
 
 t.test('should decode fixed-length big-endian encoded bits', t => {

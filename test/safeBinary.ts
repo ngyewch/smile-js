@@ -1,5 +1,5 @@
 import t from 'tap';
-import {arrayEqual} from './utils/helper.js';
+import {arrayEqual} from './utils/assert.js';
 import {SafeBinary} from '../src/safeBinary.js';
 
 t.test('should decode safe binary encoded bits', t => {
