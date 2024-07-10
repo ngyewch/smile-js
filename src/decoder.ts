@@ -1,14 +1,6 @@
 import {BitView} from 'bit-buffer';
 
 export class Decoder {
-    public decodeAscii(bytes: Uint8Array): string {
-        return new TextDecoder('ascii').decode(bytes);
-    }
-
-    public decodeUtf8(bytes: Uint8Array): string {
-        return new TextDecoder('utf8').decode(bytes);
-    }
-
     private toDataView(bytes: Uint8Array): DataView {
         const buffer = new ArrayBuffer(bytes.length);
         const view = new DataView(buffer);

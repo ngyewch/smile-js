@@ -2,22 +2,6 @@ import t from 'tap';
 import {Decoder} from '../src/decoder.js';
 import {approx, arrayEqual} from './utils/helper.js';
 
-t.test('should decode ASCII values', t => {
-    const decoder = new Decoder();
-
-    t.equal(decoder.decodeAscii(new Uint8Array([0x61, 0x62, 0x63])), 'abc');
-
-    t.end();
-});
-
-t.test('should decode UTF-8 values', t => {
-    const decoder = new Decoder();
-
-    t.equal(decoder.decodeUtf8(new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0xe6, 0x82, 0xa8, 0xe5, 0xa5, 0xbd])), 'Hello 您好');
-
-    t.end();
-});
-
 t.test('should decode 32-bit float values', t => {
     const decoder = new Decoder();
 

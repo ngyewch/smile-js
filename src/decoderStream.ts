@@ -3,6 +3,8 @@ import {Decoder} from './decoder.js';
 import {SmileError} from './error.js';
 import {ZigZag} from './zigZag.js';
 import {VInt} from './vInt.js';
+import {ASCII} from './ascii.js';
+import {UTF8} from './utf8.js';
 
 export class DecoderStream {
     private readonly inputStream: InputStream;
@@ -33,12 +35,12 @@ export class DecoderStream {
         return ZigZag.decode(this.readUnsignedVint());
     }
 
-    public readAscii(len: number): string {
-        return this.decoder.decodeAscii(this.inputStream.readArray(len));
+    public readAscii(encodedByteLen: number): string {
+        return ASCII.read(this.inputStream, encodedByteLen);
     }
 
-    public readUtf8(len: number): string {
-        return this.decoder.decodeUtf8(this.inputStream.readArray(len));
+    public readUtf8(encodedByteLen: number): string {
+        return UTF8.read(this.inputStream, encodedByteLen);
     }
 
     public readFloat32(): number {
@@ -103,11 +105,11 @@ export class DecoderStream {
     }
 
     public readLongAscii() {
-        return this.decoder.decodeAscii(this.readLongString());
+        return ASCII.decode(this.readLongString());
     }
 
     public readLongUtf8() {
-        return this.decoder.decodeUtf8(this.readLongString());
+        return UTF8.decode(this.readLongString());
     }
 
     public readBytes(len: number): Uint8Array {
