@@ -6,36 +6,22 @@ export class ZigZag {
         if (value < 0) {
             throw new SmileError("illegal zigzag value");
         }
-        if (typeof value === 'bigint') {
-            if (value <= BigInt(2147483647)) {
-                if ((value % BigInt(2)) === BigInt(1)) {
-                    return normalizeNumber(-(value >> BigInt(1)) - BigInt(1));
-                } else {
-                    return normalizeNumber(value >> BigInt(1));
-                }
-            } else {
-                if ((value % BigInt(2)) === BigInt(1)) {
-                    const v = (value - BigInt(1)) / BigInt(2);
-                    return normalizeNumber(-v - BigInt(1));
-                } else {
-                    const v = value / BigInt(2);
-                    return normalizeNumber(v);
-                }
-            }
+        const v = BigInt(value);
+        const isOdd = ((v % BigInt(2)) === BigInt(1));
+        if (isOdd) {
+            return normalizeNumber(-(v + BigInt(1)) / BigInt(2));
         } else {
-            if (value <= 2147483647) {
-                if ((value % 2) === 1) {
-                    return -(value >> 1) - 1;
-                } else {
-                    return (value >> 1);
-                }
-            } else {
-                if ((value % 2) === 1) {
-                    return -((value - 1) / 2) - 1;
-                } else {
-                    return value / 2;
-                }
-            }
+            return normalizeNumber(v / BigInt(2));
+        }
+    }
+
+    public static encode(value: number | bigint): number | bigint {
+        const v = BigInt(value);
+        const isNegative = (v < 0);
+        if (isNegative) {
+            return normalizeNumber((-v * BigInt(2)) - BigInt(1));
+        } else {
+            return normalizeNumber(v * BigInt(2));
         }
     }
 }
