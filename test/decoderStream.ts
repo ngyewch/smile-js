@@ -85,7 +85,7 @@ t.test('should decode ASCII values', t => {
     {
         const data = [0x61, 0x62, 0x63];
         const decoderStream = newDecoderStream(data);
-        t.equal(decoderStream.readAscii(data.length), 'abc');
+        t.equal(decoderStream.readASCII(data.length), 'abc');
     }
 
     t.end();
@@ -95,7 +95,7 @@ t.test('should decode UTF-8 values', t => {
     {
         const data = [0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0xe6, 0x82, 0xa8, 0xe5, 0xa5, 0xbd];
         const decoderStream = newDecoderStream(data);
-        t.equal(decoderStream.readUtf8(data.length), 'Hello 您好');
+        t.equal(decoderStream.readUTF8(data.length), 'Hello 您好');
     }
 
     t.end();

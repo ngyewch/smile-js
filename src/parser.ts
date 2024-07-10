@@ -78,22 +78,22 @@ class ParserContext {
                 return this.readSimpleLiteralValue(token);
             }
             case 2: { // Tiny ASCII (1 - 32 bytes == chars)
-                const value = this.decoderStream.readAscii(tokenValue + 1);
+                const value = this.decoderStream.readASCII(tokenValue + 1);
                 this.sharedStringValues.addString(value);
                 return value;
             }
             case 3: { // Short ASCII (33 - 64 bytes == chars)
-                const value = this.decoderStream.readAscii(tokenValue + 33);
+                const value = this.decoderStream.readASCII(tokenValue + 33);
                 this.sharedStringValues.addString(value);
                 return value;
             }
             case 4: { // Tiny Unicode (2 - 33 bytes; <= 33 characters)
-                const value = this.decoderStream.readUtf8(tokenValue + 2);
+                const value = this.decoderStream.readUTF8(tokenValue + 2);
                 this.sharedStringValues.addString(value);
                 return value;
             }
             case 5: { // Short Unicode (34 - 64 bytes; <= 64 characters)
-                const value = this.decoderStream.readUtf8(tokenValue + 34);
+                const value = this.decoderStream.readUTF8(tokenValue + 34);
                 this.sharedStringValues.addString(value);
                 return value;
             }
@@ -137,9 +137,9 @@ class ParserContext {
 
     private readBinaryLongTextStructureValues(token: number): any {
         if (token === 0xe0) { // Long (variable length) ASCII text
-            return this.decoderStream.readLongAscii();
+            return this.decoderStream.readLongASCII();
         } else if (token === 0xe4) { // Long (variable length) Unicode text
-            return this.decoderStream.readLongUtf8();
+            return this.decoderStream.readLongUTF8();
         } else if (token === 0xe8) { // Binary, 7-bit encoded
             return this.decoderStream.readSafeBinary();
         } else if ((token >= 0xec) && (token <= 0xef)) { // Shared String reference, long
@@ -180,16 +180,16 @@ class ParserContext {
             const reference = ((token & 0x03) << 8) | this.decoderStream.read();
             return this.sharedPropertyNames.getString(reference);
         } else if (token === 0x34) { // Long (not-yet-shared) Unicode name
-            return this.decoderStream.readLongUtf8();
+            return this.decoderStream.readLongUTF8();
         } else if ((token >= 0x40) && (token <= 0x7f)) { // 'Short' shared key name reference
             const reference = token & 0x3f;
             return this.sharedPropertyNames.getString(reference);
         } else if ((token >= 0x80) && (token <= 0xbf)) { // Short Ascii names
-            const s = this.decoderStream.readAscii((token & 0x3f) + 1);
+            const s = this.decoderStream.readASCII((token & 0x3f) + 1);
             this.sharedPropertyNames.addString(s);
             return s;
         } else if ((token >= 0xc0) && (token <= 0xf7)) { // Short Unicode names
-            const s = this.decoderStream.readUtf8((token & 0x3f) + 2);
+            const s = this.decoderStream.readUTF8((token & 0x3f) + 2);
             this.sharedPropertyNames.addString(s);
             return s;
         } else {

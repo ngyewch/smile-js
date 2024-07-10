@@ -6,6 +6,7 @@ import {ASCII} from './ascii.js';
 import {UTF8} from './utf8.js';
 import {FixedLengthBigEndian} from './fixedLengthBigEndian.js';
 import {SafeBinary} from './safeBinary.js';
+import {LongString} from './longString.js';
 
 export class DecoderStream {
     private readonly inputStream: InputStream;
@@ -34,11 +35,11 @@ export class DecoderStream {
         return ZigZag.decode(this.readUnsignedVint());
     }
 
-    public readAscii(encodedByteLen: number): string {
+    public readASCII(encodedByteLen: number): string {
         return ASCII.read(this.inputStream, encodedByteLen);
     }
 
-    public readUtf8(encodedByteLen: number): string {
+    public readUTF8(encodedByteLen: number): string {
         return UTF8.read(this.inputStream, encodedByteLen);
     }
 
@@ -67,24 +68,12 @@ export class DecoderStream {
         return Number(magnitude) * Math.pow(10, scale);
     }
 
-    public readLongString(): Uint8Array {
-        const buffer: number[] = [];
-        while (true) {
-            const c = this.inputStream.read();
-            if (c === 0xfc) {
-                break;
-            }
-            buffer.push(c);
-        }
-        return new Uint8Array(buffer);
+    public readLongASCII(): string {
+        return LongString.readASCII(this.inputStream);
     }
 
-    public readLongAscii() {
-        return ASCII.decode(this.readLongString());
-    }
-
-    public readLongUtf8() {
-        return UTF8.decode(this.readLongString());
+    public readLongUTF8() {
+        return LongString.readUTF8(this.inputStream);
     }
 
     public readBytes(len: number): Uint8Array {
