@@ -16,6 +16,13 @@ export class Float32 {
         }
         return toDataView(bytes).getFloat32(0, false);
     }
+
+    public static encode(n: number): Uint8Array {
+        const buffer = new ArrayBuffer(4);
+        const view = new DataView(buffer);
+        view.setFloat32(0, n, false);
+        return new Uint8Array(buffer);
+    }
 }
 
 export class Float64 {
@@ -24,5 +31,12 @@ export class Float64 {
             throw new SmileError('invalid float64');
         }
         return toDataView(bytes).getFloat64(0, false);
+    }
+
+    public static encode(n: number): Uint8Array {
+        const buffer = new ArrayBuffer(8);
+        const view = new DataView(buffer);
+        view.setFloat64(0, n, false);
+        return new Uint8Array(buffer);
     }
 }
