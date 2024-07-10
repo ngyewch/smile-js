@@ -1,19 +1,18 @@
 import {InputStream} from './inputStream.js';
-import {Decoder} from './decoder.js';
 import {SmileError} from './error.js';
 import {ZigZag} from './zigZag.js';
 import {VInt} from './vInt.js';
 import {ASCII} from './ascii.js';
 import {UTF8} from './utf8.js';
 import {Float32, Float64} from './float.js';
+import {FixedLengthBigEndian} from './fixedLengthBigEndian.js';
+import {SafeBinary} from './safeBinary.js';
 
 export class DecoderStream {
     private readonly inputStream: InputStream;
-    private readonly decoder: Decoder;
 
     constructor(inputStream: InputStream) {
         this.inputStream = inputStream;
-        this.decoder = new Decoder();
     }
 
     public isEof(): boolean {
@@ -55,7 +54,7 @@ export class DecoderStream {
     public readFixedLengthBigEndianEncodedBytes(decodedByteLen: number): Uint8Array {
         const encodedByteLen = Math.ceil(decodedByteLen * 8 / 7);
         const bytes = this.inputStream.readArray(encodedByteLen);
-        return this.decoder.decodeFixedLengthBigEndianEncodedBytes(bytes, decodedByteLen);
+        return FixedLengthBigEndian.decode(bytes, decodedByteLen);
     }
 
     public readSafeBinary(): Uint8Array {
@@ -65,7 +64,7 @@ export class DecoderStream {
         }
         const encodedByteLen = Math.ceil(decodedByteLen * 8 / 7);
         const bytes = this.inputStream.readArray(encodedByteLen);
-        return this.decoder.decodeSafeBinaryEncodedBits(bytes, decodedByteLen);
+        return SafeBinary.decode(bytes, decodedByteLen);
     }
 
     public readBigInt(): bigint {

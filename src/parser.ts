@@ -2,7 +2,6 @@ import {DecoderStream} from './decoderStream.js';
 import {InputStream} from './inputStream.js';
 import {SmileError} from './error.js';
 import {SharedStringBuffer} from './sharedStringBuffer.js';
-import {Decoder} from './decoder.js';
 import {ZigZag} from './zigZag.js';
 
 /**
@@ -24,7 +23,6 @@ export function parse(data: Uint8Array, options?: ParserOptions): any {
 class ParserContext {
     private readonly decoderStream: DecoderStream;
     private readonly options?: ParserOptions;
-    private readonly decoder: Decoder;
     private sharedPropertyName: boolean;
     private sharedStringValue: boolean;
     private rawBinary: boolean;
@@ -35,7 +33,6 @@ class ParserContext {
     constructor(data: Uint8Array, options?: ParserOptions) {
         this.decoderStream = new DecoderStream(new InputStream(data));
         this.options = options;
-        this.decoder = new Decoder();
 
         this.sharedPropertyName = false;
         this.sharedStringValue = false;
