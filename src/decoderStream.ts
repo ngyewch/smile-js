@@ -1,5 +1,4 @@
 import {InputStream} from './inputStream.js';
-import {SmileError} from './error.js';
 import {ZigZag} from './zigZag.js';
 import {VInt} from './vInt.js';
 import {ASCII} from './ascii.js';
@@ -7,6 +6,7 @@ import {UTF8} from './utf8.js';
 import {FixedLengthBigEndian} from './fixedLengthBigEndian.js';
 import {SafeBinary} from './safeBinary.js';
 import {LongString} from './longString.js';
+import {BigDecimal} from './bigDecimal.js';
 
 export class DecoderStream {
     private readonly inputStream: InputStream;
@@ -60,12 +60,7 @@ export class DecoderStream {
     }
 
     public readBigDecimal(): number {
-        const scale = this.readSignedVint();
-        if (typeof (scale) === 'bigint') {
-            throw new SmileError('invalid scale');
-        }
-        const magnitude = this.readBigInt();
-        return Number(magnitude) * Math.pow(10, scale);
+        return BigDecimal.read(this.inputStream);
     }
 
     public readLongASCII(): string {
