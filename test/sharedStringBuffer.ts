@@ -4,7 +4,7 @@ import {SmileError} from '../src/error.js';
 import {throws} from './utils/assert.js';
 
 t.test('when not enabled', t => {
-    const ssb = new SharedStringBuffer('test', false, 4);
+    const ssb = new SharedStringBuffer(false, 4);
 
     t.doesNotThrow(() => ssb.addString('test1'));
 
@@ -16,7 +16,7 @@ t.test('when not enabled', t => {
 });
 
 t.test('when enabled', t => {
-    const ssb = new SharedStringBuffer('test', true, 4);
+    const ssb = new SharedStringBuffer(true, 4);
 
     t.equal(ssb.addString('test1'), 0);
     t.equal(ssb.getString(0), 'test1');
@@ -37,6 +37,11 @@ t.test('when enabled', t => {
     throws(t, () => {
         ssb.getString(2);
     }, e => e instanceof SmileError);
+
+    t.equal(ssb.addString('test5'), 0);
+    t.equal(ssb.getString(0), 'test5');
+
+    t.equal(ssb.addString('hello world! this very long string encodes to more than 64 bytes.'), -1);
 
     t.end();
 });
