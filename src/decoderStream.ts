@@ -4,9 +4,9 @@ import {ZigZag} from './zigZag.js';
 import {VInt} from './vInt.js';
 import {ASCII} from './ascii.js';
 import {UTF8} from './utf8.js';
-import {Float32, Float64} from './float.js';
 import {FixedLengthBigEndian} from './fixedLengthBigEndian.js';
 import {SafeBinary} from './safeBinary.js';
+import {calcByteLen} from './utils.js';
 
 export class DecoderStream {
     private readonly inputStream: InputStream;
@@ -44,17 +44,11 @@ export class DecoderStream {
     }
 
     public readFloat32(): number {
-        return Float32.decode(this.readFixedLengthBigEndianEncodedBytes(4));
+        return FixedLengthBigEndian.readFloat32(this.inputStream);
     }
 
     public readFloat64(): number {
-        return Float64.decode(this.readFixedLengthBigEndianEncodedBytes(8));
-    }
-
-    public readFixedLengthBigEndianEncodedBytes(decodedByteLen: number): Uint8Array {
-        const encodedByteLen = Math.ceil(decodedByteLen * 8 / 7);
-        const bytes = this.inputStream.readArray(encodedByteLen);
-        return FixedLengthBigEndian.decode(bytes, decodedByteLen);
+        return FixedLengthBigEndian.readFloat64(this.inputStream);
     }
 
     public readSafeBinary(): Uint8Array {
@@ -62,7 +56,7 @@ export class DecoderStream {
         if (typeof (decodedByteLen) === 'bigint') {
             throw new SmileError('invalid length');
         }
-        const encodedByteLen = Math.ceil(decodedByteLen * 8 / 7);
+        const encodedByteLen = calcByteLen(decodedByteLen, 8, 7);
         const bytes = this.inputStream.readArray(encodedByteLen);
         return SafeBinary.decode(bytes, decodedByteLen);
     }

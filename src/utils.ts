@@ -9,3 +9,7 @@ export function normalizeNumber(value: number | bigint): number | bigint {
         return value;
     }
 }
+
+export function calcByteLen(inputByteLen: number, inputBitsPerByte: number, outputBitsPerByte: number): number {
+    return Math.ceil(inputByteLen * inputBitsPerByte / outputBitsPerByte);
+}
