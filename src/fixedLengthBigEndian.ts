@@ -1,5 +1,6 @@
 import {BitView} from 'bit-buffer';
 import {InputStream} from './inputStream.js';
+import {OutputStream} from './outputStream.js';
 import {calcByteLen} from './utils.js';
 import {Float32, Float64} from './float.js';
 
@@ -34,5 +35,38 @@ export class FixedLengthBigEndian {
         return Float64.decode(FixedLengthBigEndian.read(inputStream, 8));
     }
 
-    // TODO encode/write
+    public static encode(bytes: Uint8Array): Uint8Array {
+        const encodedByteLen = calcByteLen(bytes.length, 8, 7);
+        const arrayBuffer = new ArrayBuffer(bytes.length);
+        const view = new Uint8Array(arrayBuffer);
+        for (let i = 0; i < bytes.length; i++) {
+            view[i] = bytes[i];
+        }
+        const bitView = new BitView(arrayBuffer);
+        bitView.bigEndian = true;
+        let bitOffset = 0;
+        let remainingBits = bytes.length * 8;
+        let bitsToRead = 7 - ((encodedByteLen * 7) - (bytes.length * 8));
+        const encodedBytes: number[] = [];
+        while (remainingBits > 0) {
+            const v = bitView.getBits(bitOffset, bitsToRead);
+            encodedBytes.push(v);
+            bitOffset += bitsToRead;
+            remainingBits -= bitsToRead;
+            bitsToRead = 7;
+        }
+        return new Uint8Array(encodedBytes);
+    }
+
+    public static write(outputStream: OutputStream, bytes: Uint8Array): void {
+        outputStream.write(FixedLengthBigEndian.encode(bytes));
+    }
+
+    public static writeFloat32(outputStream: OutputStream, value: number): void {
+        FixedLengthBigEndian.write(outputStream, Float32.encode(value));
+    }
+
+    public static writeFloat64(outputStream: OutputStream, value: number): void {
+        FixedLengthBigEndian.write(outputStream, Float64.encode(value));
+    }
 }
