@@ -16,6 +16,8 @@ import {VInt} from './vInt.js';
 export interface DecoderOptions {
 }
 
+const defaultDecoderOptions: DecoderOptions = {};
+
 /**
  * Decode SMILE-encoded data.
  *
@@ -23,7 +25,7 @@ export interface DecoderOptions {
  * @param options decoder options
  * @deprecated Use {@link decode} instead
  */
-export function parse(data: Uint8Array, options?: DecoderOptions): any {
+export function parse(data: Uint8Array, options?: Partial<DecoderOptions>): any {
     return new DecoderContext(data, options).decode();
 }
 
@@ -33,13 +35,13 @@ export function parse(data: Uint8Array, options?: DecoderOptions): any {
  * @param data SMILE-encoded data
  * @param options decoder options
  */
-export function decode(data: Uint8Array, options?: DecoderOptions): any {
+export function decode(data: Uint8Array, options?: Partial<DecoderOptions>): any {
     return new DecoderContext(data, options).decode();
 }
 
 class DecoderContext {
     private readonly inputStream: InputStream;
-    private readonly options?: DecoderOptions;
+    private readonly options: DecoderOptions;
     private sharedPropertyName: boolean;
     private sharedStringValue: boolean;
     private rawBinary: boolean;
@@ -47,9 +49,16 @@ class DecoderContext {
     private sharedPropertyNames: SharedStringBuffer;
     private sharedStringValues: SharedStringBuffer;
 
-    constructor(data: Uint8Array, options?: DecoderOptions) {
+    constructor(data: Uint8Array, options?: Partial<DecoderOptions>) {
         this.inputStream = new InputStream(data);
-        this.options = options;
+        if (options !== undefined) {
+            this.options = {
+                ...defaultDecoderOptions,
+                ...options,
+            }
+        } else {
+            this.options = defaultDecoderOptions;
+        }
 
         this.sharedPropertyName = false;
         this.sharedStringValue = false;
