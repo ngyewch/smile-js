@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import {execSync, type SpawnSyncReturns} from 'child_process';
 import {parse as jsonParse, stringify as jsonStringify, isInteger} from 'lossless-json';
-import {parse as smileParse} from '../../src/parser.js';
+import {parse as smileParse} from '../../src/decoder.js';
 import {objectEqual} from './assert.js';
 
 export function verifyFiles(t: Test, pattern: string | string[]): void {

@@ -11,24 +11,35 @@ import {BigDecimal} from './bigDecimal.js';
 import {VInt} from './vInt.js';
 
 /**
- * Parser options.
+ * Decoder options.
  */
-export interface ParserOptions {
+export interface DecoderOptions {
 }
 
 /**
- * Parse SMILE-encoded data.
+ * Decode SMILE-encoded data.
  *
  * @param data SMILE-encoded data
- * @param options parser options
+ * @param options decoder options
+ * @deprecated Use {@link decode} instead
  */
-export function parse(data: Uint8Array, options?: ParserOptions): any {
-    return new ParserContext(data, options).parse();
+export function parse(data: Uint8Array, options?: DecoderOptions): any {
+    return new DecoderContext(data, options).decode();
 }
 
-class ParserContext {
+/**
+ * Decode SMILE-encoded data.
+ *
+ * @param data SMILE-encoded data
+ * @param options decoder options
+ */
+export function decode(data: Uint8Array, options?: DecoderOptions): any {
+    return new DecoderContext(data, options).decode();
+}
+
+class DecoderContext {
     private readonly inputStream: InputStream;
-    private readonly options?: ParserOptions;
+    private readonly options?: DecoderOptions;
     private sharedPropertyName: boolean;
     private sharedStringValue: boolean;
     private rawBinary: boolean;
@@ -36,7 +47,7 @@ class ParserContext {
     private sharedPropertyNames: SharedStringBuffer;
     private sharedStringValues: SharedStringBuffer;
 
-    constructor(data: Uint8Array, options?: ParserOptions) {
+    constructor(data: Uint8Array, options?: DecoderOptions) {
         this.inputStream = new InputStream(data);
         this.options = options;
 
@@ -50,7 +61,7 @@ class ParserContext {
         this.sharedStringValues = new SharedStringBuffer(false, 1024);
     }
 
-    public parse(): any {
+    public decode(): any {
         // parse header
         const b0 = this.inputStream.read();
         const b1 = this.inputStream.read();

@@ -1,5 +1,5 @@
 import {SmileError} from './error.js';
-import {parse} from './parser.js';
+import {parse} from './decoder.js';
 
 export {
     parse,
