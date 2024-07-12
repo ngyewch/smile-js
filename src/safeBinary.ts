@@ -2,7 +2,9 @@ import {BitView} from 'bit-buffer';
 import {SmileError} from './error.js';
 import {calcByteLen} from './utils.js';
 import {InputStream} from './inputStream.js';
+import {OutputStream} from './outputStream.js';
 import {VInt} from './vInt.js';
+import {BigInteger} from './bigInteger.js';
 
 export class SafeBinary {
     public static decode(bytes: Uint8Array, decodedByteLen: number): Uint8Array {
@@ -32,20 +34,31 @@ export class SafeBinary {
     }
 
     public static readBigInt(inputStream: InputStream): bigint {
-        const bytes = SafeBinary.read(inputStream);
-        let n = BigInt(0);
-        if (bytes.length === 0) {
-            return n;
-        }
-        const isNegative = (bytes[0] & 0x80) === 0x80;
-        for (let i = 0; i < bytes.length; i++) {
-            n = (n * BigInt(256)) + BigInt(isNegative ? bytes[i] ^ 0xff : bytes[i]);
-        }
-        if (isNegative) {
-            n = -n - BigInt(1);
-        }
-        return n;
+        return BigInteger.decode(SafeBinary.read(inputStream));
     }
 
-    // TODO encode/write
+    public static encode(bytes: Uint8Array): Uint8Array {
+        const encodedBytes: number[] = [];
+        const bitView = new BitView(bytes.buffer);
+        bitView.bigEndian = true;
+        let bitOffset = 0;
+        let remainingBits = bytes.length * 8;
+        while (remainingBits > 0) {
+            const bitsToRead = Math.min(remainingBits, 7);
+            const n = bitView.getBits(bitOffset, bitsToRead);
+            encodedBytes.push(n);
+            bitOffset += bitsToRead;
+            remainingBits -= bitsToRead;
+        }
+        return new Uint8Array(encodedBytes);
+    }
+
+    public static write(outputStream: OutputStream, bytes: Uint8Array): void {
+        VInt.write(outputStream, bytes.length);
+        outputStream.write(SafeBinary.encode(bytes));
+    }
+
+    public static writeBigInt(outputStream: OutputStream, value: bigint): void {
+        SafeBinary.write(outputStream, BigInteger.encode(value));
+    }
 }
