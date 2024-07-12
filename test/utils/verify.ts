@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import {execSync, type SpawnSyncReturns} from 'child_process';
 import {parse as jsonParse, stringify as jsonStringify, isInteger} from 'lossless-json';
-import {parse as smileParse} from '../../src/decoder.js';
+import {decode} from '../../src/decoder.js';
 import {objectEqual} from './assert.js';
 
 export function verifyFiles(t: Test, pattern: string | string[]): void {
@@ -36,7 +36,7 @@ export function verifyFile(t: Test, smileFile: string): void {
         const jsonFile = path.resolve(parsedPath.dir, parsedPath.name + ".json");
         const smileData = fs.readFileSync(smileFile);
         const jsonData = fs.readFileSync(jsonFile);
-        const smileValue = smileParse(smileData);
+        const smileValue = decode(smileData);
         const wrappedJsonValue = jsonParse(jsonData.toString(), null, v => {
             if (isInteger(v)) {
                 const b = BigInt(v);
