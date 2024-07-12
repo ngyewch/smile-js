@@ -5,7 +5,8 @@ import {calcByteLen} from './utils.js';
 import {Float32, Float64} from './float.js';
 
 export class FixedLengthBigEndian {
-    public static decode(bytes: Uint8Array, decodedByteLen: number): Uint8Array {
+    public static decode(bytes: Uint8Array): Uint8Array {
+        const decodedByteLen = calcByteLen(bytes.length, 7, 8);
         const arrayBuffer = new ArrayBuffer(decodedByteLen);
         const bitView = new BitView(arrayBuffer);
         bitView.bigEndian = true;
@@ -24,7 +25,7 @@ export class FixedLengthBigEndian {
     public static read(inputStream: InputStream, decodedByteLen: number): Uint8Array {
         const encodedByteLen = calcByteLen(decodedByteLen, 8, 7);
         const encodedBytes = inputStream.readArray(encodedByteLen);
-        return FixedLengthBigEndian.decode(encodedBytes, decodedByteLen);
+        return FixedLengthBigEndian.decode(encodedBytes);
     }
 
     public static readFloat32(inputStream: InputStream): number {
