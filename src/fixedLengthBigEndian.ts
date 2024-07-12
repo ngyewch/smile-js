@@ -37,12 +37,7 @@ export class FixedLengthBigEndian {
 
     public static encode(bytes: Uint8Array): Uint8Array {
         const encodedByteLen = calcByteLen(bytes.length, 8, 7);
-        const arrayBuffer = new ArrayBuffer(bytes.length);
-        const view = new Uint8Array(arrayBuffer);
-        for (let i = 0; i < bytes.length; i++) {
-            view[i] = bytes[i];
-        }
-        const bitView = new BitView(arrayBuffer);
+        const bitView = new BitView(bytes.buffer);
         bitView.bigEndian = true;
         let bitOffset = 0;
         let remainingBits = bytes.length * 8;
