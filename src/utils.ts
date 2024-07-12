@@ -11,5 +11,9 @@ export function normalizeNumber(value: number | bigint): number | bigint {
 }
 
 export function calcByteLen(inputByteLen: number, inputBitsPerByte: number, outputBitsPerByte: number): number {
-    return Math.ceil(inputByteLen * inputBitsPerByte / outputBitsPerByte);
+    if (inputBitsPerByte > outputBitsPerByte) {
+        return Math.ceil(inputByteLen * inputBitsPerByte / outputBitsPerByte);
+    } else {
+        return Math.floor(inputByteLen * inputBitsPerByte / outputBitsPerByte);
+    }
 }

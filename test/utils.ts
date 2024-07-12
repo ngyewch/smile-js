@@ -14,5 +14,8 @@ t.test('should calculate byte len', t => {
     t.equal(calcByteLen(4, 8, 7), 5);
     t.equal(calcByteLen(8, 8, 7), 10);
 
+    t.equal(calcByteLen(5, 7, 8), 4);
+    t.equal(calcByteLen(10, 7, 8), 8);
+
     t.end();
 });
