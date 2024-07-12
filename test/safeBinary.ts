@@ -9,7 +9,7 @@ t.test('should decode/encode safe binary encoded bits', t => {
     {
         const decodedData = new Uint8Array([0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]);
         const encodedData = new Uint8Array([0x00, 0x3f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x03]);
-        arrayEqual(t, SafeBinary.decode(encodedData, decodedData.length), decodedData);
+        arrayEqual(t, SafeBinary.decode(encodedData), decodedData);
         arrayEqual(t, SafeBinary.encode(decodedData), encodedData);
     }
 
