@@ -42,7 +42,10 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Install Dependencies (example)
+      - name: Run tests
+        run:  pnpm exec tap --disable-coverage
+
+      - name: Install dependencies (example)
         working-directory: examples/basic
         run: npm install
 
