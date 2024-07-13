@@ -5,4 +5,4 @@
 # Examples
 
 - [HTML Script Tag](html-script-tag.md)
-- [Svelte example](svelte-example.md)
+- [Svelte](svelte-example.md)
