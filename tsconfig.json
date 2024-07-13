@@ -16,6 +16,7 @@
     ]
   },
   "include": [
+    "package.json",
     "vite.config.ts",
     "src/**/*.d.ts",
     "src/**/*.ts",

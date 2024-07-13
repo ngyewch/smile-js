@@ -18,6 +18,9 @@ importers:
       '@types/node':
         specifier: 20.14.10
         version: 20.14.10
+      commander:
+        specifier: 12.1.0
+        version: 12.1.0
       dependency-cruiser:
         specifier: 16.3.6
         version: 16.3.6
