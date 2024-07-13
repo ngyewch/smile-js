@@ -4,9 +4,9 @@ import path from 'path';
 import fs from 'fs';
 import {parse, stringify, isInteger} from 'lossless-json';
 import {decode} from '../../src/decoder.js';
-import {encode} from '../../src/encoder.js';
+import {encode, type EncoderOptions} from '../../src/encoder.js';
 import {objectEqual} from './assert.js';
-import {jsonDiff} from './jsonDiff.js';
+import {jsonDiff} from './diff.js';
 
 export function verifyFiles(t: Test, pattern: string | string[]): void {
     const smileFiles = globSync(pattern, {
@@ -49,7 +49,11 @@ export function verifyFile(t: Test, smileFile: string): void {
         if (pass) {
             if (!skipEncoderTest(relativePath)) {
                 const outputSmileFile = path.resolve('build/test-output', relativePath);
-                saveSmileFile(outputSmileFile, smileValue);
+                saveSmileFile(outputSmileFile, smileValue, {
+                    sharedPropertyName: (wrappedJsonValue.sharedProperties !== undefined) ? wrappedJsonValue.sharedProperties : false,
+                    sharedStringValue: (wrappedJsonValue.sharedStrings !== undefined) ? wrappedJsonValue.sharedStrings : false,
+                    rawBinary: (wrappedJsonValue.rawBinary !== undefined) ? wrappedJsonValue.rawBinary : false,
+                });
                 const outputSmileValue = loadSmileFromFile(outputSmileFile);
                 objectEqual(t, outputSmileValue, jsonValue);
             }
@@ -114,8 +118,8 @@ function saveWrappedJsonToFile(filename: string, wrappedJsonValue: WrappedJSONVa
     fs.writeFileSync(filename, jsonString);
 }
 
-function saveSmileFile(filename: string, value: any): void {
-    const encodedData = encode(value);
+function saveSmileFile(filename: string, value: any, options?: EncoderOptions): void {
+    const encodedData = encode(value, options);
     fs.mkdirSync(path.parse(filename).dir, {recursive: true});
     fs.writeFileSync(filename, encodedData);
 }
