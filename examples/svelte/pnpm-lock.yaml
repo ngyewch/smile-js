@@ -8,24 +8,30 @@ importers:
 
   .:
     dependencies:
+      js-base64:
+        specifier: 3.7.7
+        version: 3.7.7
+      lossless-json:
+        specifier: 4.0.1
+        version: 4.0.1
       smile-js:
-        specifier: 0.7.0
-        version: 0.7.0
+        specifier: 0.8.0
+        version: 0.8.0
       svelte:
-        specifier: ^4.2.13
+        specifier: 4.2.18
         version: 4.2.18
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
-        specifier: ^3.1.0
+        specifier: 3.1.1
         version: 3.1.1(svelte@4.2.18)(vite@5.3.3)
       '@tsconfig/svelte':
-        specifier: ^5.0.4
+        specifier: 5.0.4
         version: 5.0.4
       npm-run-all:
         specifier: 4.1.5
         version: 4.1.5
       svelte-check:
-        specifier: ^3.6.9
+        specifier: 3.8.4
         version: 3.8.4(postcss@8.4.39)(svelte@4.2.18)
       typescript:
         specifier: 5.5.3
@@ -753,6 +759,9 @@ packages:
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
+  js-base64@3.7.7:
+    resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
+
   json-parse-better-errors@1.0.2:
     resolution: {integrity: sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==}
 
@@ -770,6 +779,9 @@ packages:
   log-symbols@4.1.0:
     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
     engines: {node: '>=10'}
+
+  lossless-json@4.0.1:
+    resolution: {integrity: sha512-l0L+ppmgPDnb+JGxNLndPtJZGNf6+ZmVaQzoxQm3u6TXmhdnsA+YtdVR8DjzZd/em58686CQhOFDPewfJ4l7MA==}
 
   magic-string@0.30.10:
     resolution: {integrity: sha512-iIRwTIf0QKV3UAnYK4PU8uiEc4SRh5jX0mwpIwETPpHdhVM4f53RSwS/vXvN1JhGX+Cs7B8qIq3d6AH49O5fAQ==}
@@ -1007,8 +1019,8 @@ packages:
   signal-exit@3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
 
-  smile-js@0.7.0:
-    resolution: {integrity: sha512-PIWssFC5vTQlMgREzLVPRXFMAPoqKLjucuq0WTojyvuLMaOl6qb7kyJiOBO/JSse1IxH+DNrEwW1N9pOv8GzBQ==}
+  smile-js@0.8.0:
+    resolution: {integrity: sha512-imOQ4ZuczJKQAsV2RS7zXlua+QEBY1/Tw9e0Bd7ooycwOQdPmuJpt84H8RyvR+obJ1k6tbfChnlkkv1Ky28e5g==}
 
   sorcery@0.11.1:
     resolution: {integrity: sha512-o7npfeJE6wi6J9l0/5LKshFzZ2rMatRiCDwYeDQaOzqdzRJwALhX7mk/A/ecg6wjMu7wdZbmXfD2S/vpOg0bdQ==}
@@ -1956,6 +1968,8 @@ snapshots:
 
   isexe@2.0.0: {}
 
+  js-base64@3.7.7: {}
+
   json-parse-better-errors@1.0.2: {}
 
   kleur@4.1.5: {}
@@ -1973,6 +1987,8 @@ snapshots:
     dependencies:
       chalk: 4.1.2
       is-unicode-supported: 0.1.0
+
+  lossless-json@4.0.1: {}
 
   magic-string@0.30.10:
     dependencies:
@@ -2239,7 +2255,7 @@ snapshots:
 
   signal-exit@3.0.7: {}
 
-  smile-js@0.7.0:
+  smile-js@0.8.0:
     dependencies:
       bit-buffer: 0.2.5
 
