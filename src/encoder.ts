@@ -53,7 +53,7 @@ class EncoderContext {
     }
 
     public encode(): Uint8Array {
-        this.outputStream.write([0x32, 0x29, 0x0a]);
+        this.outputStream.write([0x3a, 0x29, 0x0a]);
         let options = version << 4;
         if (this.options.sharedPropertyName) {
             options |= 0x01;
