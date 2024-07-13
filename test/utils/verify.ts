@@ -94,26 +94,15 @@ function skipJsonDiff(relativePath: string): boolean {
 
 function skipHdDiff(relativePath: string): boolean {
     if (
-        relativePath.startsWith('testdata/serde-smile/double/0.0.smile')
-        || relativePath.startsWith('testdata/serde-smile/double/-0.0.smile')
-        || relativePath.startsWith('testdata/serde-smile/float/0.0.smile')
-        || relativePath.startsWith('testdata/serde-smile/float/-0.0.smile')
+        (relativePath === 'testdata/serde-smile/double/0.0.smile')
+        || (relativePath === 'testdata/serde-smile/double/-0.0.smile')
+        || (relativePath === 'testdata/serde-smile/float/0.0.smile')
+        || (relativePath === 'testdata/serde-smile/float/-0.0.smile')
+        || (relativePath === 'testdata/serde-smile/shared_property/evict.smile')
     ) {
         return true;
     }
-
-    if (
-        relativePath.startsWith('testdata/serde-smile/binary/')
-        || relativePath.startsWith('testdata/serde-smile/boolean/')
-        || relativePath.startsWith('testdata/serde-smile/double/')
-        || relativePath.startsWith('testdata/serde-smile/float/')
-        || relativePath.startsWith('testdata/serde-smile/integer/')
-        || relativePath.startsWith('testdata/serde-smile/long/')
-        || relativePath.startsWith('testdata/serde-smile/null/')
-    ) {
-        return false;
-    }
-    return true;
+    return false;
 }
 
 function replaceExtension(p: string, ext: string): string {
