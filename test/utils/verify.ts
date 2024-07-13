@@ -6,7 +6,7 @@ import {parse, stringify, isInteger} from 'lossless-json';
 import {decode} from '../../src/decoder.js';
 import {encode, type EncoderOptions} from '../../src/encoder.js';
 import {objectEqual} from './assert.js';
-import {jsonDiff} from './diff.js';
+import {jsonDiff, hdDiff} from './diff.js';
 
 export function verifyFiles(t: Test, pattern: string | string[]): void {
     const smileFiles = globSync(pattern, {
@@ -36,7 +36,7 @@ export function verifyFile(t: Test, smileFile: string): void {
         const smileValue = loadSmileFromFile(smileFile);
         const wrappedJsonValue = loadWrappedJsonFromFile(jsonFile);
         const jsonValue = wrappedJsonValue.value;
-        const pass = objectEqual(t, smileValue, jsonValue);
+        const decodePassed = objectEqual(t, smileValue, jsonValue);
 
         const outputWrappedJsonValue = {
             ...wrappedJsonValue,
@@ -46,7 +46,7 @@ export function verifyFile(t: Test, smileFile: string): void {
             path.relative(process.cwd(), replaceExtension(smileFile, ".json")));
         saveWrappedJsonToFile(outputJsonFile, outputWrappedJsonValue);
 
-        if (pass) {
+        if (decodePassed) {
             if (!skipEncoderTest(relativePath)) {
                 const outputSmileFile = path.resolve('build/test-output', relativePath);
                 saveSmileFile(outputSmileFile, smileValue, {
@@ -55,7 +55,16 @@ export function verifyFile(t: Test, smileFile: string): void {
                     rawBinary: (wrappedJsonValue.rawBinary !== undefined) ? wrappedJsonValue.rawBinary : false,
                 });
                 const outputSmileValue = loadSmileFromFile(outputSmileFile);
-                objectEqual(t, outputSmileValue, jsonValue);
+                const encodePassed = objectEqual(t, outputSmileValue, jsonValue);
+
+                if (encodePassed) {
+                    if (!skipHdDiff(relativePath)) {
+                        t.test('hd diff', t => {
+                            hdDiff(t, smileFile, outputSmileFile);
+                            t.end();
+                        });
+                    }
+                }
             }
 
             if (!skipJsonDiff(relativePath)) {
@@ -81,6 +90,30 @@ function noSkipJsonDiff(relativePath: string): boolean {
 function skipJsonDiff(relativePath: string): boolean {
     return relativePath.startsWith('testdata/serde-smile/double/')
         || relativePath.startsWith('testdata/serde-smile/float/');
+}
+
+function skipHdDiff(relativePath: string): boolean {
+    if (
+        relativePath.startsWith('testdata/serde-smile/double/0.0.smile')
+        || relativePath.startsWith('testdata/serde-smile/double/-0.0.smile')
+        || relativePath.startsWith('testdata/serde-smile/float/0.0.smile')
+        || relativePath.startsWith('testdata/serde-smile/float/-0.0.smile')
+    ) {
+        return true;
+    }
+
+    if (
+        relativePath.startsWith('testdata/serde-smile/binary/')
+        || relativePath.startsWith('testdata/serde-smile/boolean/')
+        || relativePath.startsWith('testdata/serde-smile/double/')
+        || relativePath.startsWith('testdata/serde-smile/float/')
+        || relativePath.startsWith('testdata/serde-smile/integer/')
+        || relativePath.startsWith('testdata/serde-smile/long/')
+        || relativePath.startsWith('testdata/serde-smile/null/')
+    ) {
+        return false;
+    }
+    return true;
 }
 
 function replaceExtension(p: string, ext: string): string {
