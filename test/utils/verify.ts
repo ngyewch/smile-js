@@ -67,11 +67,7 @@ export function verifyFile(t: Test, smileFile: string): void {
 }
 
 function skipEncoderTest(relativePath: string): boolean {
-    if (relativePath.startsWith('testdata/serde-smile/boolean/')
-        || relativePath.startsWith('testdata/serde-smile/null/')) {
-        return false;
-    }
-    return true;
+    return false;
 }
 
 function noSkipJsonDiff(relativePath: string): boolean {

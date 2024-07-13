@@ -1,6 +1,13 @@
 import {OutputStream} from './outputStream.js';
 import {SharedStringBuffer} from './sharedStringBuffer.js';
 import {SmileError} from './error.js';
+import {FixedLengthBigEndian} from './fixedLengthBigEndian.js';
+import {ZigZag} from './zigZag.js';
+import {VInt} from './vInt.js';
+import {SafeBinary} from './safeBinary.js';
+import {ASCII} from './ascii.js';
+import {UTF8} from './utf8.js';
+import {LongString} from './longString.js';
 
 /**
  * Encoder options.
@@ -18,6 +25,8 @@ const defaultEncoderOptions: EncoderOptions = {
 };
 
 const version = 0;
+const MAX_INT32 = 2147483647;
+const MIN_INT32 = -2147483648;
 
 /**
  * SMILE-encode the specified value.
@@ -118,15 +127,83 @@ class EncoderContext {
     }
 
     private writeString(s: string): void {
-        // TODO
+        if (s === '') {
+            this.outputStream.write(0x20);
+            return;
+        }
+        const reference = this.sharedStringValues.getReference(s);
+        if (reference >= 0) { // has reference
+            if (reference < 31) {
+                this.outputStream.write(0x00 | (reference + 1));
+                return;
+            } else {
+                this.outputStream.write(0xec | ((reference >> 8) & 0x03));
+                this.outputStream.write(reference & 0xff);
+                return;
+            }
+        } else { // no reference
+            this.sharedStringValues.addString(s);
+            if (ASCII.isASCII(s)) {
+                if (s.length <= 32) {
+                    this.outputStream.write(0x40 | (s.length - 1));
+                    ASCII.write(this.outputStream, s);
+                    return;
+                } else if (s.length <= 64) {
+                    this.outputStream.write(0x60 | (s.length - 33));
+                    ASCII.write(this.outputStream, s);
+                    return;
+                } else {
+                    this.outputStream.write(0xe0);
+                    LongString.writeASCII(this.outputStream, s);
+                    return;
+                }
+            } else {
+                const encodedBytes = UTF8.encode(s);
+                if (encodedBytes.length <= 33) {
+                    this.outputStream.write(0x80 | (encodedBytes.length - 2));
+                    UTF8.write(this.outputStream, s);
+                    return;
+                } else if (encodedBytes.length <= 65) {
+                    this.outputStream.write(0xa0 | (encodedBytes.length - 34));
+                    UTF8.write(this.outputStream, s);
+                    return;
+                } else {
+                    this.outputStream.write(0xe4);
+                    LongString.writeUTF8(this.outputStream, s);
+                    return;
+                }
+            }
+        }
     }
 
     private writeNumber(n: number): void {
-        // TODO
+        if (Number.isSafeInteger(n)) { // safe integer
+            if ((n >= -16) && (n <= 15)) { // small integer
+                const zigZagEncodedValue = ZigZag.encode(n);
+                if ((typeof zigZagEncodedValue === 'number') && (zigZagEncodedValue < 32)) {
+                    this.outputStream.write(0xc0 | zigZagEncodedValue);
+                } else {
+                    throw new SmileError('unexpected error');
+                }
+            } else if ((n >= MIN_INT32) && (n <= MAX_INT32)) { // int32
+                this.outputStream.write(0x24);
+                VInt.write(this.outputStream, ZigZag.encode(n));
+            } else if ((n >= Number.MIN_SAFE_INTEGER) && (n <= Number.MAX_SAFE_INTEGER)) { // int64
+                this.outputStream.write(0x25);
+                VInt.write(this.outputStream, ZigZag.encode(n));
+            } else { // treat everything else as int64
+                this.outputStream.write(0x25);
+                VInt.write(this.outputStream, ZigZag.encode(n));
+            }
+        } else { // treat everything else as double
+            this.outputStream.write(0x29);
+            FixedLengthBigEndian.writeFloat64(this.outputStream, n);
+        }
     }
 
     private writeBigInt(n: bigint): void {
-        // TODO
+        this.outputStream.write(0x26);
+        SafeBinary.writeBigInt(this.outputStream, n);
     }
 
     private writeArray(array: any[]): void {
@@ -148,6 +225,44 @@ class EncoderContext {
     }
 
     private writeKey(s: string): void {
-        // TODO
+        if (s === '') {
+            this.outputStream.write(0x20);
+            return;
+        }
+        const reference = this.sharedPropertyNames.getReference(s);
+        if (reference >= 0) { // has reference
+            if (reference < 64) {
+                this.outputStream.write(0x40 | reference);
+                return;
+            } else {
+                this.outputStream.write(0x30 | ((reference >> 8) & 0x03));
+                this.outputStream.write(reference & 0xff);
+                return;
+            }
+        } else { // no reference
+            this.sharedPropertyNames.addString(s);
+            if (ASCII.isASCII(s)) {
+                if (s.length <= 64) {
+                    this.outputStream.write(0x80 | (s.length - 1));
+                    ASCII.write(this.outputStream, s);
+                    return;
+                } else {
+                    this.outputStream.write(0x34);
+                    LongString.writeUTF8(this.outputStream, s);
+                    return;
+                }
+            } else {
+                const encodedBytes = UTF8.encode(s);
+                if (encodedBytes.length <= 57) {
+                    this.outputStream.write(0xc0 | (encodedBytes.length - 2));
+                    UTF8.write(this.outputStream, s);
+                    return;
+                } else {
+                    this.outputStream.write(0x34);
+                    LongString.writeUTF8(this.outputStream, s);
+                    return;
+                }
+            }
+        }
     }
 }
