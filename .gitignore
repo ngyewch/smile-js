@@ -1,6 +1,6 @@
 /.tap/
 /build/
 /node_modules/
-/tsconfig.tsbuildinfo
+/*.tsbuildinfo
 /serde-smile
 /dist/
