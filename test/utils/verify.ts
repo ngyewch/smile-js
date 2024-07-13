@@ -46,17 +46,33 @@ export function verifyFile(t: Test, smileFile: string): void {
             path.relative(process.cwd(), replaceExtension(smileFile, ".json")));
         saveWrappedJsonToFile(outputJsonFile, outputWrappedJsonValue);
 
-        if (pass && !noSkipJsonDiff(relativePath)) {
-            t.test('json diff', t => {
-                jsonDiff(t, jsonFile, outputJsonFile);
-                t.end();
-            });
+        if (pass) {
+            if (!skipEncoderTest(relativePath)) {
+                const outputSmileFile = path.resolve('build/test-output', relativePath);
+                saveSmileFile(outputSmileFile, smileValue);
+                const outputSmileValue = loadSmileFromFile(outputSmileFile);
+                objectEqual(t, outputSmileValue, jsonValue);
+            }
+
+            if (!skipJsonDiff(relativePath)) {
+                t.test('json diff', t => {
+                    jsonDiff(t, jsonFile, outputJsonFile);
+                    t.end();
+                });
+            }
         }
 
         t.end();
     });
 }
 
+function skipEncoderTest(relativePath: string): boolean {
+    if (relativePath.startsWith('testdata/serde-smile/boolean/')
+        || relativePath.startsWith('testdata/serde-smile/null/')) {
+        return false;
+    }
+    return true;
+}
 
 function noSkipJsonDiff(relativePath: string): boolean {
     return false;
@@ -100,4 +116,10 @@ function saveWrappedJsonToFile(filename: string, wrappedJsonValue: WrappedJSONVa
     }
     fs.mkdirSync(path.parse(filename).dir, {recursive: true});
     fs.writeFileSync(filename, jsonString);
+}
+
+function saveSmileFile(filename: string, value: any): void {
+    const encodedData = encode(value);
+    fs.mkdirSync(path.parse(filename).dir, {recursive: true});
+    fs.writeFileSync(filename, encodedData);
 }
