@@ -25,7 +25,7 @@ const version = 0;
  * @param value value
  * @param options encoder options
  */
-export function encode(value: any, options?: Partial<EncoderOptions>): any {
+export function encode(value: any, options?: Partial<EncoderOptions>): Uint8Array {
     return new EncoderContext(value, options).encode();
 }
 
