@@ -1,6 +1,6 @@
 import {OutputStream} from './outputStream.js';
 import {SharedStringBuffer} from './sharedStringBuffer.js';
-import {SmileError} from "./error";
+import {SmileError} from './error.js';
 
 /**
  * Encoder options.
