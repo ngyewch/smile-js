@@ -165,7 +165,7 @@ class EncoderContext {
                     this.outputStream.write(0x80 | (encodedBytes.length - 2));
                     UTF8.write(this.outputStream, s);
                     return;
-                } else if (encodedBytes.length <= 65) {
+                } else if (encodedBytes.length <= 64) {
                     this.outputStream.write(0xa0 | (encodedBytes.length - 34));
                     UTF8.write(this.outputStream, s);
                     return;
