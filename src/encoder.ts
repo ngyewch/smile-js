@@ -260,7 +260,7 @@ class EncoderContext {
                 }
             } else {
                 const encodedBytes = UTF8.encode(s);
-                if (encodedBytes.length <= 57) {
+                if (encodedBytes.length <= 56) {
                     this.outputStream.write(0xc0 | (encodedBytes.length - 2));
                     UTF8.write(this.outputStream, s);
                     return;
