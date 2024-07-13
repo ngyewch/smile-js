@@ -39,6 +39,10 @@ export class SharedStringBuffer {
         return index;
     };
 
+    public getReference(s: string): number {
+        return ((this.enabled) && (s in this.stringMap)) ? this.stringMap[s] : -1;
+    }
+
     public getString(index: number): string {
         if (!this.enabled) {
             throw new SmileError('shared strings are not enabled');
