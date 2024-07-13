@@ -21,4 +21,13 @@ export class ASCII {
     public static write(outputStream: OutputStream, s: string): void {
         outputStream.write(ASCII.encode(s));
     }
+
+    public static isASCII(s: string): boolean {
+        for (let i = 0; i < s.length; i++) {
+            if (s.charCodeAt(i) > 127) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
