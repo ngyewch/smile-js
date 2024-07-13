@@ -27,6 +27,8 @@ const defaultEncoderOptions: EncoderOptions = {
 const version = 0;
 const MAX_INT32 = 2147483647;
 const MIN_INT32 = -2147483648;
+const MAX_INT64 = BigInt('9223372036854775807');
+const MIN_INT64 = BigInt('-9223372036854775808');
 
 /**
  * SMILE-encode the specified value.
@@ -202,8 +204,13 @@ class EncoderContext {
     }
 
     private writeBigInt(n: bigint): void {
-        this.outputStream.write(0x26);
-        SafeBinary.writeBigInt(this.outputStream, n);
+        if ((n < MIN_INT64) || (n > MAX_INT64)) {
+            this.outputStream.write(0x26);
+            SafeBinary.writeBigInt(this.outputStream, n);
+        } else {
+            this.outputStream.write(0x25);
+            VInt.write(this.outputStream, ZigZag.encode(n));
+        }
     }
 
     private writeArray(array: any[]): void {
