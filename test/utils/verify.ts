@@ -2,11 +2,11 @@ import {Test} from 'tap';
 import {globSync} from 'glob';
 import path from 'path';
 import fs from 'fs';
-import {execSync, type SpawnSyncReturns} from 'child_process';
 import {parse, stringify, isInteger} from 'lossless-json';
 import {decode} from '../../src/decoder.js';
 import {encode} from '../../src/encoder.js';
 import {objectEqual} from './assert.js';
+import {jsonDiff} from './jsonDiff.js';
 
 export function verifyFiles(t: Test, pattern: string | string[]): void {
     const smileFiles = globSync(pattern, {
@@ -46,18 +46,9 @@ export function verifyFile(t: Test, smileFile: string): void {
             path.relative(process.cwd(), replaceExtension(smileFile, ".json")));
         saveWrappedJsonToFile(outputJsonFile, outputWrappedJsonValue);
 
-        if (pass && !skipJsonDiff(relativePath)) {
+        if (pass && !noSkipJsonDiff(relativePath)) {
             t.test('json diff', t => {
-                const jsonDiffCmd = `./json-diff ${jsonFile} ${outputJsonFile}`;
-                try {
-                    const jsonDiff = execSync(jsonDiffCmd);
-                } catch (e) {
-                    const returns = e as SpawnSyncReturns<Buffer>;
-                    t.fail({
-                        doNotWant: returns.stdout.toString(),
-                    });
-                }
-
+                jsonDiff(t, jsonFile, outputJsonFile);
                 t.end();
             });
         }
@@ -65,6 +56,7 @@ export function verifyFile(t: Test, smileFile: string): void {
         t.end();
     });
 }
+
 
 function noSkipJsonDiff(relativePath: string): boolean {
     return false;
@@ -102,6 +94,10 @@ function loadSmileFromFile(filename: string): any {
 }
 
 function saveWrappedJsonToFile(filename: string, wrappedJsonValue: WrappedJSONValue): void {
+    const jsonString = stringify(wrappedJsonValue);
+    if (jsonString === undefined) {
+        throw new Error('could not stringify JSON');
+    }
     fs.mkdirSync(path.parse(filename).dir, {recursive: true});
-    fs.writeFileSync(filename, stringify(wrappedJsonValue));
+    fs.writeFileSync(filename, jsonString);
 }
