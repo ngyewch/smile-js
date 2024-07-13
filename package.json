@@ -23,10 +23,14 @@
   "module": "./dist/smile-js.js",
   "main": "./dist/smile-js.cjs",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "smile-cli": "./bin/smile-cli"
+  },
   "scripts": {
     "doBuild": "vite build",
+    "doBuildCli": "vite build --config vite.config.cli.ts",
     "check": "tsc --noEmit && tsc-strict",
-    "build": "run-s check doBuild",
+    "build": "run-s check doBuild doBuildCli",
     "test": "tap",
     "typedoc": "typedoc",
     "postbuild": "validate-package-exports --check --verify",
@@ -57,6 +61,7 @@
     "smile"
   ],
   "files": [
+    "bin/*",
     "dist/*"
   ]
 }

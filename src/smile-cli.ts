@@ -2,8 +2,7 @@ import fs from 'fs';
 import {program} from 'commander';
 import {parse, stringify} from 'lossless-json';
 import {version} from '../package.json';
-import {decode} from './decoder.js';
-import {encode, type EncoderOptions} from './encoder.js';
+import {decode, encode, type EncoderOptions} from '.';
 import {jsonParseNumber} from './utils.js';
 
 program
