@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from 'fs';
 import {program} from 'commander';
 import {parse, stringify} from 'lossless-json';
 import {version} from '../package.json';
