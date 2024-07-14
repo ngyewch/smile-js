@@ -6,4 +6,7 @@ export default defineConfig({
         sourcemap: true,
         emptyOutDir: false,
     },
+    ssr: {
+        noExternal: true,
+    },
 });
