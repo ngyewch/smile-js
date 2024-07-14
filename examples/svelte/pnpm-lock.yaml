@@ -15,8 +15,8 @@ importers:
         specifier: 4.0.1
         version: 4.0.1
       smile-js:
-        specifier: 0.8.0
-        version: 0.8.0
+        specifier: 0.9.1
+        version: 0.9.1
       svelte:
         specifier: 4.2.18
         version: 4.2.18
@@ -1019,8 +1019,9 @@ packages:
   signal-exit@3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
 
-  smile-js@0.8.0:
-    resolution: {integrity: sha512-imOQ4ZuczJKQAsV2RS7zXlua+QEBY1/Tw9e0Bd7ooycwOQdPmuJpt84H8RyvR+obJ1k6tbfChnlkkv1Ky28e5g==}
+  smile-js@0.9.1:
+    resolution: {integrity: sha512-q9CU/PxnCLUbsKByuC60wXyr9ErH8HgZtyvZIGJVxdpJVVdsCq0kbbwf9jeNQKbbSQSEOex1ICxZDaOpHbCzbA==}
+    hasBin: true
 
   sorcery@0.11.1:
     resolution: {integrity: sha512-o7npfeJE6wi6J9l0/5LKshFzZ2rMatRiCDwYeDQaOzqdzRJwALhX7mk/A/ecg6wjMu7wdZbmXfD2S/vpOg0bdQ==}
@@ -2255,7 +2256,7 @@ snapshots:
 
   signal-exit@3.0.7: {}
 
-  smile-js@0.8.0:
+  smile-js@0.9.1:
     dependencies:
       bit-buffer: 0.2.5
 
