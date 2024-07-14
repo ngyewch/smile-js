@@ -14,3 +14,6 @@ This project is an implementation of Jackson's [Smile format](https://github.com
 
 See https://ngyewch.github.io/smile-js/
 
+## Attribution
+
+* Test data from [serde-smile](https://github.com/sfackler/serde-smile)
