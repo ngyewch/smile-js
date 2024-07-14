@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Examples</li><li class="chapter-item expanded "><a href="html-script-tag.html"><strong aria-hidden="true">1.</strong> HTML Script Tag</a></li><li class="chapter-item expanded "><a href="svelte-example.html"><strong aria-hidden="true">2.</strong> Svelte example</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="cli.html"><strong aria-hidden="true">1.</strong> Command line tools</a></li><li class="chapter-item expanded affix "><li class="part-title">Examples</li><li class="chapter-item expanded "><a href="html-script-tag.html"><strong aria-hidden="true">2.</strong> HTML Script Tag</a></li><li class="chapter-item expanded "><a href="svelte-example.html"><strong aria-hidden="true">3.</strong> Svelte</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -183,9 +183,28 @@
 <p>This project is an implementation of Jackson's <a href="https://github.com/FasterXML/smile-format-specification/blob/master/smile-specification.md">Smile format</a>. The library supports encoding and decoding.</p>
 <h2 id="documentation"><a class="header" href="#documentation">Documentation</a></h2>
 <p><a href="./typedoc/index.html">Typedoc</a></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="command-line-tools"><a class="header" href="#command-line-tools">Command-line tools</a></h1>
+<h2 id="smile-cli"><a class="header" href="#smile-cli">smile-cli</a></h2>
+<pre><code class="language-sh">smile-cli                            # installed globally
+node_modules/smile-js/bin/smile-cli  # [npm] installed locally
+pnpm exec smile-cli                  # [pnpm] installed locally
+</code></pre>
+<pre><code>Usage: smile-cli [options] [command]
+
+SMILE CLI
+
+Options:
+  -V, --version                            output the version number
+  -h, --help                               display help for command
+
+Commands:
+  encode [options] [jsonFile] [smileFile]  Encode JSON to SMILE
+  decode [options] [smileFile] [jsonFile]  Decode SMILE to JSON
+  help [command]                           display help for command
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="html-script-tag"><a class="header" href="#html-script-tag">HTML Script Tag</a></h1>
 <p>To use smile-js via the HTML script tag:</p>
-<pre><code class="language-html">&lt;script src="https://cdn.jsdelivr.net/npm/smile-js@0.8.0/dist/smile-js.iife.js"&gt;&lt;/script&gt;
+<pre><code class="language-html">&lt;script src="https://cdn.jsdelivr.net/npm/smile-js@0.9.1/dist/smile-js.iife.js"&gt;&lt;/script&gt;
 </code></pre>
 <p>The module will be exported as <code>windows.smile</code>.</p>
 <h2 id="example"><a class="header" href="#example">Example</a></h2>
@@ -195,7 +214,7 @@
 &lt;head&gt;
     &lt;title&gt;smile-js test&lt;/title&gt;
 
-    &lt;script src="https://cdn.jsdelivr.net/npm/smile-js@0.8.0/dist/smile-js.iife.js"&gt;&lt;/script&gt;
+    &lt;script src="https://cdn.jsdelivr.net/npm/smile-js@0.9.1/dist/smile-js.iife.js"&gt;&lt;/script&gt;
     &lt;script&gt;
         function onChooseFile(e) {
             const file = e.target.files.item(0)

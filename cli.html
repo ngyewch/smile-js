@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>HTML Script Tag - smile-js</title>
+        <title>Command line tools - smile-js</title>
 
 
         <!-- Custom HTML head -->
@@ -88,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="cli.html"><strong aria-hidden="true">1.</strong> Command line tools</a></li><li class="chapter-item expanded affix "><li class="part-title">Examples</li><li class="chapter-item expanded "><a href="html-script-tag.html" class="active"><strong aria-hidden="true">2.</strong> HTML Script Tag</a></li><li class="chapter-item expanded "><a href="svelte-example.html"><strong aria-hidden="true">3.</strong> Svelte</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="cli.html" class="active"><strong aria-hidden="true">1.</strong> Command line tools</a></li><li class="chapter-item expanded affix "><li class="part-title">Examples</li><li class="chapter-item expanded "><a href="html-script-tag.html"><strong aria-hidden="true">2.</strong> HTML Script Tag</a></li><li class="chapter-item expanded "><a href="svelte-example.html"><strong aria-hidden="true">3.</strong> Svelte</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -176,61 +176,35 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="html-script-tag"><a class="header" href="#html-script-tag">HTML Script Tag</a></h1>
-<p>To use smile-js via the HTML script tag:</p>
-<pre><code class="language-html">&lt;script src="https://cdn.jsdelivr.net/npm/smile-js@0.9.1/dist/smile-js.iife.js"&gt;&lt;/script&gt;
+                        <h1 id="command-line-tools"><a class="header" href="#command-line-tools">Command-line tools</a></h1>
+<h2 id="smile-cli"><a class="header" href="#smile-cli">smile-cli</a></h2>
+<pre><code class="language-sh">smile-cli                            # installed globally
+node_modules/smile-js/bin/smile-cli  # [npm] installed locally
+pnpm exec smile-cli                  # [pnpm] installed locally
 </code></pre>
-<p>The module will be exported as <code>windows.smile</code>.</p>
-<h2 id="example"><a class="header" href="#example">Example</a></h2>
-<p><a href="./examples/html/index.html">Demo</a></p>
-<pre><code class="language-html">&lt;!DOCTYPE html&gt;
-&lt;html lang="en-US"&gt;
-&lt;head&gt;
-    &lt;title&gt;smile-js test&lt;/title&gt;
+<pre><code>Usage: smile-cli [options] [command]
 
-    &lt;script src="https://cdn.jsdelivr.net/npm/smile-js@0.9.1/dist/smile-js.iife.js"&gt;&lt;/script&gt;
-    &lt;script&gt;
-        function onChooseFile(e) {
-            const file = e.target.files.item(0)
-            file.arrayBuffer()
-                .then(arrayBuffer =&gt; {
-                    const data = new Uint8Array(arrayBuffer);
-                    try {
-                        const o = window.smile.decode(data);
-                        console.log(o);
-                        document.getElementById("output").innerText = JSON.stringify(o, null, 2);
-                    } catch (e) {
-                        alert(e);
-                    }
-                })
-                .catch(e =&gt; {
-                    alert(e);
-                });
-        }
-    &lt;/script&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;div&gt;
-    &lt;label for="file"&gt;Select SMILE-encoded file&lt;/label&gt;
-    &lt;input id="file" type="file" onchange="onChooseFile(event)"/&gt;
-&lt;/div&gt;
-&lt;div&gt;
-    &lt;label for="output"&gt;JSON representation:&lt;/label&gt;
-    &lt;pre id="output"&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;
+SMILE CLI
+
+Options:
+  -V, --version                            output the version number
+  -h, --help                               display help for command
+
+Commands:
+  encode [options] [jsonFile] [smileFile]  Encode JSON to SMILE
+  decode [options] [smileFile] [jsonFile]  Decode SMILE to JSON
+  help [command]                           display help for command
 </code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="cli.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="svelte-example.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="html-script-tag.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -240,11 +214,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="cli.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="svelte-example.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="html-script-tag.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
