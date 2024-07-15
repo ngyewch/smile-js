@@ -5,7 +5,7 @@
   "description": "Javascript Smile implementation.",
   "author": "Nick Ng",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/ngyewch/smile-js",
+  "homepage": "http://ngyewch.github.io/smile-js/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ngyewch/smile-js.git"
