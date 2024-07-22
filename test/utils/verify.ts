@@ -43,13 +43,14 @@ export function verifyFile(t: Test, smileFile: string): void {
                 jsonValue = Base64.toUint8Array(jsonValue);
             }
         }
-        const decodePassed = (): boolean => {
+        const decodePassedFunc = (): boolean => {
             if (relativePath.startsWith('testdata/serde-smile/big_decimal/')) {
                 return approx(t, smileValue as number, jsonValue as number, 0.00000001)
             } else {
                 return objectEqual(t, smileValue, jsonValue);
             }
         }
+        const decodePassed = decodePassedFunc();
 
         const outputWrappedJsonValue = {
             ...wrappedJsonValue,
@@ -68,13 +69,14 @@ export function verifyFile(t: Test, smileFile: string): void {
                     rawBinary: (wrappedJsonValue.rawBinary !== undefined) ? wrappedJsonValue.rawBinary : false,
                 });
                 const outputSmileValue = loadSmileFromFile(outputSmileFile);
-                const encodePassed = (): boolean => {
+                const encodePassedFunc = (): boolean => {
                     if (relativePath.startsWith('testdata/serde-smile/big_decimal/')) {
                         return approx(t, outputSmileValue as number, jsonValue as number, 0.00000001)
                     } else {
                         return objectEqual(t, outputSmileValue, jsonValue);
                     }
                 }
+                const encodePassed = decodePassedFunc();
 
                 if (encodePassed) {
                     if (!skipHdDiff(relativePath)) {
