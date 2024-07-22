@@ -7,11 +7,11 @@ import {SafeBinary} from './safeBinary.js';
 export class BigDecimal {
     public static read(inputStream: InputStream): number {
         const scale = ZigZag.decode(VInt.read(inputStream));
-        if (typeof (scale) === 'bigint') {
+        if (typeof scale === 'bigint') {
             throw new SmileError('invalid scale');
         }
         const magnitude = SafeBinary.readBigInt(inputStream);
-        return Number(magnitude) * Math.pow(10, scale);
+        return Number(magnitude) * Math.pow(10, -scale);
     }
 
     // TODO encode/write
