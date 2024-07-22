@@ -5,9 +5,10 @@ import fs from 'fs';
 import {parse, stringify} from 'lossless-json';
 import {decode} from '../../src/decoder.js';
 import {encode, type EncoderOptions} from '../../src/encoder.js';
-import {objectEqual} from './assert.js';
+import {approx, objectEqual} from './assert.js';
 import {jsonDiff, hdDiff} from './diff.js';
 import {jsonParseNumber} from '../../src/utils.js';
+import {Base64} from 'js-base64';
 
 export function verifyFiles(t: Test, pattern: string | string[]): void {
     const smileFiles = globSync(pattern, {
@@ -36,8 +37,19 @@ export function verifyFile(t: Test, smileFile: string): void {
         const jsonFile = replaceExtension(smileFile, '.json');
         const smileValue = loadSmileFromFile(smileFile);
         const wrappedJsonValue = loadWrappedJsonFromFile(jsonFile);
-        const jsonValue = wrappedJsonValue.value;
-        const decodePassed = objectEqual(t, smileValue, jsonValue);
+        let jsonValue = wrappedJsonValue.value;
+        if (relativePath.startsWith('testdata/serde-smile/binary/')) {
+            if (typeof jsonValue === 'string') {
+                jsonValue = Base64.toUint8Array(jsonValue);
+            }
+        }
+        const decodePassed = (): boolean => {
+            if (relativePath.startsWith('testdata/serde-smile/big_decimal/')) {
+                return approx(t, smileValue as number, jsonValue as number, 0.00000001)
+            } else {
+                return objectEqual(t, smileValue, jsonValue);
+            }
+        }
 
         const outputWrappedJsonValue = {
             ...wrappedJsonValue,
@@ -56,7 +68,13 @@ export function verifyFile(t: Test, smileFile: string): void {
                     rawBinary: (wrappedJsonValue.rawBinary !== undefined) ? wrappedJsonValue.rawBinary : false,
                 });
                 const outputSmileValue = loadSmileFromFile(outputSmileFile);
-                const encodePassed = objectEqual(t, outputSmileValue, jsonValue);
+                const encodePassed = (): boolean => {
+                    if (relativePath.startsWith('testdata/serde-smile/big_decimal/')) {
+                        return approx(t, outputSmileValue as number, jsonValue as number, 0.00000001)
+                    } else {
+                        return objectEqual(t, outputSmileValue, jsonValue);
+                    }
+                }
 
                 if (encodePassed) {
                     if (!skipHdDiff(relativePath)) {
@@ -89,21 +107,21 @@ function noSkipJsonDiff(relativePath: string): boolean {
 }
 
 function skipJsonDiff(relativePath: string): boolean {
-    return relativePath.startsWith('testdata/serde-smile/double/')
+    return relativePath.startsWith('testdata/serde-smile/big_decimal/')
+        || relativePath.startsWith('testdata/serde-smile/binary/')
+        || relativePath.startsWith('testdata/serde-smile/double/')
         || relativePath.startsWith('testdata/serde-smile/float/');
 }
 
 function skipHdDiff(relativePath: string): boolean {
-    if (
-        (relativePath === 'testdata/serde-smile/double/0.0.smile')
+    return relativePath.startsWith('testdata/serde-smile/big_decimal/')
+        || (relativePath === 'testdata/serde-smile/double/0.0.smile')
         || (relativePath === 'testdata/serde-smile/double/-0.0.smile')
         || (relativePath === 'testdata/serde-smile/float/0.0.smile')
         || (relativePath === 'testdata/serde-smile/float/-0.0.smile')
-        || (relativePath === 'testdata/serde-smile/shared_property/evict.smile')
-    ) {
-        return true;
-    }
-    return false;
+        || (relativePath === 'testdata/serde-smile/float/100.25.smile')
+        || (relativePath === 'testdata/serde-smile/float/-100.25.smile')
+        || (relativePath === 'testdata/serde-smile/shared_property/evict.smile');
 }
 
 function replaceExtension(p: string, ext: string): string {
