@@ -28,7 +28,7 @@ tasks:
     cmds:
       - docker run -it
         --user $(id -u):$(id -g)
-        -v $(pwd)/serde-smile/tests:/data/input
+        -v $(pwd)/../../sfackler/serde-smile/tests:/data/input
         -v $(pwd)/testdata/serde-smile:/data/output
         smile-cli:latest encode -r --wrapped --copy-source /data/input /data/output
       - docker run -it

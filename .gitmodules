@@ -1,3 +1,0 @@
-[submodule "serde-smile"]
-	path = serde-smile
-	url = https://github.com/sfackler/serde-smile
