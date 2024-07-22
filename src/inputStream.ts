@@ -34,7 +34,7 @@ export class InputStream {
             throw eofError;
         }
         const endIndex = Math.min(this.array.length, this.index + n);
-        const readData = this.array.subarray(this.index, endIndex);
+        const readData = new Uint8Array(this.array.subarray(this.index, endIndex));
         this.index = endIndex;
         return readData;
     }
