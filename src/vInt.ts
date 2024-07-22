@@ -54,6 +54,9 @@ export class VInt {
                 v /= BigInt(128);
             }
         }
+        if (buffer.length === 0) {
+            buffer.push(0x80);
+        }
         buffer.reverse();
         return new Uint8Array(buffer);
     }
