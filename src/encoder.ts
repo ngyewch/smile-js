@@ -86,6 +86,9 @@ class EncoderContext {
         if ((value === undefined) || (value === null)) {
             this.writeNull();
             return;
+        } else if (value instanceof Uint8Array) {
+            this.writeBinary(value as Uint8Array);
+            return;
         } else if (Array.isArray(value)) {
             this.writeArray(value as any[]);
             return;
@@ -229,6 +232,17 @@ class EncoderContext {
             this.writeValue(value);
         }
         this.outputStream.write(0xfb);
+    }
+
+    private writeBinary(data: Uint8Array): void {
+        if (this.options.rawBinary) {
+            this.outputStream.write(0xfd);
+            VInt.write(this.outputStream, data.length);
+            this.outputStream.write(data);
+        } else {
+            this.outputStream.write(0xe8);
+            SafeBinary.write(this.outputStream, data);
+        }
     }
 
     private writeKey(s: string): void {
