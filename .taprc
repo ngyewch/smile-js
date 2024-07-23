@@ -5,7 +5,7 @@ coverage-report:
   - text
 browser: true
 timeout: 30
-jobs: 8
+jobs: 1
 include:
   - "test/*.ts"
 snapshot-clean-cwd: true
