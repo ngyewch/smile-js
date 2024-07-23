@@ -207,13 +207,8 @@ class EncoderContext {
     }
 
     private writeBigInt(n: bigint): void {
-        if ((n < MIN_INT64) || (n > MAX_INT64)) {
-            this.outputStream.write(0x26);
-            SafeBinary.writeBigInt(this.outputStream, n);
-        } else {
-            this.outputStream.write(0x25);
-            VInt.write(this.outputStream, ZigZag.encode(n));
-        }
+        this.outputStream.write(0x26);
+        SafeBinary.writeBigInt(this.outputStream, n);
     }
 
     private writeArray(array: any[]): void {
