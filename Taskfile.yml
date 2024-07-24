@@ -21,6 +21,7 @@ tasks:
   build-smile-cli:
     cmds:
       - docker build -t smile-cli:latest github.com/ngyewch/smile-cli
+      #- docker build -t smile-cli:latest ../smile-cli
 
   generateTestData:
     desc: Generate test data
@@ -30,12 +31,23 @@ tasks:
         --user $(id -u):$(id -g)
         -v $(pwd)/../../sfackler/serde-smile/tests:/data/input
         -v $(pwd)/testdata/serde-smile:/data/output
-        smile-cli:latest encode -r --wrapped --copy-source /data/input /data/output
+        smile-cli:latest encode -r --wrapped --copy-source
+        --parse-as big_decimal/*.json=big_decimal
+        --parse-as big_integer/*.json=big_integer
+        --parse-as binary/*.json=binary
+        --parse-as boolean/*.json=boolean
+        --parse-as double/*.json=double
+        --parse-as float/*.json=float
+        --parse-as integer/*.json=integer
+        --parse-as long/*.json=long
+        --parse-as string/*.json=string
+        /data/input /data/output
       - docker run -it
         --user $(id -u):$(id -g)
         -v $(pwd)/testdata/basic:/data/input
         -v $(pwd)/testdata/basic:/data/output
-        smile-cli:latest encode -r --wrapped /data/input /data/output
+        smile-cli:latest encode -r --wrapped
+        /data/input /data/output
 
   site-clean:
     desc: Clean site
