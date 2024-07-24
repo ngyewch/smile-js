@@ -32,15 +32,15 @@ tasks:
         -v $(pwd)/../../sfackler/serde-smile/tests:/data/input
         -v $(pwd)/testdata/serde-smile:/data/output
         smile-cli:latest encode -r --wrapped --copy-source
-        --parse-as big_decimal/*.json=big_decimal
-        --parse-as big_integer/*.json=big_integer
-        --parse-as binary/*.json=binary
-        --parse-as boolean/*.json=boolean
-        --parse-as double/*.json=double
-        --parse-as float/*.json=float
-        --parse-as integer/*.json=integer
-        --parse-as long/*.json=long
-        --parse-as string/*.json=string
+        --parse-files-as big_decimal/*.json=big_decimal
+        --parse-files-as big_integer/*.json=big_integer
+        --parse-files-as binary/*.json=binary
+        --parse-files-as boolean/*.json=boolean
+        --parse-files-as double/*.json=double
+        --parse-files-as float/*.json=float
+        --parse-files-as integer/*.json=integer
+        --parse-files-as long/*.json=long
+        --parse-files-as string/*.json=string
         /data/input /data/output
       - docker run -it
         --user $(id -u):$(id -g)
