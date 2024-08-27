@@ -38,22 +38,22 @@
   },
   "devDependencies": {
     "@tapjs/core": "4.0.0",
-    "@types/node": "20.14.11",
+    "@types/node": "22.5.0",
     "commander": "12.1.0",
-    "dependency-cruiser": "16.3.9",
+    "dependency-cruiser": "16.4.0",
     "gh-pages": "6.1.1",
     "glob": "11.0.0",
     "js-base64": "3.7.7",
     "js-testdiff": "1.0.5",
     "lossless-json": "4.0.1",
     "npm-run-all": "4.1.5",
-    "tap": "21.0.0",
-    "typedoc": "0.26.5",
-    "typescript": "5.5.3",
+    "tap": "21.0.1",
+    "typedoc": "0.26.6",
+    "typescript": "5.5.4",
     "typescript-strict-plugin": "2.4.4",
-    "validate-package-exports": "0.5.0",
-    "vite": "5.3.4",
-    "vite-plugin-dts": "3.9.1"
+    "validate-package-exports": "0.6.1",
+    "vite": "5.4.2",
+    "vite-plugin-dts": "4.0.3"
   },
   "dependencies": {
     "bit-buffer": "0.2.5"
