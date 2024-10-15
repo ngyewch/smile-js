@@ -4,7 +4,7 @@
     "example": "ts-node ./example.ts"
   },
   "dependencies": {
-    "typescript": "5.6.2",
+    "typescript": "5.6.3",
     "smile-js": "file:../../",
     "ts-node": "10.9.2"
   }
