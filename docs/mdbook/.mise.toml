@@ -1,3 +1,3 @@
 [tools]
 task = "3.41.0"
-mdbook = "0.4.43"
+mdbook = "0.4.44"
