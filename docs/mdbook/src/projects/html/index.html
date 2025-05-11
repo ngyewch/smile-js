@@ -1,0 +1,16 @@
+<!doctype html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/smile-js@0.10.1/dist/smile-js.iife.js"></script>
+
+    <script src="./index.js"></script>
+</head>
+<body>
+<div>
+    <label for="file">Select SMILE-encoded file</label>
+    <input id="file" type="file" onchange="onChooseFile(event)"/>
+</div>
+<div>
+    <label for="output">JSON representation:</label>
+    <pre id="output"></pre>
+</div>
+</body>

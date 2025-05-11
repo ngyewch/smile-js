@@ -10,8 +10,6 @@ The module will be exported as `windows.smile`.
 
 ## Example
 
-[Demo](./examples/html/index.html)
+<script type="module" src="./js/playground-elements/index.js"></script>
 
-```html
-{{#include ../../../examples/html/index.html}}
-```
+<playground-ide editable-file-system line-numbers resizable project-src="./projects/html/project.json"></playground-ide>
