@@ -8,4 +8,3 @@
 
 - [HTML Script Tag](html-script-tag.md)
 - [Module import](module-import.md)
-- [Svelte](svelte-example.md)

@@ -61,8 +61,6 @@ tasks:
       - mkdir -p build/gh-pages
       - task: site-build-mdbook
       - task: site-build-typedoc
-      - task: site-build-example-html
-      - task: site-build-example-svelte
 
   site-deploy:
     desc: Deploy site
@@ -79,21 +77,3 @@ tasks:
     desc: Generate typedoc
     cmds:
       - pnpm run typedoc
-
-  site-build-example-html:
-    cmds:
-      - mkdir -p build/gh-pages/examples/html
-      - cp -r examples/html/* build/gh-pages/examples/html/
-
-  site-build-example-svelte:
-    deps: [ build-example-svelte ]
-    cmds:
-      - mkdir -p build/gh-pages/examples/svelte
-      - cp -r examples/svelte/dist/* build/gh-pages/examples/svelte/
-
-  build-example-svelte:
-    desc: Build example
-    dir: examples/svelte
-    cmds:
-      - pnpm install
-      - pnpm run build
