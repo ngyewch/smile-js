@@ -3,7 +3,7 @@
 To use smile-js via the HTML script tag:
 
 ```js
-import smile from 'smile-js';
+import * as smile from 'smile-js';
 ```
 
 ## Example
