@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" class="light" dir="ltr">
+<html lang="en" class="light sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
 
         <!-- Custom HTML head -->
-        
+
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
@@ -25,26 +25,30 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="custom.css">
 
-    </head>
-    <body class="sidebar-visible no-js">
-    <div id="body-container">
-        <!-- Provide site root to javascript -->
+
+        <!-- Provide site root and default themes to javascript -->
         <script>
-            var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
         </script>
-
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                var theme = localStorage.getItem('mdbook-theme');
-                var sidebar = localStorage.getItem('mdbook-sidebar');
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -58,24 +62,22 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            var theme;
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            var html = document.querySelector('html');
+            const html = document.documentElement;
             html.classList.remove('light')
             html.classList.add(theme);
-            var body = document.querySelector('body');
-            body.classList.remove('no-js')
-            body.classList.add('js');
+            html.classList.add("js");
         </script>
 
         <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var body = document.querySelector('body');
-            var sidebar = null;
-            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
@@ -83,45 +85,25 @@
                 sidebar = 'hidden';
             }
             sidebar_toggle.checked = sidebar === 'visible';
-            body.classList.remove('sidebar-visible');
-            body.classList.add("sidebar-" + sidebar);
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="cli.html"><strong aria-hidden="true">1.</strong> Command line tools</a></li><li class="chapter-item expanded affix "><li class="part-title">Examples</li><li class="chapter-item expanded "><a href="html-script-tag.html"><strong aria-hidden="true">2.</strong> HTML Script Tag</a></li><li class="chapter-item expanded "><a href="svelte-example.html"><strong aria-hidden="true">3.</strong> Svelte</a></li></ol>
-            </div>
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
             </div>
         </nav>
 
-        <!-- Track and set sidebar scroll position -->
-        <script>
-            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
-            sidebarScrollbox.addEventListener('click', function(e) {
-                if (e.target.tagName === 'A') {
-                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
-                }
-            }, { passive: true });
-            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
-            sessionStorage.removeItem('sidebar-scroll');
-            if (sidebarScrollTop) {
-                // preserve sidebar scroll position when navigating via links within sidebar
-                sidebarScrollbox.scrollTop = sidebarScrollTop;
-            } else {
-                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
-                var activeSection = document.querySelector('#sidebar .active');
-                if (activeSection) {
-                    activeSection.scrollIntoView({ block: 'center' });
-                }
-            }
-        </script>
-
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -131,6 +113,7 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
@@ -208,149 +191,15 @@ Commands:
 </code></pre>
 <p>The module will be exported as <code>windows.smile</code>.</p>
 <h2 id="example"><a class="header" href="#example">Example</a></h2>
-<p><a href="./examples/html/index.html">Demo</a></p>
-<pre><code class="language-html">&lt;!DOCTYPE html&gt;
-&lt;html lang="en-US"&gt;
-&lt;head&gt;
-    &lt;title&gt;smile-js test&lt;/title&gt;
-
-    &lt;script src="https://cdn.jsdelivr.net/npm/smile-js@0.10.1/dist/smile-js.iife.js"&gt;&lt;/script&gt;
-    &lt;script&gt;
-        function onChooseFile(e) {
-            const file = e.target.files.item(0)
-            file.arrayBuffer()
-                .then(arrayBuffer =&gt; {
-                    const data = new Uint8Array(arrayBuffer);
-                    try {
-                        const o = window.smile.decode(data);
-                        console.log(o);
-                        document.getElementById("output").innerText = JSON.stringify(o, null, 2);
-                    } catch (e) {
-                        alert(e);
-                    }
-                })
-                .catch(e =&gt; {
-                    alert(e);
-                });
-        }
-    &lt;/script&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;div&gt;
-    &lt;label for="file"&gt;Select SMILE-encoded file&lt;/label&gt;
-    &lt;input id="file" type="file" onchange="onChooseFile(event)"/&gt;
-&lt;/div&gt;
-&lt;div&gt;
-    &lt;label for="output"&gt;JSON representation:&lt;/label&gt;
-    &lt;pre id="output"&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;
+<script type="module" src="./js/playground-elements/index.js"></script>
+<p><playground-ide editable-file-system line-numbers resizable project-src="./projects/html/project.json"></playground-ide></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="module-import"><a class="header" href="#module-import">Module import</a></h1>
+<p>To use smile-js via the HTML script tag:</p>
+<pre><code class="language-js">import * as smile from 'smile-js';
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="svelte-example"><a class="header" href="#svelte-example">Svelte example</a></h1>
-<p><a href="https://github.com/ngyewch/smile-js/tree/master/examples/svelte">Source</a></p>
-<p><a href="./examples/svelte/index.html">Demo</a></p>
-<h2 id="appsvelte"><a class="header" href="#appsvelte">App.svelte</a></h2>
-<pre><code class="language-sveltehtml">&lt;script lang="ts"&gt;
-    import {decode, encode} from 'smile-js';
-    import {isInteger, parse, stringify} from 'lossless-json';
-    import {Base64} from 'js-base64';
-
-    let decodedJson: string = '';
-    let inputJson: string = '';
-
-    function onChooseEncodedFile(e: Event) {
-        const target = e.target as HTMLInputElement;
-        if (!target.files || (target.files.length &lt; 1)) {
-            return;
-        }
-        const file = target.files.item(0)
-        if (!file) {
-            return;
-        }
-        file.arrayBuffer()
-            .then(arrayBuffer =&gt; {
-                const data = new Uint8Array(arrayBuffer);
-                try {
-                    const o = decode(data);
-                    console.log(o);
-                    const json = stringify(o, null, '  ');
-                    if (json !== undefined) {
-                        decodedJson = json;
-                    } else {
-                        alert('could not JSON stringify object')
-                    }
-                } catch (e) {
-                    alert(e);
-                }
-            })
-            .catch(e =&gt; {
-                alert(e);
-            });
-    }
-
-    function onClickEncode(e: Event) {
-        try {
-            const o = parse(inputJson, null, parseNumber);
-            console.log('input', o);
-            const encodedData = encode(o);
-            download('encoded.smile', 'application/x-jackson-smile', encodedData);
-        } catch (e) {
-            alert(e);
-        }
-    }
-
-    function download(filename: string, contentType: string, data: Uint8Array) {
-        const element = document.createElement('a');
-        element.setAttribute('href', `data:${contentType};base64,${Base64.fromUint8Array(data)}`);
-        element.setAttribute('download', filename);
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
-    }
-
-    function parseNumber(v: string): unknown {
-        if (isInteger(v)) {
-            const b = BigInt(v);
-            if ((b &gt;= BigInt(Number.MIN_SAFE_INTEGER)) &amp;&amp; (b &lt;= BigInt(Number.MAX_SAFE_INTEGER))) {
-                return Number(b);
-            } else {
-                return b;
-            }
-        } else {
-            return parseFloat(v);
-        }
-    }
-&lt;/script&gt;
-
-&lt;h1&gt;smile-js demo&lt;/h1&gt;
-
-&lt;h2&gt;Decode&lt;/h2&gt;
-
-&lt;div&gt;
-    &lt;label for="file"&gt;Select SMILE-encoded file&lt;/label&gt;
-    &lt;input id="file" type="file" on:change={onChooseEncodedFile}/&gt;
-&lt;/div&gt;
-&lt;div&gt;
-    &lt;label for="output"&gt;JSON representation:&lt;/label&gt;
-    &lt;pre id="output"&gt;{decodedJson}&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;hr&gt;
-
-&lt;h2&gt;Encode&lt;/h2&gt;
-
-&lt;button on:click={onClickEncode}&gt;Encode&lt;/button&gt;
-&lt;textarea class="inputJson" bind:value={inputJson}&gt;&lt;/textarea&gt;
-
-&lt;style&gt;
-    .inputJson {
-        width: 100%;
-        height: 20em;
-    }
-&lt;/style&gt;
-</code></pre>
+<h2 id="example-1"><a class="header" href="#example-1">Example</a></h2>
+<script type="module" src="./js/playground-elements/index.js"></script>
+<p><playground-ide editable-file-system line-numbers resizable project-src="./projects/basic/project.json"></playground-ide></p>
 
                     </main>
 
