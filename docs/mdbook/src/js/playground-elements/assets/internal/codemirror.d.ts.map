@@ -1,1 +1,0 @@
-{"version":3,"file":"codemirror.d.ts","sourceRoot":"","sources":["../src/internal/codemirror.ts"],"names":[],"mappings":"AAAA;;;;GAIG;AAGH,OAAO,qCAAqC,CAAC;AAI7C,OAAO,cAAc,MAAM,YAAY,CAAC;AACxC,OAAO,iBAAiB,MAAM,mCAAmC,CAAC;AAClE,OAAO,iBAAiB,MAAM,oCAAoC,CAAC;AACnE,OAAO,iBAAiB,MAAM,qCAAqC,CAAC;AAEpE;;;;;GAKG;AACH,eAAO,MAAM,UAAU,wGAOX,CAAC"}
