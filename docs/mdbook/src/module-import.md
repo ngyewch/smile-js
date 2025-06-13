@@ -1,6 +1,6 @@
 # Module import
 
-To use smile-js via the HTML script tag:
+To use smile-js via module import:
 
 ```js
 import * as smile from 'smile-js';
