@@ -12,6 +12,13 @@ tasks:
     cmds:
       - pnpm run build
 
+  outdated:
+    desc: Outdated
+    aliases: [ dependencyUpdates ]
+    deps: [ install ]
+    cmds:
+      - pnpm outdated
+
   test:
     desc: Test
     deps: [ install ]
