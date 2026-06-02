@@ -1,6 +1,11 @@
 version: 3
 
 tasks:
+  clean:
+    desc: Clean
+    cmds:
+      - rm -rf build dist
+
   install:
     desc: Install
     cmds:
